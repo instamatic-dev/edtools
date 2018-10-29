@@ -58,39 +58,37 @@ def parse_xds(path):
     # simultaneous print statements from different threads
     with rlock:
         if not fn.exists():
-            print(f"FAIL: Cannot find file `{fn.name}`, was the indexing successful??")
             msg = f"{path}: Automatic indexing failed..."
         else:
             try:
                 p = xds_parser(fn)
             except UnboundLocalError:
                 msg = f"{path}: Automatic indexing completed but no cell reported..."
-                print(f"FAIL: `{fn.name}` found, but could not be parsed...")
             else:
                 msg = "\n"
                 msg += p.cell_info()
                 msg += "\n"
                 msg += p.integration_info()
-                print(msg)
 
-    return msg
+    print(msg)
 
 
 def xds_index(path):
     plat = sys.platform
     if plat == "linux":
-        # cmd = "xds 2>&1 >/dev/null"
-        cmd = "xds"
+        try:
+            p = sp.Popen("xds", cwd=path, stdout=DEVNULL)
+            p.wait()
+        except Exception as e:
+            print("ERROR in subprocess call:", e)
     elif plat == "win32":
-        cmd = "bash -c xds 2>&1 >/dev/null"
+        try:
+            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=path)
+            p.wait()
+        except Exception as e:
+            print("ERROR in subprocess call:", e)
     else:
         raise RuntimeError
-
-    # try:
-    p = sp.Popen(cmd, cwd=path, stdout=DEVNULL)
-    p.wait()
-    # except Exception as e:
-        # print("ERROR in subprocess call:", e)
 
     try:
         parse_xds(path)
