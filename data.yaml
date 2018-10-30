@@ -1,0 +1,2346 @@
+!!python/object/apply:collections.OrderedDict
+- - - sfac_mapping
+    - [a1, b1, a2, b2, a3, b3, a4, b4, c]
+  - [source_sfac_xray, 'Int. Tab. C, 6.1.1.4']
+  - [source_sfac_electron, Doyle & Turner]
+  - [source_sfac_neutron, 'Int. Tab. C, 4.4.4.1']
+  - [source_vdw_radius, 'A. Bondi, J. Phys. Chem., 68, 441-452, 1964; R. S. Rowland
+      & R. Taylor, J. Phys. Chem., 100, 7384 - 7391, 1996; else 2.0 if not available']
+  - - h
+    - name: Hydrogen
+      number: 1
+      radius: 0.32
+      sfac_electron: [0.3754, 15.4946, 0.1408, 4.1261, 0.0216, 0.0246, -0.1012, 46.884,
+        0.0]
+      sfac_neutron: -0.3739
+      sfac_xray: [0.48992, 20.6593, 0.262, 7.74039, 0.19677, 49.5519, 0.04988, 2.20159,
+        0.0013]
+      vdw_radius: 1.09
+      weight: 1.008
+  - - he
+    - name: Helium
+      number: 2
+      radius: 0.93
+      sfac_electron: [0.0906, 18.1834, 0.1814, 6.2109, 0.1095, 1.8026, 0.0362, 0.2844,
+        0.0]
+      sfac_neutron: 0.326
+      sfac_xray: [0.8734, 9.1037, 0.6309, 3.3568, 0.3112, 22.9276, 0.178, 0.9821,
+        0.0064]
+      vdw_radius: 1.4
+      weight: 4.0026
+  - - li
+    - name: Lithium
+      number: 3
+      radius: 0.6
+      sfac_electron: [1.6108, 107.6384, 1.246, 30.4795, 0.3257, 4.5331, 0.0986, 0.4951,
+        0.0]
+      sfac_neutron: -0.19
+      sfac_xray: [1.1282, 3.9546, 0.7508, 1.0524, 0.6175, 85.3905, 0.4653, 168.261,
+        0.0377]
+      vdw_radius: 1.82
+      weight: 6.939
+  - - be
+    - name: Beryllium
+      number: 4
+      radius: 0.31
+      sfac_electron: [1.2498, 60.8042, 1.3335, 18.5914, 0.3603, 3.6534, 0.1055, 0.4157,
+        0.0]
+      sfac_neutron: 0.779
+      sfac_xray: [1.5919, 43.6427, 1.1278, 1.8623, 0.5391, 103.483, 0.7029, 0.542,
+        0.0385]
+      vdw_radius: 2.0
+      weight: 9.0122
+  - - b
+    - name: Boron
+      number: 5
+      radius: 0.82
+      sfac_electron: [0.9446, 46.4438, 1.312, 14.1778, 0.4188, 3.2228, 0.1159, 0.3767,
+        0.0]
+      sfac_neutron: 0.53
+      sfac_xray: [2.0545, 23.21851, 1.3326, 1.021, 1.0979, 60.34979, 0.7068, 0.1403,
+        -0.1932]
+      vdw_radius: 2.0
+      weight: 10.811
+  - - c
+    - name: Carbon
+      number: 6
+      radius: 0.77
+      sfac_electron: [0.7307, 36.9951, 1.1951, 11.2966, 0.4563, 2.8139, 0.1247, 0.3456,
+        0.0]
+      sfac_neutron: 0.6646
+      sfac_xray: [2.31, 20.8439, 1.02, 10.2075, 1.5886, 0.5687, 0.865, 51.6512, 0.2156]
+      vdw_radius: 1.7
+      weight: 12.0107
+  - - n
+    - name: Nitrogen
+      number: 7
+      radius: 0.75
+      sfac_electron: [0.5717, 28.8465, 1.0425, 9.0542, 0.4647, 2.4213, 0.1311, 0.3167,
+        0.0]
+      sfac_neutron: 0.936
+      sfac_xray: [12.2126, 0.0057, 3.1322, 9.8933, 2.0125, 28.9975, 1.1663, 0.5826,
+        -11.529]
+      vdw_radius: 1.55
+      weight: 14.007
+  - - o
+    - name: Oxygen
+      number: 8
+      radius: 0.73
+      sfac_electron: [0.4548, 23.7803, 0.9173, 7.622, 0.4719, 2.144, 0.1384, 0.2959,
+        0.0]
+      sfac_neutron: 0.5803
+      sfac_xray: [3.0485, 13.2771, 2.2868, 5.7011, 1.5463, 0.3239, 0.867, 32.90891,
+        0.2508]
+      vdw_radius: 1.52
+      weight: 15.999
+  - - f
+    - name: Fluorine
+      number: 9
+      radius: 0.72
+      sfac_electron: [0.3686, 20.239, 0.8109, 6.6093, 0.4751, 1.931, 0.1459, 0.2793,
+        0.0]
+      sfac_neutron: 0.5654
+      sfac_xray: [3.5392, 10.2825, 2.6412, 4.2944, 1.517, 0.2615, 1.0243, 26.1476,
+        0.2776]
+      vdw_radius: 1.47
+      weight: 18.998
+  - - ne
+    - name: Neon
+      number: 10
+      radius: 0.71
+      sfac_electron: [0.3025, 17.6396, 0.7202, 5.8604, 0.4751, 1.7623, 0.1534, 0.2656,
+        0.0]
+      sfac_neutron: 0.4566
+      sfac_xray: [3.9553, 8.4042, 3.1125, 3.4262, 1.4546, 0.2306, 1.1251, 21.7184,
+        0.3515]
+      vdw_radius: 1.54
+      weight: 20.183
+  - - na
+    - name: Sodium
+      number: 11
+      radius: 1.4
+      sfac_electron: [2.2406, 108.0039, 1.3326, 24.5047, 0.907, 3.3914, 0.2863, 0.4346,
+        0.0]
+      sfac_neutron: 0.363
+      sfac_xray: [4.7626, 3.285, 3.1736, 8.8422, 1.2674, 0.3136, 1.1128, 129.424,
+        0.676]
+      vdw_radius: 2.27
+      weight: 22.99
+  - - mg
+    - name: Magnesium
+      number: 12
+      radius: 1.36
+      sfac_electron: [2.2682, 73.6704, 1.8025, 20.1749, 0.8394, 3.0181, 0.2892, 0.4046,
+        0.0]
+      sfac_neutron: 0.5375
+      sfac_xray: [5.4204, 2.8275, 2.1735, 79.2611, 1.2269, 0.3808, 2.3073, 7.1937,
+        0.8584]
+      vdw_radius: 1.73
+      weight: 24.312
+  - - al
+    - name: Aluminium
+      number: 13
+      radius: 1.18
+      sfac_electron: [2.2756, 72.322, 2.428, 19.7729, 0.8578, 3.0799, 0.3166, 0.4076,
+        0.0]
+      sfac_neutron: 0.3449
+      sfac_xray: [6.4202, 3.0387, 1.9002, 0.7426, 1.5936, 31.5472, 1.9646, 85.0886,
+        1.1151]
+      vdw_radius: 2.0
+      weight: 26.9815
+  - - si
+    - name: Silicon
+      number: 14
+      radius: 1.11
+      sfac_electron: [2.1293, 57.7748, 2.5333, 16.4756, 0.8349, 2.8796, 0.3216, 0.386,
+        0.0]
+      sfac_neutron: 0.41491
+      sfac_xray: [6.2915, 2.4386, 3.0353, 32.33369, 1.9891, 0.6785, 1.541, 81.6937,
+        1.1407]
+      vdw_radius: 2.1
+      weight: 28.086
+  - - p
+    - name: Phosphorus
+      number: 15
+      radius: 1.06
+      sfac_electron: [1.8882, 44.8756, 2.4685, 13.5383, 0.8046, 2.6424, 0.3204, 0.3608,
+        0.0]
+      sfac_neutron: 0.513
+      sfac_xray: [6.4345, 1.9067, 4.1791, 27.157, 1.78, 0.526, 1.4908, 68.16451, 1.1149]
+      vdw_radius: 1.8
+      weight: 30.974
+  - - s
+    - name: Sulphur
+      number: 16
+      radius: 1.02
+      sfac_electron: [1.6591, 36.65, 2.3863, 11.4881, 0.7899, 2.4686, 0.3208, 0.3403,
+        0.0]
+      sfac_neutron: 0.2847
+      sfac_xray: [6.9053, 1.4679, 5.2034, 22.2151, 1.4379, 0.2536, 1.5863, 56.172,
+        0.8669]
+      vdw_radius: 1.8
+      weight: 32.065
+  - - cl
+    - name: Chlorine
+      number: 17
+      radius: 0.99
+      sfac_electron: [1.4524, 30.9352, 2.2926, 9.9798, 0.7874, 2.3336, 0.3217, 0.3228,
+        0.0]
+      sfac_neutron: 0.9577
+      sfac_xray: [11.4604, 0.0104, 7.1964, 1.1662, 6.2556, 18.51939, 1.6455, 47.7784,
+        -9.5574]
+      vdw_radius: 1.75
+      weight: 35.453
+  - - ar
+    - name: Argon
+      number: 18
+      radius: 0.98
+      sfac_electron: [1.2736, 26.6823, 2.1894, 8.813, 0.7927, 2.2186, 0.3225, 0.3071,
+        0.0]
+      sfac_neutron: 0.1909
+      sfac_xray: [7.4845, 0.9072, 6.7723, 14.8407, 0.6539, 43.8983, 1.6442, 33.3929,
+        1.4445]
+      vdw_radius: 1.88
+      weight: 39.948
+  - - k
+    - name: Potassium
+      number: 19
+      radius: 1.33
+      sfac_electron: [3.9507, 137.0748, 2.5452, 22.4017, 1.9795, 4.5319, 0.4817, 0.434,
+        0.0]
+      sfac_neutron: 0.367
+      sfac_xray: [8.2186, 12.7949, 7.4398, 0.7748, 1.0519, 213.187, 0.8659, 41.6841,
+        1.4228]
+      vdw_radius: 2.75
+      weight: 39.102
+  - - ca
+    - name: Calcium
+      number: 20
+      radius: 1.4
+      sfac_electron: [4.4696, 99.5228, 2.9708, 22.6958, 1.9696, 4.1954, 0.4818, 0.4165,
+        0.0]
+      sfac_neutron: 0.47
+      sfac_xray: [15.6348, -0.0074, 7.9518, 0.6089, 8.4372, 10.3116, 0.8537, 25.99049,
+        -14.875]
+      vdw_radius: 2.0
+      weight: 40.08
+  - - sc
+    - name: Scandium
+      number: 21
+      radius: 0.81
+      sfac_electron: [3.9659, 88.9597, 2.9169, 20.6061, 1.9254, 3.8557, 0.4802, 0.3988,
+        0.0]
+      sfac_neutron: 1.229
+      sfac_xray: [9.189, 9.0213, 7.3679, 0.5729, 1.6409, 136.108, 1.468, 51.3531,
+        1.3329]
+      vdw_radius: 2.0
+      weight: 44.956
+  - - ti
+    - name: Titanium
+      number: 22
+      radius: 0.9
+      sfac_electron: [3.5653, 81.9821, 2.8181, 19.0486, 1.893, 3.5904, 0.4825, 0.3855,
+        0.0]
+      sfac_neutron: -0.337
+      sfac_xray: [9.7595, 7.8508, 7.3558, 0.5, 1.6991, 35.6338, 1.9021, 116.105, 1.2807]
+      vdw_radius: 2.0
+      weight: 47.9
+  - - v
+    - name: Vanadium
+      number: 23
+      radius: 1.22
+      sfac_electron: [3.2449, 76.3789, 2.6978, 17.7262, 1.8597, 3.3632, 0.4864, 0.3743,
+        0.0]
+      sfac_neutron: -0.03824
+      sfac_xray: [10.2971, 6.8657, 7.3511, 0.4385, 2.0703, 26.8938, 2.0571, 102.478,
+        1.2199]
+      vdw_radius: 2.0
+      weight: 50.942
+  - - cr
+    - name: Chromium
+      number: 24
+      radius: 1.18
+      sfac_electron: [2.3066, 78.4051, 2.3339, 15.7851, 1.8226, 3.1566, 0.4901, 0.3636,
+        0.0]
+      sfac_neutron: 0.3635
+      sfac_xray: [10.6406, 6.1038, 7.3537, 0.392, 3.324, 20.2626, 1.4922, 98.7399,
+        1.1832]
+      vdw_radius: 2.0
+      weight: 51.996
+  - - mn
+    - name: Manganese
+      number: 25
+      radius: 1.17
+      sfac_electron: [2.7467, 67.7862, 2.4556, 15.6743, 1.7923, 2.9998, 0.4984, 0.3569,
+        0.0]
+      sfac_neutron: -0.375
+      sfac_xray: [11.2819, 5.3409, 7.3573, 0.3432, 3.0193, 17.8674, 2.2441, 83.7543,
+        1.0896]
+      vdw_radius: 2.0
+      weight: 54.938
+  - - fe
+    - name: Iron
+      number: 26
+      radius: 1.17
+      sfac_electron: [2.544, 64.4244, 2.3434, 14.8806, 1.7588, 2.8539, 0.5062, 0.3502,
+        0.0]
+      sfac_neutron: 0.945
+      sfac_xray: [11.7695, 4.7611, 7.3573, 0.3072, 3.5222, 15.3535, 2.3045, 76.88049,
+        1.0369]
+      vdw_radius: 2.0
+      weight: 55.847
+  - - co
+    - name: Cobalt
+      number: 27
+      radius: 1.16
+      sfac_electron: [2.3668, 61.4306, 2.2361, 14.1798, 1.7243, 2.7247, 0.5148, 0.3442,
+        0.0]
+      sfac_neutron: 0.249
+      sfac_xray: [12.2841, 4.2791, 7.3409, 0.2784, 4.0034, 13.5359, 2.3488, 71.1692,
+        1.0118]
+      vdw_radius: 2.0
+      weight: 58.933
+  - - ni
+    - name: Nickel
+      number: 28
+      radius: 1.15
+      sfac_electron: [2.2104, 58.7267, 2.1342, 13.553, 1.6891, 2.6094, 0.5238, 0.3388,
+        0.0]
+      sfac_neutron: 1.03
+      sfac_xray: [12.8376, 3.8785, 7.292, 0.2565, 4.4438, 12.1763, 2.38, 66.3421,
+        1.0341]
+      vdw_radius: 1.63
+      weight: 58.71
+  - - cu
+    - name: Copper
+      number: 29
+      radius: 1.17
+      sfac_electron: [1.5792, 62.9403, 1.8197, 12.4527, 1.6576, 2.5042, 0.5323, 0.3331,
+        0.0]
+      sfac_neutron: 0.7718
+      sfac_xray: [13.338, 3.5828, 7.1676, 0.247, 5.6158, 11.3966, 1.6735, 64.81261,
+        1.191]
+      vdw_radius: 1.4
+      weight: 63.54
+  - - zn
+    - name: Zinc
+      number: 30
+      radius: 1.25
+      sfac_electron: [1.9418, 54.1621, 1.9501, 12.5177, 1.6192, 2.4164, 0.5434, 0.3295,
+        0.0]
+      sfac_neutron: 0.56
+      sfac_xray: [14.0743, 3.2655, 7.0318, 0.2333, 5.1652, 10.3163, 2.41, 58.7097,
+        1.3041]
+      vdw_radius: 1.39
+      weight: 65.37
+  - - ga
+    - name: Gallium
+      number: 31
+      radius: 1.26
+      sfac_electron: [2.3205, 65.6019, 2.4855, 15.4577, 1.6879, 2.5806, 0.5992, 0.351,
+        0.0]
+      sfac_neutron: 0.7288
+      sfac_xray: [15.2354, 3.0669, 6.7006, 0.2412, 4.3591, 10.7805, 2.9623, 61.4135,
+        1.7189]
+      vdw_radius: 1.87
+      weight: 69.72
+  - - ge
+    - name: Germanium
+      number: 32
+      radius: 1.22
+      sfac_electron: [2.4467, 55.893, 2.7015, 14.393, 1.6157, 2.4461, 0.6009, 0.3415,
+        0.0]
+      sfac_neutron: 0.8185
+      sfac_xray: [16.0816, 2.8509, 6.3747, 0.2516, 3.7068, 11.4468, 3.683, 54.7625,
+        2.1313]
+      vdw_radius: 2.0
+      weight: 72.59
+  - - as
+    - name: Arsenic
+      number: 33
+      radius: 1.2
+      sfac_electron: [2.3989, 45.7179, 2.7898, 12.8166, 1.5288, 2.2799, 0.5936, 0.3277,
+        0.0]
+      sfac_neutron: 0.658
+      sfac_xray: [16.6723, 2.6345, 6.0701, 0.2647, 3.4313, 12.9479, 4.2779, 47.7972,
+        2.531]
+      vdw_radius: 1.85
+      weight: 74.922
+  - - se
+    - name: Selenium
+      number: 34
+      radius: 1.16
+      sfac_electron: [1.02041, 0.85673, 1.56993, 4.20859, 3.02495, 16.808, 1.44175,
+        48.63, 0.0]
+      sfac_neutron: 0.797
+      sfac_xray: [15.5372, 2.7153, 5.98288, 0.68962, 4.83996, 21.0079, 2.93549, 52.4308,
+        4.70026]
+      vdw_radius: 1.9
+      weight: 78.96
+  - - br
+    - name: Bromine
+      number: 35
+      radius: 1.14
+      sfac_electron: [2.1659, 33.8987, 2.9037, 10.4996, 1.3951, 2.0413, 0.5886, 0.307,
+        0.0]
+      sfac_neutron: 0.6795
+      sfac_xray: [17.17889, 2.1723, 5.2358, 16.57961, 5.6377, 0.2609, 3.9851, 41.4328,
+        2.9557]
+      vdw_radius: 1.85
+      weight: 79.909
+  - - kr
+    - name: Krypton
+      number: 36
+      radius: 1.12
+      sfac_electron: [2.0338, 29.9992, 2.9271, 9.5977, 1.3425, 1.952, 0.5888, 0.2986,
+        0.0]
+      sfac_neutron: 0.781
+      sfac_xray: [17.3555, 1.9384, 6.7286, 16.5623, 5.5493, 0.2261, 3.5375, 39.3972,
+        2.855]
+      vdw_radius: 2.02
+      weight: 83.8
+  - - rb
+    - name: Rubidium
+      number: 37
+      radius: 1.48
+      sfac_electron: [4.776, 140.7821, 3.8588, 18.991, 2.2339, 3.701, 0.8683, 0.4194,
+        0.0]
+      sfac_neutron: 0.709
+      sfac_xray: [17.17841, 1.7888, 9.6435, 17.31509, 5.1399, 0.2748, 1.5292, 164.93401,
+        3.4873]
+      vdw_radius: 2.0
+      weight: 85.47
+  - - sr
+    - name: Strontium
+      number: 38
+      radius: 1.13
+      sfac_electron: [5.8478, 104.9721, 4.0026, 19.3666, 2.342, 3.7368, 0.8795, 0.4142,
+        0.0]
+      sfac_neutron: 0.702
+      sfac_xray: [17.5663, 1.5564, 9.8184, 14.0988, 5.422, 0.1664, 2.6694, 132.376,
+        2.5064]
+      vdw_radius: 2.0
+      weight: 87.62
+  - - y
+    - name: Ytrium
+      number: 39
+      radius: 1.53
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.775
+      sfac_xray: [17.776, 1.4029, 10.2946, 12.8006, 5.72629, 0.125599, 3.26588, 104.354,
+        1.91213]
+      vdw_radius: 2.0
+      weight: 88.905
+  - - zr
+    - name: Zirconium
+      number: 40
+      radius: 0.8
+      sfac_electron: [1.30145, 0.9856, 3.22818, 6.62142, 4.06357, 30.6316, 3.36196,
+        101.129, 0.0]
+      sfac_neutron: 0.716
+      sfac_xray: [17.8765, 1.27618, 10.948, 11.916, 5.41732, 0.117622, 3.65721, 87.6627,
+        2.06929]
+      vdw_radius: 2.0
+      weight: 91.22
+  - - nb
+    - name: Niobium
+      number: 41
+      radius: 1.34
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.7054
+      sfac_xray: [17.6142, 1.18865, 12.0144, 11.766, 4.04183, 0.204785, 3.53346, 69.7957,
+        3.75591]
+      vdw_radius: 2.0
+      weight: 92.906
+  - - mo
+    - name: Molybdenum
+      number: 42
+      radius: 1.3
+      sfac_electron: [3.1199, 72.4642, 3.9061, 14.6424, 2.3615, 3.237, 0.8504, 0.3662,
+        0.0]
+      sfac_neutron: 0.6715
+      sfac_xray: [19.3885, 0.97877, 11.8308, 10.0885, 3.75919, 31.9738, 1.46772, 117.93201,
+        5.55047]
+      vdw_radius: 2.0
+      weight: 95.94
+  - - tc
+    - name: Technetium
+      number: 43
+      radius: 1.27
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.68
+      sfac_xray: [19.1301, 0.864132, 11.0948, 8.14487, 4.64901, 21.5707, 2.71263,
+        86.8472, 5.40428]
+      vdw_radius: 2.0
+      weight: 98.0
+  - - ru
+    - name: Ruthenium
+      number: 44
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.703
+      sfac_xray: [19.2674, 0.80852, 12.9182, 8.43467, 4.86337, 24.7997, 1.56756, 94.2928,
+        5.37874]
+      vdw_radius: 2.0
+      weight: 101.07
+  - - rh
+    - name: Rhodium
+      number: 45
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.588
+      sfac_xray: [19.2957, 0.75154, 14.3501, 8.21758, 4.73425, 25.87489, 1.28918,
+        98.6062, 5.328]
+      vdw_radius: 2.0
+      weight: 102.905
+  - - pd
+    - name: Palladium
+      number: 46
+      radius: 1.28
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.591
+      sfac_xray: [19.33189, 0.69866, 15.5017, 7.98929, 5.29537, 25.2052, 0.60584,
+        76.89861, 5.26593]
+      vdw_radius: 1.63
+      weight: 106.4
+  - - ag
+    - name: Silver
+      number: 47
+      radius: 1.34
+      sfac_electron: [2.0355, 61.497, 3.2716, 11.8237, 2.5105, 2.8456, 0.8372, 0.3271,
+        0.0]
+      sfac_neutron: 0.5922
+      sfac_xray: [19.28081, 0.6446, 16.68851, 7.4726, 4.8045, 24.66051, 1.0463, 99.8156,
+        5.179]
+      vdw_radius: 1.72
+      weight: 107.87
+  - - cd
+    - name: Cadmium
+      number: 48
+      radius: 1.48
+      sfac_electron: [2.5737, 55.6752, 3.2586, 11.8376, 2.5468, 2.7842, 0.8379, 0.3217,
+        0.0]
+      sfac_neutron: 0.487
+      sfac_xray: [19.22141, 0.5946, 17.64439, 6.9089, 4.461, 24.70081, 1.6029, 87.4825,
+        5.0694]
+      vdw_radius: 1.58
+      weight: 112.4
+  - - in
+    - name: Indium
+      number: 49
+      radius: 1.44
+      sfac_electron: [3.1528, 66.6492, 3.5565, 14.4494, 2.818, 2.9758, 0.8842, 0.3345,
+        0.0]
+      sfac_neutron: 0.4065
+      sfac_xray: [19.1624, 0.5476, 18.5596, 6.3776, 4.2948, 25.8499, 2.0396, 92.8029,
+        4.9391]
+      vdw_radius: 1.93
+      weight: 114.82
+  - - sn
+    - name: Tin
+      number: 50
+      radius: 1.41
+      sfac_electron: [3.4495, 59.1042, 3.7349, 14.1787, 2.7779, 2.8548, 0.8786, 0.327,
+        0.0]
+      sfac_neutron: 0.6225
+      sfac_xray: [19.10941, 0.5036, 19.05479, 5.8378, 4.5648, 23.3752, 0.487, 62.2061,
+        4.7861]
+      vdw_radius: 2.17
+      weight: 118.69
+  - - sb
+    - name: Antimony
+      number: 51
+      radius: 1.4
+      sfac_electron: [3.5644, 50.4869, 3.8437, 13.3156, 2.6866, 2.6909, 0.8638, 0.3161,
+        0.0]
+      sfac_neutron: 0.557
+      sfac_xray: [19.6418, 5.3034, 19.0455, 0.4607, 5.0371, 27.9074, 2.6827, 75.2825,
+        4.5909]
+      vdw_radius: 2.0
+      weight: 121.75
+  - - te
+    - name: Tellurium
+      number: 52
+      radius: 1.36
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.58
+      sfac_xray: [19.9644, 4.81742, 19.0138, 0.420885, 6.14487, 28.5284, 2.5239, 70.8403,
+        4.352]
+      vdw_radius: 2.06
+      weight: 127.6
+  - - i
+    - name: Iodine
+      number: 53
+      radius: 1.33
+      sfac_electron: [3.4728, 39.4411, 4.0602, 11.8161, 2.5215, 2.4148, 0.8398, 0.2976,
+        0.0]
+      sfac_neutron: 0.528
+      sfac_xray: [20.1472, 4.347, 18.9949, 0.3814, 7.5138, 27.76601, 2.2735, 66.87759,
+        4.0712]
+      vdw_radius: 1.98
+      weight: 126.904
+  - - xe
+    - name: Xenon
+      number: 54
+      radius: 1.31
+      sfac_electron: [3.3656, 35.5094, 4.1468, 11.117, 2.443, 2.294, 0.8293, 0.2892,
+        0.0]
+      sfac_neutron: 0.492
+      sfac_xray: [20.2933, 3.9282, 19.0298, 0.344, 8.9767, 26.4659, 1.99, 64.2658,
+        3.7118]
+      vdw_radius: 2.16
+      weight: 131.3
+  - - cs
+    - name: Caesium
+      number: 55
+      radius: 1.69
+      sfac_electron: [6.062, 155.8336, 5.9861, 19.6951, 3.3033, 3.3354, 1.0958, 0.3793,
+        0.0]
+      sfac_neutron: 0.542
+      sfac_xray: [20.3892, 3.569, 19.1062, 0.3107, 10.662, 24.3879, 1.4953, 213.904,
+        3.3352]
+      vdw_radius: 2.0
+      weight: 132.905
+  - - ba
+    - name: Barium
+      number: 56
+      radius: 1.35
+      sfac_electron: [7.8212, 117.6575, 6.004, 18.7782, 3.2803, 3.2634, 1.103, 0.376,
+        0.0]
+      sfac_neutron: 0.507
+      sfac_xray: [20.3361, 3.216, 19.297, 0.2756, 10.888, 20.2073, 2.6959, 167.202,
+        2.7731]
+      vdw_radius: 2.0
+      weight: 137.34
+  - - la
+    - name: Lanthanum
+      number: 57
+      radius: 1.69
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.824
+      sfac_xray: [20.578, 2.94817, 19.599, 0.24448, 11.3727, 18.7726, 3.28719, 133.12399,
+        2.14678]
+      vdw_radius: 2.0
+      weight: 138.91
+  - - ce
+    - name: Cerium
+      number: 58
+      radius: 1.65
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.484
+      sfac_xray: [21.1671, 2.81219, 19.7695, 0.226836, 11.8513, 17.6083, 3.33049,
+        127.113, 1.86264]
+      vdw_radius: 2.0
+      weight: 140.12
+  - - pr
+    - name: Praseodymium
+      number: 59
+      radius: 1.5
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.458
+      sfac_xray: [22.044, 2.77393, 19.6697, 0.222087, 12.3856, 16.7669, 2.82428, 143.644,
+        2.0583]
+      vdw_radius: 2.0
+      weight: 140.907
+  - - nd
+    - name: Neodymium
+      number: 60
+      radius: 1.64
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.769
+      sfac_xray: [22.6845, 2.66248, 19.6847, 0.210628, 12.774, 15.885, 2.85137, 137.903,
+        1.98486]
+      vdw_radius: 2.0
+      weight: 144.24
+  - - pm
+    - name: Promethium
+      number: 61
+      radius: 1.63
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.26
+      sfac_xray: [23.3405, 2.5627, 19.6095, 0.202088, 13.1235, 15.1009, 2.87516, 132.721,
+        2.02876]
+      vdw_radius: 2.0
+      weight: 147.0
+  - - sm
+    - name: Samarium
+      number: 62
+      radius: 1.62
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.08
+      sfac_xray: [24.0042, 2.47274, 19.4258, 0.196451, 13.4396, 14.3996, 2.89604,
+        128.007, 2.20963]
+      vdw_radius: 2.0
+      weight: 150.35
+  - - eu
+    - name: Europium
+      number: 63
+      radius: 1.85
+      sfac_electron: [6.2667, 100.2983, 4.844, 16.0662, 3.2023, 2.9803, 1.2009, 0.3674,
+        0.0]
+      sfac_neutron: 0.722
+      sfac_xray: [24.6274, 2.3879, 19.0886, 0.1942, 13.7603, 13.7546, 2.9227, 123.174,
+        2.5745]
+      vdw_radius: 2.0
+      weight: 151.96
+  - - gd
+    - name: Gadolinium
+      number: 64
+      radius: 1.61
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.65
+      sfac_xray: [25.0709, 2.25341, 19.0798, 0.181951, 13.8518, 12.9331, 3.54545,
+        101.398, 2.4196]
+      vdw_radius: 2.0
+      weight: 157.25
+  - - tb
+    - name: Terbium
+      number: 65
+      radius: 1.59
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.738
+      sfac_xray: [25.8976, 2.24256, 18.2185, 0.196143, 14.3167, 12.6648, 2.95354,
+        115.362, 3.58224]
+      vdw_radius: 2.0
+      weight: 158.924
+  - - dy
+    - name: Dysprosium
+      number: 66
+      radius: 1.59
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.69
+      sfac_xray: [26.507, 2.1802, 17.6383, 0.202172, 14.5596, 12.1899, 2.96577, 111.874,
+        4.29728]
+      vdw_radius: 2.0
+      weight: 162.5
+  - - ho
+    - name: Holmium
+      number: 67
+      radius: 1.58
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.801
+      sfac_xray: [26.9049, 2.07051, 17.294, 0.19794, 14.5583, 11.4407, 3.63837, 92.6566,
+        4.56796]
+      vdw_radius: 2.0
+      weight: 164.93
+  - - er
+    - name: Erbium
+      number: 68
+      radius: 1.57
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.779
+      sfac_xray: [27.6563, 2.07356, 16.4285, 0.223545, 14.9779, 11.3604, 2.98233,
+        105.703, 5.92046]
+      vdw_radius: 2.0
+      weight: 167.26
+  - - tm
+    - name: Thulium
+      number: 69
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.707
+      sfac_xray: [28.1819, 2.02859, 15.8851, 0.238849, 15.1542, 10.9975, 2.98706,
+        102.961, 6.75621]
+      vdw_radius: 2.0
+      weight: 168.93
+  - - yb
+    - name: Ytterbium
+      number: 70
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.243
+      sfac_xray: [28.6641, 1.9889, 15.4345, 0.257119, 15.3087, 10.6647, 2.98963, 100.417,
+        7.56672]
+      vdw_radius: 2.0
+      weight: 173.04
+  - - lu
+    - name: Lutetium
+      number: 71
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.721
+      sfac_xray: [28.9476, 1.90182, 15.2208, 9.98519, 15.1, 0.261033, 3.71601, 84.3298,
+        7.97628]
+      vdw_radius: 2.0
+      weight: 174.97
+  - - hf
+    - name: Hafnium
+      number: 72
+      radius: 1.44
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.777
+      sfac_xray: [29.144, 1.83262, 15.1726, 9.5999, 14.7586, 0.275116, 4.30013, 72.029,
+        8.58154]
+      vdw_radius: 2.0
+      weight: 178.49
+  - - ta
+    - name: Tantalum
+      number: 73
+      radius: 1.34
+      sfac_electron: [1.9885, 0.8784, 3.48239, 5.12588, 4.07937, 23.4938, 2.98409,
+        80.1163, 0.0]
+      sfac_neutron: 0.691
+      sfac_xray: [29.2024, 1.77333, 15.2293, 9.37046, 14.5135, 0.295977, 4.76492,
+        63.3644, 9.24354]
+      vdw_radius: 2.0
+      weight: 180.95
+  - - w
+    - name: Tungsten
+      number: 74
+      radius: 1.3
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.486
+      sfac_xray: [29.0818, 1.72029, 15.43, 9.2259, 14.4327, 0.321703, 5.11982, 57.056,
+        9.8875]
+      vdw_radius: 2.0
+      weight: 183.85
+  - - re
+    - name: Rhenium
+      number: 75
+      radius: 1.28
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.92
+      sfac_xray: [28.7621, 1.67191, 15.7189, 9.09227, 14.5564, 0.3505, 5.44174, 52.0861,
+        10.472]
+      vdw_radius: 2.0
+      weight: 186.2
+  - - os
+    - name: Osmium
+      number: 76
+      radius: 1.26
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.07
+      sfac_xray: [28.1894, 1.62903, 16.155, 8.97948, 14.9305, 0.382661, 5.67589, 48.1647,
+        11.0005]
+      vdw_radius: 2.0
+      weight: 190.2
+  - - ir
+    - name: Iridium
+      number: 77
+      radius: 1.27
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.06
+      sfac_xray: [27.3049, 1.59279, 16.7296, 8.86553, 15.6115, 0.41792, 5.83377, 45.0011,
+        11.4722]
+      vdw_radius: 2.0
+      weight: 192.2
+  - - pt
+    - name: Platinum
+      number: 78
+      radius: 1.3
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.96
+      sfac_xray: [27.00591, 1.51293, 17.7639, 8.81174, 15.7131, 0.42459, 5.7837, 38.61031,
+        11.6883]
+      vdw_radius: 1.72
+      weight: 195.09
+  - - au
+    - name: Gold
+      number: 79
+      radius: 1.34
+      sfac_electron: [2.388, 42.8656, 4.2259, 9.743, 2.6886, 2.2641, 1.2551, 0.3067,
+        0.0]
+      sfac_neutron: 0.763
+      sfac_xray: [16.8819, 0.4611, 18.5913, 8.6216, 25.5582, 1.4826, 5.86, 36.3956,
+        12.0658]
+      vdw_radius: 1.66
+      weight: 196.97
+  - - hg
+    - name: Mercury
+      number: 80
+      radius: 1.49
+      sfac_electron: [2.6817, 42.8217, 4.2414, 9.8557, 2.7549, 2.2951, 1.2708, 0.3067,
+        0.0]
+      sfac_neutron: 1.2692
+      sfac_xray: [29.5641, 1.21152, 18.06, 7.05639, 12.8374, 0.28474, 6.89912, 20.7482,
+        10.6268]
+      vdw_radius: 1.55
+      weight: 200.59
+  - - tl
+    - name: Thalium
+      number: 81
+      radius: 1.48
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.8776
+      sfac_xray: [27.5446, 0.65515, 19.1584, 8.70751, 15.538, 1.96347, 5.52593, 45.8149,
+        13.1746]
+      vdw_radius: 1.96
+      weight: 204.37
+  - - pb
+    - name: Lead
+      number: 82
+      radius: 1.47
+      sfac_electron: [3.5099, 52.9141, 4.5523, 11.884, 3.1539, 2.5713, 1.3591, 0.3205,
+        0.0]
+      sfac_neutron: 0.9405
+      sfac_xray: [31.0617, 0.6902, 13.0637, 2.3576, 18.442, 8.618, 5.9696, 47.2579,
+        13.4118]
+      vdw_radius: 2.02
+      weight: 207.19
+  - - bi
+    - name: Bismuth
+      number: 83
+      radius: 1.46
+      sfac_electron: [3.8412, 50.2608, 4.6784, 11.9988, 3.1924, 2.5598, 1.3625, 0.3177,
+        0.0]
+      sfac_neutron: 0.8532
+      sfac_xray: [33.3689, 0.704, 12.951, 2.9238, 16.5877, 8.7937, 6.4692, 48.0093,
+        13.5782]
+      vdw_radius: 2.0
+      weight: 208.98
+  - - po
+    - name: Polonium
+      number: 84
+      radius: 1.46
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [34.6726, 0.700999, 15.4733, 3.55078, 13.1138, 9.55642, 7.02588,
+        47.0045, 13.677]
+      vdw_radius: 2.0
+      weight: 210.0
+  - - at
+    - name: Astatine
+      number: 85
+      radius: 1.45
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [35.3163, 0.68587, 19.0211, 3.97458, 9.49887, 11.3824, 7.42518, 45.4715,
+        13.7108]
+      vdw_radius: 2.0
+      weight: 210.0
+  - - rn
+    - name: Radon
+      number: 86
+      radius: 1.45
+      sfac_electron: [4.0779, 28.4058, 4.9778, 11.0204, 3.0955, 2.3549, 1.3259, 0.2991,
+        0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [35.5631, 0.6631, 21.2816, 4.0691, 8.0037, 14.0422, 7.4433, 44.2473,
+        13.6905]
+      vdw_radius: 2.0
+      weight: 222.0
+  - - fr
+    - name: Francium
+      number: 87
+      radius: 1.76
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [35.9299, 0.646453, 23.0547, 4.17619, 12.1439, 23.1052, 2.11253,
+        150.645, 13.7247]
+      vdw_radius: 2.0
+      weight: 223.0
+  - - ra
+    - name: Radium
+      number: 88
+      radius: 1.4
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.0
+      sfac_xray: [35.763, 0.616341, 22.9064, 3.87135, 12.4739, 19.9887, 3.21097, 142.325,
+        13.6211]
+      vdw_radius: 2.0
+      weight: 226.0
+  - - ac
+    - name: Actinium
+      number: 89
+      radius: 1.18
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [35.6597, 0.589092, 23.1032, 3.65155, 12.5977, 18.599, 4.08655, 117.02,
+        13.5266]
+      vdw_radius: 2.0
+      weight: 227.0
+  - - th
+    - name: Thorium
+      number: 90
+      radius: 1.14
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.031
+      sfac_xray: [35.5645, 0.563359, 23.4219, 3.46204, 12.7473, 17.8309, 4.80703,
+        99.1722, 13.4314]
+      vdw_radius: 2.0
+      weight: 232.038
+  - - pa
+    - name: Protactinium
+      number: 91
+      radius: 1.12
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.91
+      sfac_xray: [35.8847, 0.547751, 23.2948, 3.41519, 14.1891, 16.9235, 4.17287,
+        105.251, 13.4287]
+      vdw_radius: 2.0
+      weight: 231.0
+  - - u
+    - name: Uranium
+      number: 92
+      radius: 1.11
+      sfac_electron: [6.7668, 85.951, 6.7287, 15.6415, 4.0135, 2.9364, 1.5607, 0.3348,
+        0.0]
+      sfac_neutron: 0.8417
+      sfac_xray: [36.0228, 0.5293, 23.4128, 3.3253, 14.9491, 16.0927, 4.188, 100.613,
+        13.3966]
+      vdw_radius: 1.86
+      weight: 238.03
+  - - np
+    - name: Neptunium
+      number: 93
+      radius: 1.09
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.055
+      sfac_xray: [36.1874, 0.511929, 23.5964, 3.25396, 15.6402, 15.3622, 4.1855, 97.4908,
+        13.3573]
+      vdw_radius: 2.0
+      weight: 237.0
+  - - pu
+    - name: Plutonium
+      number: 94
+      radius: 1.07
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.41
+      sfac_xray: [36.5254, 0.499384, 23.8083, 3.26371, 16.7707, 14.9455, 3.47947,
+        105.98, 13.3812]
+      vdw_radius: 2.0
+      weight: 242.0
+  - - am
+    - name: Americium
+      number: 95
+      radius: 1.06
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.83
+      sfac_xray: [36.6706, 0.483629, 24.0992, 3.20647, 17.3415, 14.3136, 3.49331,
+        102.273, 13.3592]
+      vdw_radius: 2.0
+      weight: 243.0
+  - - cm
+    - name: Curium
+      number: 96
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.95
+      sfac_xray: [36.6488, 0.465154, 24.4096, 3.08997, 17.399, 13.4346, 4.21665, 88.4834,
+        13.2887]
+      vdw_radius: 2.0
+      weight: 247.0
+  - - bk
+    - name: Berkelium
+      number: 97
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [36.7881, 0.451018, 24.7736, 3.04619, 17.8919, 12.8946, 4.23284,
+        86.003, 13.2754]
+      vdw_radius: 2.0
+      weight: 248.0
+  - - cf
+    - name: Californium
+      number: 98
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [36.9185, 0.437533, 25.1995, 3.00775, 18.3317, 12.4044, 4.24391,
+        83.7881, 13.2674]
+      vdw_radius: 2.0
+      weight: 251.0
+  - - es
+    - name: Einsteinium
+      number: 99
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 252.0
+  - - fm
+    - name: Fermium
+      number: 100
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 257.0
+  - - md
+    - name: Mendelevium
+      number: 101
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 258.0
+  - - 'no'
+    - name: Nobelium
+      number: 102
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 259.0
+  - - lr
+    - name: Lawrencium
+      number: 103
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 262.0
+  - - rf
+    - name: Rutherfordium
+      number: 104
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 261.0
+  - - db
+    - name: Dubnium
+      number: 105
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 262.0
+  - - sg
+    - name: Seaborgium
+      number: 106
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 266.0
+  - - bh
+    - name: Bohrium
+      number: 107
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 264.0
+  - - hs
+    - name: Hassium
+      number: 108
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 269.0
+  - - mt
+    - name: Meitnerium
+      number: 109
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 268.0
+  - - ds
+    - name: Darmstadtium
+      number: 110
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 281.0
+  - - rg
+    - name: Roentgenium
+      number: 111
+      radius: 1.1
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      vdw_radius: 2.0
+      weight: 282.0
+  - - d
+    - name: Deuterium
+      number: 1
+      radius: 0.32
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.6671
+      sfac_xray: [0.48992, 20.6593, 0.262, 7.74039, 0.19677, 49.5519, 0.04988, 2.20159,
+        0.0013]
+      vdw_radius: 1.09
+      weight: 1.008
+  - - h1-
+    - name: Hydrogen(1-)
+      number: 1
+      radius: 0.32
+      sfac_electron: [0.3754, 15.4946, 0.1408, 4.1261, 0.0216, 0.0246, -0.1012, 46.884,
+        0.0]
+      sfac_neutron: -0.3739
+      sfac_xray: [0.897661, 53.1368, 0.565616, 15.187, 0.415815, 186.576, 0.116973,
+        3.56709, 0.002389]
+      vdw_radius: 1.09
+      weight: 1.008
+  - - li1+
+    - name: Lithium(1+)
+      number: 3
+      radius: 0.6
+      sfac_electron: [1.6108, 107.6384, 1.246, 30.4795, 0.3257, 4.5331, 0.0986, 0.4951,
+        0.0]
+      sfac_neutron: -0.19
+      sfac_xray: [0.6968, 4.6237, 0.7888, 1.9557, 0.3414, 0.6316, 0.1563, 10.0953,
+        0.0167]
+      vdw_radius: 1.82
+      weight: 6.939
+  - - be2+
+    - name: Beryllium(2+)
+      number: 4
+      radius: 0.31
+      sfac_electron: [1.2498, 60.8042, 1.3335, 18.5914, 0.3603, 3.6534, 0.1055, 0.4157,
+        0.0]
+      sfac_neutron: 0.779
+      sfac_xray: [6.2603, 0.0027, 0.8849, 0.8313, 0.7993, 2.2758, 0.1647, 5.1146,
+        -6.1092]
+      vdw_radius: 2.0
+      weight: 9.0122
+  - - o1-
+    - name: Oxygen(1-)
+      number: 8
+      radius: 0.73
+      sfac_electron: [0.4548, 23.7803, 0.9173, 7.622, 0.4719, 2.144, 0.1384, 0.2959,
+        0.0]
+      sfac_neutron: 0.5803
+      sfac_xray: [4.1916, 12.8573, 1.63969, 4.17236, 1.52673, 47.0179, -20.307, -0.01404,
+        21.9412]
+      vdw_radius: 1.52
+      weight: 15.999
+  - - f1-
+    - name: Fluorine(1-)
+      number: 9
+      radius: 0.72
+      sfac_electron: [0.3686, 20.239, 0.8109, 6.6093, 0.4751, 1.931, 0.1459, 0.2793,
+        0.0]
+      sfac_neutron: 0.5654
+      sfac_xray: [3.6322, 5.27756, 3.51057, 14.7353, 1.26064, 0.442258, 0.940706,
+        47.3437, 0.653396]
+      vdw_radius: 1.47
+      weight: 18.998
+  - - na1+
+    - name: Sodium(1+)
+      number: 11
+      radius: 1.4
+      sfac_electron: [2.2406, 108.0039, 1.3326, 24.5047, 0.907, 3.3914, 0.2863, 0.4346,
+        0.0]
+      sfac_neutron: 0.363
+      sfac_xray: [3.2565, 2.6671, 3.9362, 6.1153, 1.3998, 0.2001, 1.0032, 14.039,
+        0.404]
+      vdw_radius: 2.27
+      weight: 22.99
+  - - mg2+
+    - name: Magnesium(2+)
+      number: 12
+      radius: 1.36
+      sfac_electron: [2.2682, 73.6704, 1.8025, 20.1749, 0.8394, 3.0181, 0.2892, 0.4046,
+        0.0]
+      sfac_neutron: 0.5375
+      sfac_xray: [3.4988, 2.1676, 3.8378, 4.7542, 1.3284, 0.185, 0.8497, 10.1411,
+        0.4853]
+      vdw_radius: 1.73
+      weight: 24.312
+  - - al3+
+    - name: Aluminium(3+)
+      number: 13
+      radius: 1.18
+      sfac_electron: [2.2756, 72.322, 2.428, 19.7729, 0.8578, 3.0799, 0.3166, 0.4076,
+        0.0]
+      sfac_neutron: 0.3449
+      sfac_xray: [4.17448, 1.93816, 3.3876, 4.14553, 1.20296, 0.228753, 0.528137,
+        8.28524, 0.706786]
+      vdw_radius: 2.0
+      weight: 26.9815
+  - - si4+
+    - name: Silicon(4+)
+      number: 14
+      radius: 1.11
+      sfac_electron: [2.1293, 57.7748, 2.5333, 16.4756, 0.8349, 2.8796, 0.3216, 0.386,
+        0.0]
+      sfac_neutron: 0.41491
+      sfac_xray: [4.43918, 1.64167, 3.20345, 3.43757, 1.19453, 0.2149, 0.41653, 6.65365,
+        0.746297]
+      vdw_radius: 2.1
+      weight: 28.086
+  - - cl1-
+    - name: Chlorine(1-)
+      number: 17
+      radius: 0.99
+      sfac_electron: [1.4524, 30.9352, 2.2926, 9.9798, 0.7874, 2.3336, 0.3217, 0.3228,
+        0.0]
+      sfac_neutron: 0.9577
+      sfac_xray: [18.2915, 0.0066, 7.2084, 1.1717, 6.5337, 19.5424, 2.3386, 60.4486,
+        -16.378]
+      vdw_radius: 1.75
+      weight: 35.453
+  - - k1+
+    - name: Potassium(1+)
+      number: 19
+      radius: 1.33
+      sfac_electron: [3.9507, 137.0748, 2.5452, 22.4017, 1.9795, 4.5319, 0.4817, 0.434,
+        0.0]
+      sfac_neutron: 0.367
+      sfac_xray: [7.9578, 12.6331, 7.4917, 0.7674, 6.359, -0.002, 1.1915, 31.9128,
+        -4.9978]
+      vdw_radius: 2.75
+      weight: 39.102
+  - - ca2+
+    - name: Calcium(2+)
+      number: 20
+      radius: 1.4
+      sfac_electron: [4.4696, 99.5228, 2.9708, 22.6958, 1.9696, 4.1954, 0.4818, 0.4165,
+        0.0]
+      sfac_neutron: 0.47
+      sfac_xray: [15.6348, -0.0074, 7.9518, 0.6089, 8.4372, 10.3116, 0.8537, 25.9905,
+        -14.875]
+      vdw_radius: 2.0
+      weight: 40.08
+  - - sc3+
+    - name: Scandium(3+)
+      number: 21
+      radius: 0.81
+      sfac_electron: [3.9659, 88.9597, 2.9169, 20.6061, 1.9254, 3.8557, 0.4802, 0.3988,
+        0.0]
+      sfac_neutron: 1.229
+      sfac_xray: [13.4008, 0.29854, 8.0273, 7.9629, 1.65943, -0.28604, 1.57936, 16.0662,
+        -6.6667]
+      vdw_radius: 2.0
+      weight: 44.956
+  - - ti2+
+    - name: Titanium(2+)
+      number: 22
+      radius: 0.9
+      sfac_electron: [3.5653, 81.9821, 2.8181, 19.0486, 1.893, 3.5904, 0.4825, 0.3855,
+        0.0]
+      sfac_neutron: -0.337
+      sfac_xray: [9.11423, 7.5243, 7.62174, 0.457585, 2.2793, 19.5361, 0.087899, 61.6558,
+        0.897155]
+      vdw_radius: 2.0
+      weight: 47.9
+  - - ti3+
+    - name: Titanium(3+)
+      number: 22
+      radius: 0.9
+      sfac_electron: [3.5653, 81.9821, 2.8181, 19.0486, 1.893, 3.5904, 0.4825, 0.3855,
+        0.0]
+      sfac_neutron: -0.337
+      sfac_xray: [17.7344, 0.22061, 8.73816, 7.04716, 5.25691, -0.15762, 1.92134,
+        15.9768, -14.652]
+      vdw_radius: 2.0
+      weight: 47.9
+  - - ti4+
+    - name: Titanium(4+)
+      number: 22
+      radius: 0.9
+      sfac_electron: [3.5653, 81.9821, 2.8181, 19.0486, 1.893, 3.5904, 0.4825, 0.3855,
+        0.0]
+      sfac_neutron: -0.337
+      sfac_xray: [19.5114, 0.178847, 8.23473, 6.67018, 2.01341, -0.29263, 1.5208,
+        12.9464, -13.28]
+      vdw_radius: 2.0
+      weight: 47.9
+  - - v2+
+    - name: Vanadium(2+)
+      number: 23
+      radius: 1.22
+      sfac_electron: [3.2449, 76.3789, 2.6978, 17.7262, 1.8597, 3.3632, 0.4864, 0.3743,
+        0.0]
+      sfac_neutron: -0.03824
+      sfac_xray: [10.106, 6.8818, 7.3541, 0.4409, 2.2884, 20.3004, 0.0223, 115.122,
+        1.2298]
+      vdw_radius: 2.0
+      weight: 50.942
+  - - v3+
+    - name: Vanadium(3+)
+      number: 23
+      radius: 1.22
+      sfac_electron: [3.2449, 76.3789, 2.6978, 17.7262, 1.8597, 3.3632, 0.4864, 0.3743,
+        0.0]
+      sfac_neutron: -0.03824
+      sfac_xray: [9.43141, 6.39535, 7.7419, 0.383349, 2.15343, 15.1908, 0.016865,
+        63.969, 0.656565]
+      vdw_radius: 2.0
+      weight: 50.942
+  - - v5+
+    - name: Vanadium(5+)
+      number: 23
+      radius: 1.22
+      sfac_electron: [3.2449, 76.3789, 2.6978, 17.7262, 1.8597, 3.3632, 0.4864, 0.3743,
+        0.0]
+      sfac_neutron: -0.03824
+      sfac_xray: [15.6887, 0.679003, 8.14208, 5.40135, 2.03081, 9.97278, -9.576, 0.940464,
+        1.7143]
+      vdw_radius: 2.0
+      weight: 50.942
+  - - cr2+
+    - name: Chromium(2+)
+      number: 24
+      radius: 1.18
+      sfac_electron: [2.3066, 78.4051, 2.3339, 15.7851, 1.8226, 3.1566, 0.4901, 0.3636,
+        0.0]
+      sfac_neutron: 0.3635
+      sfac_xray: [9.54034, 5.66078, 7.7509, 0.344261, 3.58274, 13.3075, 0.509107,
+        32.4224, 0.616898]
+      vdw_radius: 2.0
+      weight: 51.996
+  - - cr3+
+    - name: Chromium(3+)
+      number: 24
+      radius: 1.18
+      sfac_electron: [2.3066, 78.4051, 2.3339, 15.7851, 1.8226, 3.1566, 0.4901, 0.3636,
+        0.0]
+      sfac_neutron: 0.3635
+      sfac_xray: [9.6809, 5.59463, 7.81136, 0.334393, 2.87603, 12.8288, 0.113575,
+        32.8761, 0.518275]
+      vdw_radius: 2.0
+      weight: 51.996
+  - - mn2+
+    - name: Manganese(2+)
+      number: 25
+      radius: 1.17
+      sfac_electron: [2.7467, 67.7862, 2.4556, 15.6743, 1.7923, 2.9998, 0.4984, 0.3569,
+        0.0]
+      sfac_neutron: -0.375
+      sfac_xray: [10.8061, 5.2796, 7.362, 0.3435, 3.5268, 14.343, 0.2184, 41.3235,
+        1.0874]
+      vdw_radius: 2.0
+      weight: 54.938
+  - - mn3+
+    - name: Manganese(3+)
+      number: 25
+      radius: 1.17
+      sfac_electron: [2.7467, 67.7862, 2.4556, 15.6743, 1.7923, 2.9998, 0.4984, 0.3569,
+        0.0]
+      sfac_neutron: -0.375
+      sfac_xray: [9.84521, 4.91797, 7.87194, 0.294393, 3.56531, 10.8171, 0.323613,
+        24.1281, 0.393974]
+      vdw_radius: 2.0
+      weight: 54.938
+  - - mn4+
+    - name: Manganese(4+)
+      number: 25
+      radius: 1.17
+      sfac_electron: [2.7467, 67.7862, 2.4556, 15.6743, 1.7923, 2.9998, 0.4984, 0.3569,
+        0.0]
+      sfac_neutron: -0.375
+      sfac_xray: [9.96253, 4.8485, 7.97057, 0.283303, 2.76067, 10.4852, 0.054447,
+        27.573, 0.251877]
+      vdw_radius: 2.0
+      weight: 54.938
+  - - fe2+
+    - name: Iron(2+)
+      number: 26
+      radius: 1.17
+      sfac_electron: [2.544, 64.4244, 2.3434, 14.8806, 1.7588, 2.8539, 0.5062, 0.3502,
+        0.0]
+      sfac_neutron: 0.945
+      sfac_xray: [11.0424, 4.6538, 7.374, 0.3053, 4.1346, 12.0546, 0.4399, 31.2809,
+        1.0097]
+      vdw_radius: 2.0
+      weight: 55.847
+  - - fe3+
+    - name: Iron(3+)
+      number: 26
+      radius: 1.17
+      sfac_electron: [2.544, 64.4244, 2.3434, 14.8806, 1.7588, 2.8539, 0.5062, 0.3502,
+        0.0]
+      sfac_neutron: 0.945
+      sfac_xray: [11.1764, 4.6147, 7.3863, 0.3005, 3.3948, 11.6729, 0.0724, 38.5566,
+        0.9707]
+      vdw_radius: 2.0
+      weight: 55.847
+  - - co2+
+    - name: Cobalt(2+)
+      number: 27
+      radius: 1.16
+      sfac_electron: [2.3668, 61.4306, 2.2361, 14.1798, 1.7243, 2.7247, 0.5148, 0.3442,
+        0.0]
+      sfac_neutron: 0.249
+      sfac_xray: [11.2296, 4.1231, 7.3883, 0.2726, 4.7393, 10.2443, 0.7108, 25.6466,
+        0.9324]
+      vdw_radius: 2.0
+      weight: 58.933
+  - - co3+
+    - name: Cobalt(3+)
+      number: 27
+      radius: 1.16
+      sfac_electron: [2.3668, 61.4306, 2.2361, 14.1798, 1.7243, 2.7247, 0.5148, 0.3442,
+        0.0]
+      sfac_neutron: 0.249
+      sfac_xray: [10.338, 3.90969, 7.88173, 0.238668, 4.76795, 8.35583, 0.725591,
+        18.3491, 0.286667]
+      vdw_radius: 2.0
+      weight: 58.933
+  - - ni2+
+    - name: Nickel(2+)
+      number: 28
+      radius: 1.15
+      sfac_electron: [2.2104, 58.7267, 2.1342, 13.553, 1.6891, 2.6094, 0.5238, 0.3388,
+        0.0]
+      sfac_neutron: 1.03
+      sfac_xray: [11.4166, 3.6766, 7.4005, 0.2449, 5.3442, 8.873, 0.9773, 22.1626,
+        0.8614]
+      vdw_radius: 1.63
+      weight: 58.71
+  - - ni3+
+    - name: Nickel(3+)
+      number: 28
+      radius: 1.15
+      sfac_electron: [2.2104, 58.7267, 2.1342, 13.553, 1.6891, 2.6094, 0.5238, 0.3388,
+        0.0]
+      sfac_neutron: 1.03
+      sfac_xray: [10.7806, 3.5477, 7.75868, 0.22314, 5.22746, 7.64468, 0.847114, 16.9673,
+        0.386044]
+      vdw_radius: 1.63
+      weight: 58.71
+  - - cu1+
+    - name: Copper(1+)
+      number: 29
+      radius: 1.17
+      sfac_electron: [1.5792, 62.9403, 1.8197, 12.4527, 1.6576, 2.5042, 0.5323, 0.3331,
+        0.0]
+      sfac_neutron: 0.7718
+      sfac_xray: [11.9475, 3.3669, 7.3573, 0.2274, 6.2455, 8.6625, 1.5578, 25.8487,
+        0.89]
+      vdw_radius: 1.4
+      weight: 63.54
+  - - cu2+
+    - name: Copper(2+)
+      number: 29
+      radius: 1.17
+      sfac_electron: [1.5792, 62.9403, 1.8197, 12.4527, 1.6576, 2.5042, 0.5323, 0.3331,
+        0.0]
+      sfac_neutron: 0.7718
+      sfac_xray: [11.8168, 3.37484, 7.11181, 0.244078, 5.78135, 7.9876, 1.14523, 19.897,
+        1.14431]
+      vdw_radius: 1.4
+      weight: 63.54
+  - - zn2+
+    - name: Zinc(2+)
+      number: 30
+      radius: 1.25
+      sfac_electron: [1.9418, 54.1621, 1.9501, 12.5177, 1.6192, 2.4164, 0.5434, 0.3295,
+        0.0]
+      sfac_neutron: 0.56
+      sfac_xray: [11.9719, 2.9946, 7.3862, 0.2031, 6.4668, 7.0826, 1.394, 18.0995,
+        0.7807]
+      vdw_radius: 1.39
+      weight: 65.37
+  - - ga3+
+    - name: Gallium(3+)
+      number: 31
+      radius: 1.26
+      sfac_electron: [2.3205, 65.6019, 2.4855, 15.4577, 1.6879, 2.5806, 0.5992, 0.351,
+        0.0]
+      sfac_neutron: 0.7288
+      sfac_xray: [12.692, 2.81262, 6.69883, 0.22789, 6.06692, 6.36441, 1.0066, 14.4122,
+        1.53545]
+      vdw_radius: 1.87
+      weight: 69.72
+  - - ge4+
+    - name: Germanium(4+)
+      number: 32
+      radius: 1.22
+      sfac_electron: [2.4467, 55.893, 2.7015, 14.393, 1.6157, 2.4461, 0.6009, 0.3415,
+        0.0]
+      sfac_neutron: 0.8185
+      sfac_xray: [12.9172, 2.53718, 6.70003, 0.205855, 6.06791, 5.47913, 0.859041,
+        11.603, 1.45572]
+      vdw_radius: 2.0
+      weight: 72.59
+  - - br1-
+    - name: Bromine(1-)
+      number: 35
+      radius: 1.14
+      sfac_electron: [2.1659, 33.8987, 2.9037, 10.4996, 1.3951, 2.0413, 0.5886, 0.307,
+        0.0]
+      sfac_neutron: 0.6795
+      sfac_xray: [17.1718, 2.2059, 6.3338, 19.3345, 5.5754, 0.2871, 3.7272, 58.1535,
+        3.1776]
+      vdw_radius: 1.85
+      weight: 79.909
+  - - rb1+
+    - name: Rubidium(1+)
+      number: 37
+      radius: 1.48
+      sfac_electron: [4.776, 140.7821, 3.8588, 18.991, 2.2339, 3.701, 0.8683, 0.4194,
+        0.0]
+      sfac_neutron: 0.709
+      sfac_xray: [17.5816, 1.7139, 7.6598, 14.7957, 5.8981, 0.1603, 2.7817, 31.2087,
+        2.0782]
+      vdw_radius: 2.0
+      weight: 85.47
+  - - sr2+
+    - name: Strontium(2+)
+      number: 38
+      radius: 1.13
+      sfac_electron: [5.8478, 104.9721, 4.0026, 19.3666, 2.342, 3.7368, 0.8795, 0.4142,
+        0.0]
+      sfac_neutron: 0.702
+      sfac_xray: [18.0874, 1.4907, 8.1373, 12.6963, 2.5654, 24.5651, -34.193, -0.0138,
+        41.4025]
+      vdw_radius: 2.0
+      weight: 87.62
+  - - y3+
+    - name: Ytrium(3+)
+      number: 39
+      radius: 1.53
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.775
+      sfac_xray: [17.9268, 1.35417, 9.1531, 11.2145, 1.76795, 22.6599, -33.108, -0.01319,
+        40.2602]
+      vdw_radius: 2.0
+      weight: 88.905
+  - - zr4+
+    - name: Zirconium(4+)
+      number: 40
+      radius: 0.8
+      sfac_electron: [1.30145, 0.9856, 3.22818, 6.62142, 4.06357, 30.6316, 3.36196,
+        101.129, 0.0]
+      sfac_neutron: 0.716
+      sfac_xray: [18.1668, 1.2148, 10.0562, 10.1483, 1.01118, 21.6054, -2.6479, -0.10276,
+        9.41454]
+      vdw_radius: 2.0
+      weight: 91.22
+  - - nb3+
+    - name: Niobium(3+)
+      number: 41
+      radius: 1.34
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.7054
+      sfac_xray: [19.8812, 0.019175, 18.0653, 1.13305, 11.0177, 10.1621, 1.94715,
+        28.3389, -12.912]
+      vdw_radius: 2.0
+      weight: 92.906
+  - - nb5+
+    - name: Niobium(5+)
+      number: 41
+      radius: 1.34
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.7054
+      sfac_xray: [17.9163, 1.12446, 13.3417, 0.028781, 10.799, 9.28206, 0.337905,
+        25.7228, -6.3934]
+      vdw_radius: 2.0
+      weight: 92.906
+  - - mo3+
+    - name: Molybdenum(3+)
+      number: 42
+      radius: 1.3
+      sfac_electron: [3.1199, 72.4642, 3.9061, 14.6424, 2.3615, 3.237, 0.8504, 0.3662,
+        0.0]
+      sfac_neutron: 0.6715
+      sfac_xray: [21.1664, 0.014734, 18.2017, 1.03031, 11.7423, 9.53659, 2.30951,
+        26.6307, -14.421]
+      vdw_radius: 2.0
+      weight: 95.94
+  - - mo5+
+    - name: Molybdenum(5+)
+      number: 42
+      radius: 1.3
+      sfac_electron: [3.1199, 72.4642, 3.9061, 14.6424, 2.3615, 3.237, 0.8504, 0.3662,
+        0.0]
+      sfac_neutron: 0.6715
+      sfac_xray: [21.0149, 0.014345, 18.0992, 1.02238, 11.4632, 8.78809, 0.740625,
+        23.3452, -14.316]
+      vdw_radius: 2.0
+      weight: 95.94
+  - - mo6+
+    - name: Molybdenum(6+)
+      number: 42
+      radius: 1.3
+      sfac_electron: [3.1199, 72.4642, 3.9061, 14.6424, 2.3615, 3.237, 0.8504, 0.3662,
+        0.0]
+      sfac_neutron: 0.6715
+      sfac_xray: [17.8871, 1.03649, 11.175, 8.48061, 6.57891, 0.058881, 0.0, 0.0,
+        0.344941]
+      vdw_radius: 2.0
+      weight: 95.94
+  - - ru3+
+    - name: Ruthenium(3+)
+      number: 44
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.703
+      sfac_xray: [18.5638, 0.847329, 13.2885, 8.37164, 9.32602, 0.017662, 3.00964,
+        22.887, -3.1892]
+      vdw_radius: 2.0
+      weight: 101.07
+  - - ru4+
+    - name: Ruthenium(4+)
+      number: 44
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.703
+      sfac_xray: [18.5003, 0.844582, 13.1787, 8.12534, 4.71304, 0.36495, 2.18535,
+        20.8504, 1.42357]
+      vdw_radius: 2.0
+      weight: 101.07
+  - - rh3+
+    - name: Rhodium(3+)
+      number: 45
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.588
+      sfac_xray: [18.8785, 0.764252, 14.1259, 7.84438, 3.32515, 21.2487, -6.1989,
+        -0.01036, 11.8678]
+      vdw_radius: 2.0
+      weight: 102.905
+  - - rh4+
+    - name: Rhodium(4+)
+      number: 45
+      radius: 1.25
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.588
+      sfac_xray: [18.8545, 0.760825, 13.9806, 7.62436, 2.53464, 19.3317, -5.6526,
+        -0.0102, 11.2835]
+      vdw_radius: 2.0
+      weight: 102.905
+  - - pd2+
+    - name: Palladium(2+)
+      number: 46
+      radius: 1.28
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.591
+      sfac_xray: [19.1701, 0.696219, 15.2096, 7.55573, 4.32234, 22.5057, 0.0, 0.0,
+        5.2916]
+      vdw_radius: 1.63
+      weight: 106.4
+  - - pd4+
+    - name: Palladium(4+)
+      number: 46
+      radius: 1.28
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.591
+      sfac_xray: [19.2493, 0.683839, 14.79, 7.14833, 2.89289, 17.9144, -7.9492, 0.005127,
+        13.0174]
+      vdw_radius: 1.63
+      weight: 106.4
+  - - ag1+
+    - name: Silver(1+)
+      number: 47
+      radius: 1.34
+      sfac_electron: [2.0355, 61.497, 3.2716, 11.8237, 2.5105, 2.8456, 0.8372, 0.3271,
+        0.0]
+      sfac_neutron: 0.5922
+      sfac_xray: [19.1812, 0.646179, 15.9719, 7.19123, 5.27475, 21.7326, 0.357534,
+        66.1147, 5.21572]
+      vdw_radius: 1.72
+      weight: 107.87
+  - - ag2+
+    - name: Silver(2+)
+      number: 47
+      radius: 1.34
+      sfac_electron: [2.0355, 61.497, 3.2716, 11.8237, 2.5105, 2.8456, 0.8372, 0.3271,
+        0.0]
+      sfac_neutron: 0.5922
+      sfac_xray: [19.1643, 0.645643, 16.2456, 7.18544, 4.3709, 21.4072, 0.0, 0.0,
+        5.21404]
+      vdw_radius: 1.72
+      weight: 107.87
+  - - cd2+
+    - name: Cadmium(2+)
+      number: 48
+      radius: 1.48
+      sfac_electron: [2.5737, 55.6752, 3.2586, 11.8376, 2.5468, 2.7842, 0.8379, 0.3217,
+        0.0]
+      sfac_neutron: 0.487
+      sfac_xray: [19.1514, 0.597922, 17.2535, 6.80639, 4.47128, 20.2521, 0.0, 0.0,
+        5.11937]
+      vdw_radius: 1.58
+      weight: 112.4
+  - - in3+
+    - name: Indium(3+)
+      number: 49
+      radius: 1.44
+      sfac_electron: [3.1528, 66.6492, 3.5565, 14.4494, 2.818, 2.9758, 0.8842, 0.3345,
+        0.0]
+      sfac_neutron: 0.4065
+      sfac_xray: [19.1045, 0.551522, 18.1108, 6.3247, 3.78897, 17.3595, 0.0, 0.0,
+        4.99635]
+      vdw_radius: 1.93
+      weight: 114.82
+  - - sn2+
+    - name: Tin(2+)
+      number: 50
+      radius: 1.41
+      sfac_electron: [3.4495, 59.1042, 3.7349, 14.1787, 2.7779, 2.8548, 0.8786, 0.327,
+        0.0]
+      sfac_neutron: 0.6225
+      sfac_xray: [19.1094, 0.5036, 19.0548, 5.8378, 4.5648, 23.3752, 0.487, 62.2061,
+        4.7861]
+      vdw_radius: 2.17
+      weight: 118.69
+  - - sn4+
+    - name: Tin(4+)
+      number: 50
+      radius: 1.41
+      sfac_electron: [3.4495, 59.1042, 3.7349, 14.1787, 2.7779, 2.8548, 0.8786, 0.327,
+        0.0]
+      sfac_neutron: 0.6225
+      sfac_xray: [18.9333, 5.764, 19.7131, 0.4655, 3.4182, 14.0049, 0.0193, -0.7583,
+        3.9182]
+      vdw_radius: 2.17
+      weight: 118.69
+  - - sb3+
+    - name: Antimony(3+)
+      number: 51
+      radius: 1.4
+      sfac_electron: [3.5644, 50.4869, 3.8437, 13.3156, 2.6866, 2.6909, 0.8638, 0.3161,
+        0.0]
+      sfac_neutron: 0.557
+      sfac_xray: [18.9755, 0.467196, 18.933, 5.22126, 5.10789, 19.5902, 0.288753,
+        55.5113, 4.69626]
+      vdw_radius: 2.0
+      weight: 121.75
+  - - sb5+
+    - name: Antimony(5+)
+      number: 51
+      radius: 1.4
+      sfac_electron: [3.5644, 50.4869, 3.8437, 13.3156, 2.6866, 2.6909, 0.8638, 0.3161,
+        0.0]
+      sfac_neutron: 0.557
+      sfac_xray: [19.8685, 5.44853, 19.0302, 0.467973, 2.41253, 14.1259, 0.0, 0.0,
+        4.69263]
+      vdw_radius: 2.0
+      weight: 121.75
+  - - i1-
+    - name: Iodine(1-)
+      number: 53
+      radius: 1.33
+      sfac_electron: [3.4728, 39.4411, 4.0602, 11.8161, 2.5215, 2.4148, 0.8398, 0.2976,
+        0.0]
+      sfac_neutron: 0.528
+      sfac_xray: [20.2332, 4.3579, 18.997, 0.3815, 7.8069, 29.5259, 2.8868, 84.9304,
+        4.0714]
+      vdw_radius: 1.98
+      weight: 126.904
+  - - cs1+
+    - name: Caesium(1+)
+      number: 55
+      radius: 1.69
+      sfac_electron: [6.062, 155.8336, 5.9861, 19.6951, 3.3033, 3.3354, 1.0958, 0.3793,
+        0.0]
+      sfac_neutron: 0.542
+      sfac_xray: [20.3524, 3.552, 19.1278, 0.3086, 10.2821, 23.7128, 0.9615, 59.4565,
+        3.2791]
+      vdw_radius: 2.0
+      weight: 132.905
+  - - ba2+
+    - name: Barium(2+)
+      number: 56
+      radius: 1.35
+      sfac_electron: [7.8212, 117.6575, 6.004, 18.7782, 3.2803, 3.2634, 1.103, 0.376,
+        0.0]
+      sfac_neutron: 0.507
+      sfac_xray: [20.1807, 3.21367, 19.1136, 0.28331, 10.9054, 20.0558, 0.77634, 51.746,
+        3.02902]
+      vdw_radius: 2.0
+      weight: 137.34
+  - - la3+
+    - name: Lanthanum(3+)
+      number: 57
+      radius: 1.69
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.824
+      sfac_xray: [20.2489, 2.9207, 19.3763, 0.250698, 11.6323, 17.8211, 0.336048,
+        54.9453, 2.4086]
+      vdw_radius: 2.0
+      weight: 138.91
+  - - ce3+
+    - name: Cerium(3+)
+      number: 58
+      radius: 1.65
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.484
+      sfac_xray: [20.8036, 2.77691, 19.559, 0.23154, 11.9369, 16.5408, 0.612376, 43.1692,
+        2.09013]
+      vdw_radius: 2.0
+      weight: 140.12
+  - - ce4+
+    - name: Cerium(4+)
+      number: 58
+      radius: 1.65
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.484
+      sfac_xray: [20.3235, 2.65941, 19.8186, 0.21885, 12.1233, 15.7992, 0.144583,
+        62.2355, 1.5918]
+      vdw_radius: 2.0
+      weight: 140.12
+  - - pr3+
+    - name: Praseodymium(3+)
+      number: 59
+      radius: 1.5
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.458
+      sfac_xray: [21.3727, 2.6452, 19.7491, 0.214299, 12.1329, 15.323, 0.97518, 36.4065,
+        1.77132]
+      vdw_radius: 2.0
+      weight: 140.907
+  - - pr4+
+    - name: Praseodymium(4+)
+      number: 59
+      radius: 1.5
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.458
+      sfac_xray: [20.9413, 2.54467, 20.0539, 0.202481, 12.4668, 14.8137, 0.296689,
+        45.4643, 1.24285]
+      vdw_radius: 2.0
+      weight: 140.907
+  - - nd3+
+    - name: Neodymium(3+)
+      number: 60
+      radius: 1.64
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.769
+      sfac_xray: [21.961, 2.52722, 19.9339, 0.199237, 12.12, 14.1783, 1.51031, 30.8717,
+        1.47588]
+      vdw_radius: 2.0
+      weight: 144.24
+  - - pm3+
+    - name: Promethium(3+)
+      number: 61
+      radius: 1.63
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.26
+      sfac_xray: [22.5527, 2.4174, 20.1108, 0.185769, 12.0671, 13.1275, 2.07492, 27.4491,
+        1.19499]
+      vdw_radius: 2.0
+      weight: 147.0
+  - - sm3+
+    - name: Samarium(3+)
+      number: 62
+      radius: 1.62
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.08
+      sfac_xray: [23.1504, 2.31641, 20.2599, 0.174081, 11.9202, 12.1571, 2.71488,
+        24.8242, 0.954586]
+      vdw_radius: 2.0
+      weight: 150.35
+  - - eu2+
+    - name: Europium(2+)
+      number: 63
+      radius: 1.85
+      sfac_electron: [6.2667, 100.2983, 4.844, 16.0662, 3.2023, 2.9803, 1.2009, 0.3674,
+        0.0]
+      sfac_neutron: 0.722
+      sfac_xray: [24.0063, 2.27783, 19.9504, 0.17353, 11.8034, 11.6096, 3.87243, 26.5156,
+        1.36389]
+      vdw_radius: 2.0
+      weight: 151.96
+  - - eu3+
+    - name: Europium(3+)
+      number: 63
+      radius: 1.85
+      sfac_electron: [6.2667, 100.2983, 4.844, 16.0662, 3.2023, 2.9803, 1.2009, 0.3674,
+        0.0]
+      sfac_neutron: 0.722
+      sfac_xray: [23.7497, 2.22258, 20.3745, 0.16394, 11.8509, 11.311, 3.26503, 22.9966,
+        0.759344]
+      vdw_radius: 2.0
+      weight: 151.96
+  - - gd3+
+    - name: Gadolinium(3+)
+      number: 64
+      radius: 1.61
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.65
+      sfac_xray: [24.3466, 2.13553, 20.4208, 0.155525, 11.8708, 10.5782, 3.7149, 21.7029,
+        0.645089]
+      vdw_radius: 2.0
+      weight: 157.25
+  - - tb3+
+    - name: Terbium(3+)
+      number: 65
+      radius: 1.59
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.738
+      sfac_xray: [24.9559, 2.05601, 20.3271, 0.149525, 12.2471, 10.0499, 3.773, 21.2773,
+        0.691967]
+      vdw_radius: 2.0
+      weight: 158.924
+  - - dy3+
+    - name: Dysprosium(3+)
+      number: 66
+      radius: 1.59
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.69
+      sfac_xray: [25.5395, 1.9804, 20.2861, 0.143384, 11.9812, 9.34972, 4.50073, 19.581,
+        0.68969]
+      vdw_radius: 2.0
+      weight: 162.5
+  - - ho3+
+    - name: Holmium(3+)
+      number: 67
+      radius: 1.58
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.801
+      sfac_xray: [26.1296, 1.91072, 20.0994, 0.139358, 11.9788, 8.80018, 4.93676,
+        18.5908, 0.852795]
+      vdw_radius: 2.0
+      weight: 164.93
+  - - er3+
+    - name: Erbium(3+)
+      number: 68
+      radius: 1.57
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.779
+      sfac_xray: [26.722, 1.84659, 19.7748, 0.13729, 12.1506, 8.36225, 5.17379, 17.8974,
+        1.17613]
+      vdw_radius: 2.0
+      weight: 167.26
+  - - tm3+
+    - name: Thulium(3+)
+      number: 69
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.707
+      sfac_xray: [27.3083, 1.78711, 19.332, 0.136974, 12.3339, 7.96778, 5.38348, 17.2922,
+        1.63929]
+      vdw_radius: 2.0
+      weight: 168.93
+  - - yb2+
+    - name: Ytterbium(2+)
+      number: 70
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.243
+      sfac_xray: [28.1209, 1.78503, 17.6817, 0.15997, 13.3335, 8.18304, 5.14657, 20.39,
+        3.70983]
+      vdw_radius: 2.0
+      weight: 173.04
+  - - yb3+
+    - name: Ytterbium(3+)
+      number: 70
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.243
+      sfac_xray: [27.8917, 1.73272, 18.7614, 0.13879, 12.6072, 7.64412, 5.47647, 16.8153,
+        2.26001]
+      vdw_radius: 2.0
+      weight: 173.04
+  - - lu3+
+    - name: Lutetium(3+)
+      number: 71
+      radius: 1.56
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.721
+      sfac_xray: [28.4628, 1.68216, 18.121, 0.142292, 12.8429, 7.33727, 5.59415, 16.3535,
+        2.97573]
+      vdw_radius: 2.0
+      weight: 174.97
+  - - hf4+
+    - name: Hafnium(4+)
+      number: 72
+      radius: 1.44
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.777
+      sfac_xray: [28.8131, 1.59136, 18.4601, 0.128903, 12.7285, 6.76232, 5.59927,
+        14.0366, 2.39699]
+      vdw_radius: 2.0
+      weight: 178.49
+  - - ta5+
+    - name: Tantalum(5+)
+      number: 73
+      radius: 1.34
+      sfac_electron: [1.9885, 0.8784, 3.48239, 5.12588, 4.07937, 23.4938, 2.98409,
+        80.1163, 0.0]
+      sfac_neutron: 0.691
+      sfac_xray: [29.1587, 1.50711, 18.8407, 0.116741, 12.8268, 6.31524, 5.38695,
+        12.4244, 1.78555]
+      vdw_radius: 2.0
+      weight: 180.95
+  - - w6+
+    - name: Tungsten(6+)
+      number: 74
+      radius: 1.3
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.486
+      sfac_xray: [29.4936, 1.42755, 19.3763, 0.104621, 13.0544, 5.93667, 5.06412,
+        11.1972, 1.01074]
+      vdw_radius: 2.0
+      weight: 183.85
+  - - os4+
+    - name: Osmium(4+)
+      number: 76
+      radius: 1.26
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.07
+      sfac_xray: [30.419, 1.37113, 15.2637, 6.84706, 14.7458, 0.165191, 5.06795, 18.003,
+        6.49804]
+      vdw_radius: 2.0
+      weight: 190.2
+  - - ir3+
+    - name: Iridium(3+)
+      number: 77
+      radius: 1.27
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.06
+      sfac_xray: [30.4156, 1.34323, 15.862, 7.10909, 13.6145, 0.204633, 5.82008, 20.3254,
+        8.27903]
+      vdw_radius: 2.0
+      weight: 192.2
+  - - ir4+
+    - name: Iridium(4+)
+      number: 77
+      radius: 1.27
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.06
+      sfac_xray: [30.7058, 1.30923, 15.5512, 6.71983, 14.2326, 0.167252, 5.53672,
+        17.4911, 6.96824]
+      vdw_radius: 2.0
+      weight: 192.2
+  - - pt2+
+    - name: Platinum(2+)
+      number: 78
+      radius: 1.3
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.96
+      sfac_xray: [29.8429, 1.32927, 16.7224, 7.38979, 13.2153, 0.263297, 6.35234,
+        22.9426, 9.85329]
+      vdw_radius: 1.72
+      weight: 195.09
+  - - pt4+
+    - name: Platinum(4+)
+      number: 78
+      radius: 1.3
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.96
+      sfac_xray: [30.9612, 1.24813, 15.9829, 6.60834, 13.7348, 0.16864, 5.92034, 16.9392,
+        7.39534]
+      vdw_radius: 1.72
+      weight: 195.09
+  - - au1+
+    - name: Gold(1+)
+      number: 79
+      radius: 1.34
+      sfac_electron: [2.388, 42.8656, 4.2259, 9.743, 2.6886, 2.2641, 1.2551, 0.3067,
+        0.0]
+      sfac_neutron: 0.763
+      sfac_xray: [28.0109, 1.35321, 17.8204, 7.7395, 14.3359, 0.356752, 6.58077, 26.4043,
+        11.2299]
+      vdw_radius: 1.66
+      weight: 196.97
+  - - au3+
+    - name: Gold(3+)
+      number: 79
+      radius: 1.34
+      sfac_electron: [2.388, 42.8656, 4.2259, 9.743, 2.6886, 2.2641, 1.2551, 0.3067,
+        0.0]
+      sfac_neutron: 0.763
+      sfac_xray: [30.6886, 1.2199, 16.9029, 6.82872, 12.7801, 0.212867, 6.52354, 18.659,
+        9.0968]
+      vdw_radius: 1.66
+      weight: 196.97
+  - - hg1+
+    - name: Mercury(1+)
+      number: 80
+      radius: 1.49
+      sfac_electron: [2.6817, 42.8217, 4.2414, 9.8557, 2.7549, 2.2951, 1.2708, 0.3067,
+        0.0]
+      sfac_neutron: 1.2692
+      sfac_xray: [25.0853, 1.39507, 18.4973, 7.65105, 16.8883, 0.443378, 6.48216,
+        28.2262, 12.0205]
+      vdw_radius: 1.55
+      weight: 200.59
+  - - hg2+
+    - name: Mercury(2+)
+      number: 80
+      radius: 1.49
+      sfac_electron: [2.6817, 42.8217, 4.2414, 9.8557, 2.7549, 2.2951, 1.2708, 0.3067,
+        0.0]
+      sfac_neutron: 1.2692
+      sfac_xray: [29.5641, 1.21152, 18.06, 7.05639, 12.8374, 0.284738, 6.89912, 20.7482,
+        10.6268]
+      vdw_radius: 1.55
+      weight: 200.59
+  - - tl1+
+    - name: Thalium(1+)
+      number: 81
+      radius: 1.48
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.8776
+      sfac_xray: [21.3985, 1.4711, 20.4723, 0.517394, 18.7478, 7.43463, 6.82847, 28.8482,
+        12.5258]
+      vdw_radius: 1.96
+      weight: 204.37
+  - - tl3+
+    - name: Thalium(3+)
+      number: 81
+      radius: 1.48
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.8776
+      sfac_xray: [30.8695, 1.1008, 18.3481, 6.53852, 11.9328, 0.219074, 7.00574, 17.2114,
+        9.8027]
+      vdw_radius: 1.96
+      weight: 204.37
+  - - pb2+
+    - name: Lead(2+)
+      number: 82
+      radius: 1.47
+      sfac_electron: [3.5099, 52.9141, 4.5523, 11.884, 3.1539, 2.5713, 1.3591, 0.3205,
+        0.0]
+      sfac_neutron: 0.9405
+      sfac_xray: [21.7886, 1.3366, 19.5682, 0.488383, 19.1406, 6.7727, 7.01107, 23.8132,
+        12.4734]
+      vdw_radius: 2.02
+      weight: 207.19
+  - - pb4+
+    - name: Lead(4+)
+      number: 82
+      radius: 1.47
+      sfac_electron: [3.5099, 52.9141, 4.5523, 11.884, 3.1539, 2.5713, 1.3591, 0.3205,
+        0.0]
+      sfac_neutron: 0.9405
+      sfac_xray: [32.1244, 1.00566, 18.8003, 6.10926, 12.0175, 0.147041, 6.96886,
+        14.714, 8.08428]
+      vdw_radius: 2.02
+      weight: 207.19
+  - - bi3+
+    - name: Bismuth(3+)
+      number: 83
+      radius: 1.46
+      sfac_electron: [3.8412, 50.2608, 4.6784, 11.9988, 3.1924, 2.5598, 1.3625, 0.3177,
+        0.0]
+      sfac_neutron: 0.8532
+      sfac_xray: [21.8053, 1.2356, 19.5026, 6.24149, 19.1053, 0.469999, 7.10295, 20.3185,
+        12.4711]
+      vdw_radius: 2.0
+      weight: 208.98
+  - - bi5+
+    - name: Bismuth(5+)
+      number: 83
+      radius: 1.46
+      sfac_electron: [3.8412, 50.2608, 4.6784, 11.9988, 3.1924, 2.5598, 1.3625, 0.3177,
+        0.0]
+      sfac_neutron: 0.8532
+      sfac_xray: [33.5364, 0.91654, 25.0946, 0.39042, 19.2497, 5.71414, 6.91555, 12.8285,
+        -6.7994]
+      vdw_radius: 2.0
+      weight: 208.98
+  - - ra2+
+    - name: Radium(2+)
+      number: 88
+      radius: 1.4
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.0
+      sfac_xray: [35.215, 0.604909, 21.67, 3.5767, 7.91342, 12.601, 7.65078, 29.8436,
+        13.5431]
+      vdw_radius: 2.0
+      weight: 226.0
+  - - ac3+
+    - name: Actinium(3+)
+      number: 89
+      radius: 1.18
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 0.0
+      sfac_xray: [35.1736, 0.579689, 22.1112, 3.41437, 8.19216, 12.9187, 7.05545,
+        25.9443, 13.4637]
+      vdw_radius: 2.0
+      weight: 227.0
+  - - th4+
+    - name: Thorium(4+)
+      number: 90
+      radius: 1.14
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.031
+      sfac_xray: [35.1007, 0.555054, 22.4418, 3.24498, 9.78554, 13.4661, 5.29444,
+        23.9533, 13.376]
+      vdw_radius: 2.0
+      weight: 232.038
+  - - u3+
+    - name: Uranium(3+)
+      number: 92
+      radius: 1.11
+      sfac_electron: [6.7668, 85.951, 6.7287, 15.6415, 4.0135, 2.9364, 1.5607, 0.3348,
+        0.0]
+      sfac_neutron: 0.8417
+      sfac_xray: [35.5747, 0.52048, 22.5259, 3.12293, 12.2165, 12.7148, 5.37073, 26.3394,
+        13.3092]
+      vdw_radius: 1.86
+      weight: 238.03
+  - - u4+
+    - name: Uranium(4+)
+      number: 92
+      radius: 1.11
+      sfac_electron: [6.7668, 85.951, 6.7287, 15.6415, 4.0135, 2.9364, 1.5607, 0.3348,
+        0.0]
+      sfac_neutron: 0.8417
+      sfac_xray: [35.3715, 0.516598, 22.5326, 3.05053, 12.0291, 12.5723, 4.7984, 23.4582,
+        13.2671]
+      vdw_radius: 1.86
+      weight: 238.03
+  - - u6+
+    - name: Uranium(6+)
+      number: 92
+      radius: 1.11
+      sfac_electron: [6.7668, 85.951, 6.7287, 15.6415, 4.0135, 2.9364, 1.5607, 0.3348,
+        0.0]
+      sfac_neutron: 0.8417
+      sfac_xray: [34.8509, 0.507079, 22.7584, 2.8903, 14.0099, 13.1767, 1.21457, 25.2017,
+        13.1665]
+      vdw_radius: 1.86
+      weight: 238.03
+  - - np3+
+    - name: Neptunium(3+)
+      number: 93
+      radius: 1.09
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.055
+      sfac_xray: [35.7074, 0.502322, 22.613, 3.03807, 12.9898, 12.1449, 5.43227, 25.4928,
+        13.2544]
+      vdw_radius: 2.0
+      weight: 237.0
+  - - np4+
+    - name: Neptunium(4+)
+      number: 93
+      radius: 1.09
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.055
+      sfac_xray: [35.5103, 0.498626, 22.5787, 2.96627, 12.7766, 11.9484, 4.92159,
+        22.7502, 13.2116]
+      vdw_radius: 2.0
+      weight: 237.0
+  - - np6+
+    - name: Neptunium(6+)
+      number: 93
+      radius: 1.09
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.055
+      sfac_xray: [35.0136, 0.48981, 22.7286, 2.81099, 14.3884, 12.33, 1.75669, 22.6581,
+        13.113]
+      vdw_radius: 2.0
+      weight: 237.0
+  - - pu3+
+    - name: Plutonium(3+)
+      number: 94
+      radius: 1.07
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.41
+      sfac_xray: [35.84, 0.484938, 22.7169, 2.96118, 13.5807, 11.5331, 5.66016, 24.3992,
+        13.1991]
+      vdw_radius: 2.0
+      weight: 242.0
+  - - pu4+
+    - name: Plutonium(4+)
+      number: 94
+      radius: 1.07
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.41
+      sfac_xray: [35.6493, 0.481422, 22.646, 2.8902, 13.3595, 11.316, 5.18831, 21.8301,
+        13.1555]
+      vdw_radius: 2.0
+      weight: 242.0
+  - - pu6+
+    - name: Plutonium(6+)
+      number: 94
+      radius: 1.07
+      sfac_electron: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      sfac_neutron: 1.41
+      sfac_xray: [35.1736, 0.473204, 22.7181, 2.73848, 14.7635, 11.553, 2.28678, 20.9303,
+        13.0582]
+      vdw_radius: 2.0
+      weight: 242.0

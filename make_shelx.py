@@ -1,8 +1,10 @@
 import subprocess as sp
+from pathlib import Path
+import yaml
 
 exe = "sginfo"
-fin  = "C:/Program Files (x86)/Sir2014/share/Sir2014/files/Sir.xen"
-TABLE = [line.strip() for line in open(fin, "r")]
+fin  = Path(__file__).parent / "data.yaml"
+TABLE = yaml.load(open(fin, "r"))
 
 
 def comp2dict(composition):
@@ -34,18 +36,13 @@ def get_latt_symm_cards(spgr):
 
 
 def get_sfac(element):
-    key = element.lower() + " "
+    d = TABLE[element.lower()]
 
-    block = [line for line in TABLE if line.startswith(key)]
-    
-    number, weight, radius, vdw_radius = block[0].split()[1:5]
-    number = int(number)
-    weight = float(weight)
-    radius = float(radius)
-    vdw_radius = float(vdw_radius)
-    
-    a1, b1, a2, b2, a3, b3, a4, b4, c = [float(val) for val in block[5].split()[1:] + block[6].split()[1:]]
-    SFAC  = f"SFAC {key.upper():3s}{a1:7.4f} {b1:7.4f} {a2:7.4f} {b2:7.4f}         =\n        {a3:7.4f} {b3:7.4f} {a4:7.4f} {b4:7.4f} {c:7.4f} =\n"
+    radius = d["radius"]
+    weight = d["weight"]
+
+    a1, b1, a2, b2, a3, b3, a4, b4, c = d["sfac_electron"]
+    SFAC  = f"SFAC {element.upper():3s}{a1:7.4f} {b1:7.4f} {a2:7.4f} {b2:7.4f}         =\n        {a3:7.4f} {b3:7.4f} {a4:7.4f} {b4:7.4f} {c:7.4f} =\n"
     SFAC += f"         0.0000  0.0000  0.0000 {radius:7.4f} {weight:7.4f}"
 
     return SFAC
@@ -70,9 +67,14 @@ def main():
                         action="store", type=str, nargs="+", dest="composition",
                         help="Composition should be formatted something like 'Si20 O40'")
 
-    parser.set_defaults(cell=None,
+    parser.add_argument("-w","--wavelength",
+                        action="store", type=float, dest="wavelength",
+                        help="Set the wavelength in Angstroms, default=0.02508")
+
+    parser.set_defaults(cell=(10, 10, 10, 90, 90, 90),
                         spgr="P1",
-                        composition="")
+                        composition="",
+                        wavelength=0.02508)
     
     options = parser.parse_args()
 
