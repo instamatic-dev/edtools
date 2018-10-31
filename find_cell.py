@@ -2,7 +2,9 @@ import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
 from matplotlib.widgets import SpanSelector
-import sys
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+from collections import defaultdict
+import yaml
 
 
 def weighted_average(values, weights=None):
@@ -98,16 +100,19 @@ def find_cell(cells, weights, binsize=0.5):
     
         mu, sigma = update(i, ax, median-2, median+2)
     
+        ax.set_ylabel("Frequency")
         if i < 3:
             xlim = latt_xlim
+            ax.set_xlabel("Length ($\mathrm{\AA}$)")
         if i >=3:
             xlim = ang_xlim
+            ax.set_xlabel("Angle ($\mathrm{^\circ}$)")
         
         ax.set_xlim(*xlim)
         onselect = get_spanfunc(i, ax)
         
         span = SpanSelector(ax, onselect, 'horizontal', useblit=True,
-                    rectprops=dict(alpha=0.5, facecolor='red'), span_stays=True, minspan=1.0)
+                    rectprops=dict(alpha=0.2, facecolor='red'), span_stays=True, minspan=1.0)
         
         spans[i] = span  # keep a reference in memory
         params[i] = mu, sigma
@@ -119,30 +124,168 @@ def find_cell(cells, weights, binsize=0.5):
     return constants, esds
 
 
-def main():
-    binsize = 0.5
+def d_calculator(uc):
+    a,b,c,alpha,beta,gamma = uc
+    dab = np.sqrt(a**2 + b**2 - 2*a*b*np.cos(np.deg2rad(180 - gamma)))
+    dac = np.sqrt(a**2 + c**2 - 2*a*c*np.cos(np.deg2rad(180 - beta)))
+    dbc = np.sqrt(b**2 + c**2 - 2*b*c*np.cos(np.deg2rad(180 - alpha)))
+    return dab, dac, dbc
+
+
+def unit_cell_lcv_distance(uc1, uc2):
+    dab1, dac1, dbc1 = d_calculator(uc1)
+    dab2, dac2, dbc2 = d_calculator(uc2)
+    Mab = abs(dab1 - dab2)/min(dab1, dab2)
+    Mac = abs(dac1 - dac2)/min(dac1, dac2)
+    Mbc = abs(dbc1 - dbc2)/min(dbc1, dbc2)
+    return max(Mab, Mac, Mbc)
+
+
+def get_largest_cluster(z, cells, distance=0.5):
+    largest = 0
+    n_largest_clust = 0
+
+    clusters = fcluster(z, distance, criterion='distance')
+    grouped = defaultdict(list)
+    for i, c in enumerate(clusters):
+        grouped[c].append(i)
     
-    args = sys.argv[1:]
-    if args:
-        fn = args[1]
+    print("---------------------------------------------")
+    np.set_printoptions(formatter={'float': '{:7.2f}'.format})
+    for i in sorted(grouped.keys()):
+        cluster = grouped[i]
+        clustsize = len(cluster)
+        if clustsize == 1:
+            continue
+        print(f"\nCluster #{i} ({clustsize} items)")
+        for j in cluster:
+            print(f"{j:5d}", cells[j])
+        print(" ---")
+        print("Mean:", np.mean(cells[cluster], axis=0))
+        print(" Min:", np.min(cells[cluster], axis=0))
+        print(" Max:", np.max(cells[cluster], axis=0))
+        if clustsize > n_largest_clust:
+            largest = i
+            n_largest_clust = clustsize
+
+    return grouped[largest]
+
+
+def cluster_cell(cells, weights=None):
+    from scipy.spatial.distance import pdist
+
+    dist = pdist(cells, metric=unit_cell_lcv_distance)
+
+    z = linkage(dist,  metric='euclidean', method="average")
+
+    distance = round(0.7*max(z[:,2]), 4)
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    tree = dendrogram(z, color_threshold=distance, ax=ax)
+    ax.set_xlabel("Index")
+    ax.set_ylabel("Distance (LCV)")
+    ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
+    hline = ax.axhline(y=distance)
+    
+    def get_cutoff(event):
+        nonlocal hline
+        nonlocal tree
+        nonlocal distance
+
+        if event:
+            distance = round(event.ydata, 4)
+            ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
+            hline.remove()
+            hline = ax.axhline(y=distance)
+        
+            for c in ax.collections:
+                c.remove()
+
+            tree = dendrogram(z, color_threshold=distance, ax=ax)
+
+            fig.canvas.draw()
+    
+    fig.canvas.mpl_connect('button_press_event', get_cutoff)
+    plt.show()
+
+    idx = get_largest_cluster(z, cells, distance=distance)
+
+    return idx
+
+    cells = cells[idx]
+
+    if weights is None:
+        weights = np.ones(len(cells))
     else:
-        fn = "CELLPARM.INP"
+        weights = weights[idx]
+
+    return cells, weights
+
+
+def main():
+    import argparse
+
+    description = "Program for finding the unit cell from a serial crystallography experiment."
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+        
+    parser.add_argument("args",
+                        type=str, nargs="*", metavar="FILE",
+                        help="Path to CELLPARM.INP")
+
+    parser.add_argument("-b","--binsize",
+                        action="store", type=float, dest="binsize",
+                        help="Binsize for the histogram, default=0.5")
+
+    parser.add_argument("-c","--cluster",
+                        action="store_true", dest="cluster",
+                        help="Apply cluster analysis prior to unit cell finding")
+
+    parser.set_defaults(binsize=0.5,
+                        cluster=True)
     
-    cells, weights = parse_cellparm(fn)
-    
+    options = parser.parse_args()
+
+    binsize = options.binsize
+    cluster = options.cluster
+    args = options.args
+
+    if args:
+        fn = args[0]
+    else:
+        fn = "cells.yaml"
+
+    ds = yaml.load(open(fn, "r"))
+
+    cells = np.array([d["raw_unit_cell"] for d in ds])
+    weights = np.array([d["weight"] for d in ds])
+
+    if cluster:
+        idx = cluster_cell(cells, weights=weights)
+        cells = cells[idx]
+        weights = weights[idx]
+        
+        ds = [ds[i] for i in idx]
+
+        yaml.dump(ds, open("cells_largest_cluster.yaml", "w"))
+        
     constants, esds = find_cell(cells, weights, binsize=binsize)
     
     print()
+    print("Weighted mean of histogram analysis")
+    print("---")
     print("Unit cell parameters: ", end="")
     for c in constants:
-        print(f"{c:8.2f}", end="")
+        print(f"{c:8.3f}", end="")
     print()
     print("Unit cell esds:       ", end="")
     for e in esds:
-        print(f"{e:8.2f}", end="")
+        print(f"{e:8.3f}", end="")
     print()
     print()
-    print("UNIT_CELL_CONSTANTS= " + " ".join(f"{val:.2f}" for val in constants))
+    print("UNIT_CELL_CONSTANTS= " + " ".join(f"{val:.3f}" for val in constants))
 
 
 if __name__ == '__main__':
