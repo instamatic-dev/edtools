@@ -209,6 +209,22 @@ def cells_to_cellparm(ps):
             print("UNIT_CELL_CONSTANTS= {:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f} WEIGHT= {ntot}".format(*cell, ntot=ntot), file=f)
 
 
+def cells_to_yaml(ps):
+    import yaml
+    ds = []
+    for i, p in enumerate(ps):
+        d = {}
+        d["directory"] = str(p.filename.parent)
+        d["number"] = i
+        d["unit_cell"] = p.d["cell"]
+        d["raw_unit_cell"] = p.d["raw_cell"]
+        d["space_group"] = p.d["spgr"]
+        d["weight"] = p.d["total"]["ntot"]
+        ds.append(d)
+
+    yaml.dump(ds, open("cells.yaml", "w"))
+
+
 def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0):
     """Takes a list of `xds_parser` instances and gathers the 
     corresponding `XDS_ASCII.HKL` files into the current directory.
@@ -282,7 +298,7 @@ def main():
     
     cells_to_excel(xdsall)
     cells_to_cellparm(xdsall)
-    
+    cells_to_yaml(xdsall)
     gather_xds_ascii(xdsall)
 
 

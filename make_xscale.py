@@ -69,6 +69,7 @@ def write_xscale_inp(fns, cells, target_cell, target_spgr):
     with open("XSCALE.INP", "w") as f:
 
         print("MINIMUM_I/SIGMA= 2", file=f)
+        print("SAVE_CORRECTION_IMAGES= FALSE")  # prevent local directory being littered with .cbf files
         print(f"SPACE_GROUP_NUMBER= {target_spgr}", file=f)
         print(f"UNIT_CELL_CONSTANTS= {target_cell}", file=f)
         print(file=f)

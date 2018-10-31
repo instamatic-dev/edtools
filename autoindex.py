@@ -77,13 +77,13 @@ def xds_index(path):
     plat = sys.platform
     if plat == "linux":
         try:
-            p = sp.Popen("xds", cwd=path, stdout=DEVNULL)
+            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
     elif plat == "win32":
         try:
-            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=path)
+            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=str(path))
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
@@ -113,8 +113,8 @@ def main():
 
         for fn in fns:
             drc = fn.parent
-            # f = executor.submit(connect, drc)
-            f = executor.submit(xds_index, drc)
+            f = executor.submit(connect, drc)
+            # f = executor.submit(xds_index, drc)
             futures.append(f)
  
         for future in futures:

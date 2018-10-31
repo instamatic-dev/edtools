@@ -75,18 +75,23 @@ def run_xscale(clusters, cell, spgr):
         print(f"! Cluster score: {item['score']:.3f}", file=f)
         print(f"! Cluster CC(I): {item['CC(I)']:.3f}", file=f)
         print(f"! Cluster items: {item['clust']}", file=f)
+        print(f"! Cluster distance cutoff: {item['distance_cutoff']}", file=f)
+        print(f"! Cluster method: {item['method']}", file=f)
         print(file=f)
         print("MINIMUM_I/SIGMA= 2", file=f)
+        print("SAVE_CORRECTION_IMAGES= FALSE", file=f)  # prevent local directory being littered with .cbf files
         print(f"! {spgr}", file=f)
         print(f"! {cell}", file=f)
         print(file=f)
         print("OUTPUT_FILE= MERGED.HKL", file=f)
         print(file=f)
     
-        for fn in fns:
+        for j, fn in enumerate(fns):
             fn = Path(fn)
-            dst = shutil.copy(fn, drc)
-            print(f"    INPUT_FILE= {fn.name}", file=f)
+            dst = drc / f"{j}_{fn.name}"
+            shutil.copy(fn, dst)
+            print(f"    ! {fn}", file=f)
+            print(f"    INPUT_FILE= {dst.name}", file=f)
             print(f"    INCLUDE_RESOLUTION_RANGE= 20 1.0", file=f)
             print(file=f)
     
@@ -108,10 +113,14 @@ def run_xscale(clusters, cell, spgr):
         d["n_clust"] = item["n_clust"]
         results.append(d)
 
+        shelx_ins = Path("shelx.ins")
+        if shelx_ins.exists():
+            shutil.copy(shelx_ins, drc)
+
     return results
 
 
-def get_clusters(z, dmat, distance=0.5, fns=[]):
+def get_clusters(z, dmat, distance=0.5, fns=[], method="average"):
     clusters = fcluster(z, distance, criterion='distance')
     
     grouped = defaultdict(list)
@@ -126,10 +135,12 @@ def get_clusters(z, dmat, distance=0.5, fns=[]):
         if len(items) == 1:
             continue
 
-        score = linkage(dsel, method="average")[-1][2]
+        score = linkage(dsel, method=method)[-1][2]
         cc = np.sqrt(1-score**2)
 
-        cluster_dict[key] = {"score": score, "CC(I)": cc, "n_clust": len(items), "clust": items, "files": [fns[i] for i in items]}
+        cluster_dict[key] = {"score": score, "CC(I)": cc, "n_clust": len(items), "clust": items, 
+                             "files": [fns[i] for i in items], "distance_cutoff":distance,
+                             "method": method}
     
     return cluster_dict
 
@@ -176,6 +187,8 @@ def parse_xscale_lp_initial(fn="XSCALE.LP"):
 
 
 def main():
+    method = "average"
+
     fns, ccs, cell, spgr = parse_xscale_lp_initial()
 
     arr = np.loadtxt(ccs)
@@ -195,7 +208,7 @@ def main():
     tri = np.triu_indices_from(dmat, k=1)
     d = dmat[tri]
     
-    z = linkage(d, method="average")
+    z = linkage(d, method=method)
     # corresponding with MATLAB behavior
     distance = round(0.7*max(z[:,2]), 4)
     
@@ -213,7 +226,7 @@ def main():
         nonlocal tree
         nonlocal distance
 
-        if event:
+        if event.ydata:
             distance = round(event.ydata, 4)
             ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
             hline.remove()
@@ -229,7 +242,7 @@ def main():
     fig.canvas.mpl_connect('button_press_event', get_cutoff)
     plt.show()
 
-    clusters = get_clusters(z, dmat=dmat, distance=distance, fns=fns)
+    clusters = get_clusters(z, dmat=dmat, distance=distance, fns=fns, method=method)
     results = run_xscale(clusters, cell=cell, spgr=spgr)
     
     print(f"Cutoff distance: {distance}")
