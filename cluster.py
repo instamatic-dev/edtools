@@ -176,7 +176,6 @@ def parse_xscale_lp_initial(fn="XSCALE.LP"):
 
 
 def main():
-
     fns, ccs, cell, spgr = parse_xscale_lp_initial()
 
     arr = np.loadtxt(ccs)
