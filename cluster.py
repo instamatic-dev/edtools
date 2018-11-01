@@ -5,6 +5,7 @@ import shutil
 import subprocess as sp
 import numpy as np
 import matplotlib.pyplot as plt
+from types import SimpleNamespace
 
 
 xscale_keys = (
@@ -72,8 +73,8 @@ def run_xscale(clusters, cell, spgr):
         f = open(drc / "XSCALE.INP", "w")
     
         print(f"! Clustered data from {item['n_clust']} data sets", file=f)
-        print(f"! Cluster score: {item['score']:.3f}", file=f)
-        print(f"! Cluster CC(I): {item['CC(I)']:.3f}", file=f)
+        # print(f"! Cluster score: {item['score']:.3f}", file=f)
+        # print(f"! Cluster CC(I): {item['CC(I)']:.3f}", file=f)
         print(f"! Cluster items: {item['clust']}", file=f)
         print(f"! Cluster distance cutoff: {item['distance_cutoff']}", file=f)
         print(f"! Cluster method: {item['method']}", file=f)
@@ -120,7 +121,7 @@ def run_xscale(clusters, cell, spgr):
     return results
 
 
-def get_clusters(z, dmat, distance=0.5, fns=[], method="average"):
+def get_clusters(z, distance=0.5, fns=[], method="average"):
     clusters = fcluster(z, distance, criterion='distance')
     
     grouped = defaultdict(list)
@@ -129,16 +130,10 @@ def get_clusters(z, dmat, distance=0.5, fns=[], method="average"):
     
     cluster_dict = {}
     for key, items in grouped.items():
-        sel = dmat[items][:,items]
-        tri = np.triu_indices_from(sel, k=1)
-        dsel = sel[tri]
         if len(items) == 1:
             continue
 
-        score = linkage(dsel, method=method)[-1][2]
-        cc = np.sqrt(1-score**2)
-
-        cluster_dict[key] = {"score": score, "CC(I)": cc, "n_clust": len(items), "clust": items, 
+        cluster_dict[key] = {"n_clust": len(items), "clust": items, 
                              "files": [fns[i] for i in items], "distance_cutoff":distance,
                              "method": method}
     
@@ -183,13 +178,6 @@ def parse_xscale_lp_initial(fn="XSCALE.LP"):
                         break
                     ccs.append(line)
                 break
-    return fns, ccs, cell, spgr
-
-
-def main():
-    method = "average"
-
-    fns, ccs, cell, spgr = parse_xscale_lp_initial()
 
     arr = np.loadtxt(ccs)
     i = arr[:,0].astype(int) - 1  # XSCALE is 1-indexed
@@ -201,14 +189,26 @@ def main():
     corrmat[i,j] = ccs
     corrmat[j,i] = ccs
     np.fill_diagonal(corrmat, 1.0)
-    
+
+    obj = SimpleNamespace()
+    obj.filenames = fns
+    obj.correlation_matrix = corrmat
+    obj.unit_cell = cell
+    obj.space_group = spgr
+
+    return obj
+
+
+def get_condensed_distance_matrix(corrmat):
     dmat = np.sqrt(1 - corrmat**2)
     
     # array must be a condensed distance matrix
     tri = np.triu_indices_from(dmat, k=1)
     d = dmat[tri]
-    
-    z = linkage(d, method=method)
+    return d
+
+
+def distance_from_dendrogram(z):
     # corresponding with MATLAB behavior
     distance = round(0.7*max(z[:,2]), 4)
     
@@ -242,8 +242,42 @@ def main():
     fig.canvas.mpl_connect('button_press_event', get_cutoff)
     plt.show()
 
-    clusters = get_clusters(z, dmat=dmat, distance=distance, fns=fns, method=method)
-    results = run_xscale(clusters, cell=cell, spgr=spgr)
+    return distance
+
+
+def main():
+    import argparse
+
+    description = ""
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+        
+    parser.add_argument("-d","--distance",
+                        action="store", type=float, dest="distance",
+                        help="Cutoff distance to use, bypass dendrogram")
+
+    parser.add_argument("-m","--method",
+                        action="store", type=str, dest="method",
+                        choices="single average complete median weighted centroid ward".split(),
+                        help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`)")
+
+    parser.set_defaults(distance=None,
+                        method="average")
+    
+    options = parser.parse_args()
+    distance = options.distance
+    method = options.method
+
+    obj = parse_xscale_lp_initial(fn="XSCALE.LP")
+    d = get_condensed_distance_matrix(obj.correlation_matrix)
+  
+    z = linkage(d, method=method)
+
+    if not distance:
+        distance = distance_from_dendrogram(z)
+    
+    clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method)
+    results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group)
     
     print(f"Cutoff distance: {distance}")
     print()
