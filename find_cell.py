@@ -141,21 +141,19 @@ def unit_cell_lcv_distance(uc1, uc2):
     return max(Mab, Mac, Mbc)
 
 
-def get_largest_cluster(z, cells, distance=0.5):
-    largest = 0
-    n_largest_clust = 0
-
+def get_clusters(z, cells, distance=0.5):
     clusters = fcluster(z, distance, criterion='distance')
     grouped = defaultdict(list)
     for i, c in enumerate(clusters):
         grouped[c].append(i)
     
-    print("---------------------------------------------")
+    print("-"*40)
     np.set_printoptions(formatter={'float': '{:7.2f}'.format})
     for i in sorted(grouped.keys()):
         cluster = grouped[i]
         clustsize = len(cluster)
         if clustsize == 1:
+            del grouped[i]
             continue
         print(f"\nCluster #{i} ({clustsize} items)")
         for j in cluster:
@@ -164,20 +162,14 @@ def get_largest_cluster(z, cells, distance=0.5):
         print("Mean:", np.mean(cells[cluster], axis=0))
         print(" Min:", np.min(cells[cluster], axis=0))
         print(" Max:", np.max(cells[cluster], axis=0))
-        if clustsize > n_largest_clust:
-            largest = i
-            n_largest_clust = clustsize
+    
+    print("")
 
-    return grouped[largest]
+    return grouped
 
 
-def cluster_cell(cells, weights=None):
-    from scipy.spatial.distance import pdist
-
-    dist = pdist(cells, metric=unit_cell_lcv_distance)
-
-    z = linkage(dist,  metric='euclidean', method="average")
-
+def distance_from_dendrogram(z):
+    # corresponding with MATLAB behavior
     distance = round(0.7*max(z[:,2]), 4)
     
     fig = plt.figure()
@@ -210,18 +202,24 @@ def cluster_cell(cells, weights=None):
     fig.canvas.mpl_connect('button_press_event', get_cutoff)
     plt.show()
 
-    idx = get_largest_cluster(z, cells, distance=distance)
+    return distance
 
-    return idx
 
-    cells = cells[idx]
+def cluster_cell(cells, weights=None, distance=None, method="average"):
+    from scipy.spatial.distance import pdist
 
-    if weights is None:
-        weights = np.ones(len(cells))
-    else:
-        weights = weights[idx]
+    dist = pdist(cells, metric=unit_cell_lcv_distance)
 
-    return cells, weights
+    z = linkage(dist,  metric='euclidean', method=method)
+
+    if not distance:
+        distance = distance_from_dendrogram(z)
+
+    print(f"Linkage method = {method}")
+    print(f"Cutoff distance = {distance}")
+    print("")
+
+    return get_clusters(z, cells, distance=distance)
 
 
 def main():
@@ -241,13 +239,25 @@ def main():
 
     parser.add_argument("-c","--cluster",
                         action="store_true", dest="cluster",
-                        help="Apply cluster analysis prior to unit cell finding")
+                        help="Apply cluster analysis")
+
+    parser.add_argument("-d","--distance",
+                        action="store", type=float, dest="distance",
+                        help="Cutoff distance to use for clustering, bypass dendrogram")
+
+    parser.add_argument("-m","--method",
+                        action="store", type=str, dest="method",
+                        choices="single average complete median weighted centroid ward".split(),
+                        help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`)")
+
 
     parser.set_defaults(binsize=0.5,
-                        cluster=True)
+                        cluster=False,
+                        distance=None)
     
     options = parser.parse_args()
 
+    distance = options.distance
     binsize = options.binsize
     cluster = options.cluster
     args = options.args
@@ -263,29 +273,29 @@ def main():
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:
-        idx = cluster_cell(cells, weights=weights)
-        cells = cells[idx]
-        weights = weights[idx]
-        
-        ds = [ds[i] for i in idx]
-
-        yaml.dump(ds, open("cells_largest_cluster.yaml", "w"))
-        
-    constants, esds = find_cell(cells, weights, binsize=binsize)
+        clusters = cluster_cell(cells, weights=weights, distance=distance)
+        for i, idx in clusters.items():
+            clustered_ds = [ds[i] for i in idx]
+            fout = f"cells_cluster_{i}_{len(idx)}-items.yaml"
+            yaml.dump(clustered_ds, open(fout, "w"))
+            print(f"Wrote cluster {i} to file `{fout}`")
     
-    print()
-    print("Weighted mean of histogram analysis")
-    print("---")
-    print("Unit cell parameters: ", end="")
-    for c in constants:
-        print(f"{c:8.3f}", end="")
-    print()
-    print("Unit cell esds:       ", end="")
-    for e in esds:
-        print(f"{e:8.3f}", end="")
-    print()
-    print()
-    print("UNIT_CELL_CONSTANTS= " + " ".join(f"{val:.3f}" for val in constants))
+    else:
+        constants, esds = find_cell(cells, weights, binsize=binsize)
+        
+        print()
+        print("Weighted mean of histogram analysis")
+        print("---")
+        print("Unit cell parameters: ", end="")
+        for c in constants:
+            print(f"{c:8.3f}", end="")
+        print()
+        print("Unit cell esds:       ", end="")
+        for e in esds:
+            print(f"{e:8.3f}", end="")
+        print()
+        print()
+        print("UNIT_CELL_CONSTANTS= " + " ".join(f"{val:.3f}" for val in constants))
 
 
 if __name__ == '__main__':
