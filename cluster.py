@@ -58,9 +58,43 @@ def parse_xscale_lp(fn):
     return d
 
 
-def run_xscale(clusters, cell, spgr):
+def run_pointless(drc, i=0):
+    with open(drc / "pointless.sh", "w") as f:
+        print("""pointless *_XDS_ASCII.HKL << eof
+SETTING SYMMETRY-BASED
+CHIRALITY NONCHIRAL
+NEIGHBOUR 0.02
+RESOLUTION 10.0 1.0
+SYSTEMATICABSENCES OFF
+XMLOUT pointless.xml
+eof""", file=f)
+
+    # -i to run bash in interactive mode, i.e. .bashrc is loaded
+    p = sp.run("bash -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
+    if p.stdout:
+        print(f"Running pointless on cluster {i}\n")
+        sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
+        with open(drc / "pointless.log", "r") as f:
+            output = False
+            for line in f:
+                if "Best Solution" in line:
+                    output = True
+                elif "Laue Group        Lklhd" in line:
+                    output = True
+                
+                if "<!--SUMMARY_END-->" in line:
+                    output = False
+                
+                if output:
+                    print(line, end="")
+        print("-----\n")
+
+
+def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
     results = []
     
+    dmax, dmin = resolution
+
     keys = sorted(clusters.keys())
     
     for i in keys:
@@ -71,6 +105,7 @@ def run_xscale(clusters, cell, spgr):
         drc.mkdir(parents=True, exist_ok=True)
     
         f = open(drc / "XSCALE.INP", "w")
+        filelist = open(drc / "filelist.txt", "w")
     
         print(f"! Clustered data from {item['n_clust']} data sets", file=f)
         # print(f"! Cluster score: {item['score']:.3f}", file=f)
@@ -88,24 +123,30 @@ def run_xscale(clusters, cell, spgr):
         print(file=f)
     
         for j, fn in enumerate(fns):
+            j += 1
             fn = Path(fn)
             dst = drc / f"{j}_{fn.name}"
             shutil.copy(fn, dst)
             print(f"    ! {fn}", file=f)
             print(f"    INPUT_FILE= {dst.name}", file=f)
-            print(f"    INCLUDE_RESOLUTION_RANGE= 20 1.0", file=f)
+            print(f"    INCLUDE_RESOLUTION_RANGE= {dmax:8.2f} {dmin:8.2f}", file=f)
             print(file=f)
+
+            print(f" {j: 3d} {dst.name} {dmax:8.2f} {dmin:8.2f}  # {fn.parent}", file=filelist)  
     
         f.close()
+        filelist.close()
     
+        run_pointless(drc, i=i)
+
         sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
     
         with open(drc / "XDSCONV.INP", "w") as f:
             print("""
-    INPUT_FILE= MERGED.HKL
-    INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
-    OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
-    FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
+INPUT_FILE= MERGED.HKL
+INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
+OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
+FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
     
         sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
     
@@ -260,13 +301,19 @@ def main():
                         action="store", type=str, dest="method",
                         choices="single average complete median weighted centroid ward".split(),
                         help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`)")
+    
+    parser.add_argument("-r","--resolution",
+                        action="store", type=float, nargs=2, dest="resolution",
+                        help="Resolution range for XSCALE (dmax, dmin)")
 
     parser.set_defaults(distance=None,
-                        method="average")
+                        method="average",
+                        resolution=None)
     
     options = parser.parse_args()
     distance = options.distance
     method = options.method
+    dmax, dmin = options.resolution
 
     obj = parse_xscale_lp_initial(fn="XSCALE.LP")
     d = get_condensed_distance_matrix(obj.correlation_matrix)
@@ -277,14 +324,22 @@ def main():
         distance = distance_from_dendrogram(z)
     
     clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method)
-    results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group)
+    results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin))
     
+    print("Clustering results")
+    print("")
     print(f"Cutoff distance: {distance}")
-    print()
-    print("  #  N_clust  CC(1/2)    N_obs   N_uniq   N_poss   Compl.   N_comp   R_meas   d_min   i/sigma")
+    print(f"Method: {method}")
+    print("")
+    print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp     R_meas   d_min   i/sigma")
     for d in results:
-        print("{number:3d} {n_clust:8d} {CC(1/2):8.1f} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
-{Completeness:8.1f} {N_comp:8d} {R_meas:8.3f} {d_min:8.2f} {i/sigma:8.2f}".format(**d))
+        p1 = "*" if d["CC(1/2)"] > 90 else " "
+        p2 = "*" if d["Completeness"] > 80 else " "
+        p3 = "*" if d["R_meas"] < 0.30 else " "
+        p0 = "".join(sorted(p1+p2+p3, reverse=True))
+
+        print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
+{Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
 
 
 if __name__ == '__main__':
