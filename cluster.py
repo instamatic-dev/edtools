@@ -69,6 +69,8 @@ SYSTEMATICABSENCES OFF
 XMLOUT pointless.xml
 eof""", file=f)
 
+    d = {}
+
     # -i to run bash in interactive mode, i.e. .bashrc is loaded
     p = sp.run("bash -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
     if p.stdout:
@@ -79,15 +81,25 @@ eof""", file=f)
             for line in f:
                 if "Best Solution" in line:
                     output = True
+                    d["laue_group"] = line.split("point group")[-1].replace(" ", "").strip()
                 elif "Laue Group        Lklhd" in line:
                     output = True
                 
+                if line.startswith("   Reindex operator:"):
+                    d["reindex_operator"] = line.split(":")[-1].strip()
+                if line.startswith("   Laue group probability:"):
+                    d["probability"] = float(line.split(":")[-1])
+                if line.startswith("   Confidence:"):
+                    d["confidence"] = float(line.split(":")[-1])
+
                 if "<!--SUMMARY_END-->" in line:
                     output = False
-                
+
                 if output:
                     print(line, end="")
         print("-----\n")
+
+    return d
 
 
 def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
@@ -137,7 +149,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
         f.close()
         filelist.close()
     
-        run_pointless(drc, i=i)
+        d = run_pointless(drc, i=i)
 
         sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
     
@@ -150,7 +162,7 @@ FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
     
         sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
     
-        d = parse_xscale_lp(drc / "XSCALE.LP")
+        d.update(parse_xscale_lp(drc / "XSCALE.LP"))
         d["number"] = i
         d["n_clust"] = item["n_clust"]
         results.append(d)
@@ -256,12 +268,12 @@ def distance_from_dendrogram(z):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     
-    tree = dendrogram(z, color_threshold=distance, ax=ax)
+    tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue")
     ax.set_xlabel("Index")
     ax.set_ylabel("Distance $(1-CC^2)^{1/2}$")
     ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
     hline = ax.axhline(y=distance)
-    
+
     def get_cutoff(event):
         nonlocal hline
         nonlocal tree
@@ -276,7 +288,7 @@ def distance_from_dendrogram(z):
             for c in ax.collections:
                 c.remove()
 
-            tree = dendrogram(z, color_threshold=distance, ax=ax)
+            tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue")
 
             fig.canvas.draw()
     
@@ -306,14 +318,20 @@ def main():
                         action="store", type=float, nargs=2, dest="resolution",
                         help="Resolution range for XSCALE (dmax, dmin)")
 
+    parser.add_argument("-g","--dendrogram",
+                        action="store_true", dest="show_dendrogram_only",
+                        help="Quit after showing dendrogram")
+
     parser.set_defaults(distance=None,
                         method="average",
-                        resolution=None)
+                        resolution=(20, 0.8),
+                        show_dendrogram_only=False)
     
     options = parser.parse_args()
     distance = options.distance
     method = options.method
     dmax, dmin = options.resolution
+    show_dendrogram_only = options.show_dendrogram_only
 
     obj = parse_xscale_lp_initial(fn="XSCALE.LP")
     d = get_condensed_distance_matrix(obj.correlation_matrix)
@@ -322,6 +340,8 @@ def main():
 
     if not distance:
         distance = distance_from_dendrogram(z)
+        if show_dendrogram_only:
+            exit()
     
     clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method)
     results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin))
@@ -331,7 +351,7 @@ def main():
     print(f"Cutoff distance: {distance}")
     print(f"Method: {method}")
     print("")
-    print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp     R_meas   d_min   i/sigma")
+    print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp    R_meas   d_min   i/sigma  | Lauegr.  prob. conf.  idx")
     for d in results:
         p1 = "*" if d["CC(1/2)"] > 90 else " "
         p2 = "*" if d["Completeness"] > 80 else " "
@@ -339,7 +359,8 @@ def main():
         p0 = "".join(sorted(p1+p2+p3, reverse=True))
 
         print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
-{Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
+{Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}  | \
+{laue_group:>7s} {probability:5.2f} {confidence:6.2f}  {reindex_operator}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
 
 
 if __name__ == '__main__':
