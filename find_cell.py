@@ -5,6 +5,7 @@ from matplotlib.widgets import SpanSelector
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from collections import defaultdict
 import yaml
+from utils import volume
 
 
 def weighted_average(values, weights=None):
@@ -45,6 +46,10 @@ def parse_cellparm(fn):
 
 
 def find_cell(cells, weights, binsize=0.5):
+    """Opens a plot with 6 subplots in which the cell parameter histogram is displayed.
+    It will calculate the weighted mean of the unit cell parameters. The ranges can be
+    adjusted by dragging on the plots.
+    """
     fig, axes = plt.subplots(2, 3, figsize=(15, 10))
     axes = axes.flatten()
     
@@ -72,30 +77,42 @@ def find_cell(cells, weights, binsize=0.5):
         idx = (par > xmin) & (par < xmax)
         sel_par = par[idx]
         sel_w = weights[idx]
+    
         if len(sel_par) == 0:
-            return 0, 0
-        mu, sigma = weighted_average(sel_par, sel_w)
-        x = np.arange(xmin-10, xmax+10, binsize/2)
-        y = stats.norm.pdf(x, mu, sigma)
+            mu, sigma = 0.0, 0.0
+        else:
+            mu, sigma = weighted_average(sel_par, sel_w)
+    
         if i in lines:
             for item in lines[i]:
-                item.remove()
-        l = ax.plot(x, y, 'r--', linewidth=1.5)
-        lines[i] = l
+                try:
+                    item.remove()
+                except ValueError:
+                    pass
+
+        if sigma > 0:
+            x = np.arange(xmin-10, xmax+10, binsize/2)
+            y = stats.norm.pdf(x, mu, sigma)
+            l = ax.plot(x, y, 'r--', linewidth=1.5)
+            lines[i] = l
+    
         name = names[i]
         ax.set_title(f"${name}$: $\mu={mu:.2f}$, $\sigma={sigma:.2f}$")
         params[i] = mu, sigma
         return mu, sigma
     
+    k = binsize/2  # displace by half a binsize to center bins on whole values
+
     for i in range(6):
         ax = axes[i]
         
         par = cells[:,i]
     
         median = np.median(par)
-        bins = np.arange(0, max(par), binsize)
+        bins = np.arange(min(par)-1.0-k, max(par)+1.0-k, binsize)  # pad 1 in case par values are all equal
+
         n, bins, patches = ax.hist(par, bins, rwidth=0.8, density=True)
-        
+
         variables[i] = par, bins
     
         mu, sigma = update(i, ax, median-2, median+2)
@@ -124,21 +141,23 @@ def find_cell(cells, weights, binsize=0.5):
     return constants, esds
 
 
-def d_calculator(uc):
-    a,b,c,alpha,beta,gamma = uc
-    dab = np.sqrt(a**2 + b**2 - 2*a*b*np.cos(np.deg2rad(180 - gamma)))
-    dac = np.sqrt(a**2 + c**2 - 2*a*c*np.cos(np.deg2rad(180 - beta)))
-    dbc = np.sqrt(b**2 + c**2 - 2*b*c*np.cos(np.deg2rad(180 - alpha)))
-    return dab, dac, dbc
+def d_calculator(cell: list) -> tuple:
+    """Helper function for `unit_cell_lcv_distance`"""
+    a, b, c, alpha, beta, gamma = cell
+    d_ab = np.sqrt(a**2 + b**2 - 2*a*b*np.cos(np.radians(180 - gamma)))
+    d_ac = np.sqrt(a**2 + c**2 - 2*a*c*np.cos(np.radians(180 - beta)))
+    d_bc = np.sqrt(b**2 + c**2 - 2*b*c*np.cos(np.radians(180 - alpha)))
+    return d_ab, d_ac, d_bc
 
 
-def unit_cell_lcv_distance(uc1, uc2):
-    dab1, dac1, dbc1 = d_calculator(uc1)
-    dab2, dac2, dbc2 = d_calculator(uc2)
-    Mab = abs(dab1 - dab2)/min(dab1, dab2)
-    Mac = abs(dac1 - dac2)/min(dac1, dac2)
-    Mbc = abs(dbc1 - dbc2)/min(dbc1, dbc2)
-    return max(Mab, Mac, Mbc)
+def unit_cell_lcv_distance(cell1: list, cell2: list) -> float:
+    """Implements Linear Cell Volume from Acta Cryst. (2013). D69, 1617-1632"""
+    d_ab1, d_ac1, d_bc1 = d_calculator(cell1)
+    d_ab2, d_ac2, d_bc2 = d_calculator(cell2)
+    M_ab = abs(d_ab1 - d_ab2)/min(d_ab1, d_ab2)
+    M_ac = abs(d_ac1 - d_ac2)/min(d_ac1, d_ac2)
+    M_bc = abs(d_bc1 - d_bc2)/min(d_bc1, d_bc2)
+    return max(M_ab, M_ac, M_bc)
 
 
 def get_clusters(z, cells, distance=0.5):
@@ -156,28 +175,40 @@ def get_clusters(z, cells, distance=0.5):
             del grouped[i]
             continue
         print(f"\nCluster #{i} ({clustsize} items)")
+        vols = []
         for j in cluster:
-            print(f"{j:5d}", cells[j])
+            cell = cells[j]
+            vol = volume(cell)
+            vols.append(vol)
+            print(f"{j:5d} {cell}  Vol.: {vol:6.1f}")
         print(" ---")
-        print("Mean:", np.mean(cells[cluster], axis=0))
-        print(" Min:", np.min(cells[cluster], axis=0))
-        print(" Max:", np.max(cells[cluster], axis=0))
+        print("Mean: {}  Vol.: {:6.1f}".format(np.mean(cells[cluster], axis=0), np.mean(vols)))
+        print(" Min: {}  Vol.: {:6.1f}".format(np.min(cells[cluster], axis=0), np.min(vols)))
+        print(" Max: {}  Vol.: {:6.1f}".format(np.max(cells[cluster], axis=0), np.max(vols)))
     
     print("")
 
     return grouped
 
 
-def distance_from_dendrogram(z):
-    # corresponding with MATLAB behavior
-    distance = round(0.7*max(z[:,2]), 4)
-    
+def distance_from_dendrogram(z, ylabel: str="", initial_distance: float=None) -> float:
+    """Takes a linkage object `z` from scipy.cluster.hierarchy.linkage and displays a
+    dendrogram. The cutoff distance can be picked interactively, and is returned
+    ylabel: sets the label for the y-axis
+    initial_distance: initial cutoff distsance to display
+    """
+    if initial_distance == None:
+        # corresponding with MATLAB behavior
+        distance = round(0.7*max(z[:,2]), 4)
+    else:
+        distance = initial_distance
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
     
     tree = dendrogram(z, color_threshold=distance, ax=ax)
     ax.set_xlabel("Index")
-    ax.set_ylabel("Distance (LCV)")
+    ax.set_ylabel(f"Distance ({ylabel})")
     ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
     hline = ax.axhline(y=distance)
     
@@ -205,18 +236,40 @@ def distance_from_dendrogram(z):
     return distance
 
 
-def cluster_cell(cells, weights=None, distance=None, method="average"):
+def volume_difference(cell1: list, cell2: list):
+    """Return the absolute difference in volumes between two unit cells"""
+    v1 = volume(cell1)
+    v2 = volume(cell2)
+    return abs(v1-v2)
+
+
+def cluster_cell(cells: list, distance: float=None, method: str="average", metric: str="euclidean"):
+    """Perform hierarchical cluster analysis on a list of cells. 
+    method: lcv, volume, euclidean
+    distance: cutoff distance, if it is not given, pop up a dendrogram to
+        interactively choose a cutoff distance
+    """
+
     from scipy.spatial.distance import pdist
 
-    dist = pdist(cells, metric=unit_cell_lcv_distance)
-
-    z = linkage(dist,  metric='euclidean', method=method)
+    if metric == "lcv":
+        dist = pdist(cells, metric=unit_cell_lcv_distance)
+        z = linkage(dist,  method=method)
+        initial_distance = None
+    elif metric == "volume":
+        dist = pdist(cells, metric=volume_difference)
+        z = linkage(dist,  method=method)
+        initial_distance = 250.0
+    else:
+        z = linkage(cells,  metric=metric, method=method)
+        initial_distance = 2.0
 
     if not distance:
-        distance = distance_from_dendrogram(z)
+        distance = distance_from_dendrogram(z, ylabel=metric, initial_distance=initial_distance)
 
     print(f"Linkage method = {method}")
     print(f"Cutoff distance = {distance}")
+    print(f"Distance metric = {metric}")
     print("")
 
     return get_clusters(z, cells, distance=distance)
@@ -248,18 +301,26 @@ def main():
     parser.add_argument("-m","--method",
                         action="store", type=str, dest="method",
                         choices="single average complete median weighted centroid ward".split(),
-                        help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`)")
+                        help="Linkage algorithm to use (see `scipy.cluster.hierarchy.linkage`)")
 
+    parser.add_argument("-t","--metric",
+                        action="store", type=str, dest="metric",
+                        choices="euclidean lcv volume".split(),
+                        help="Metric for calculating the distance between items (see `scipy.cluster.hierarchy.linkage`)")
 
     parser.set_defaults(binsize=0.5,
                         cluster=False,
-                        distance=None)
+                        distance=None,
+                        method="average",
+                        metric="euclidean")
     
     options = parser.parse_args()
 
     distance = options.distance
     binsize = options.binsize
     cluster = options.cluster
+    method = options.method
+    metric = options.metric
     args = options.args
 
     if args:
@@ -273,7 +334,7 @@ def main():
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:
-        clusters = cluster_cell(cells, weights=weights, distance=distance)
+        clusters = cluster_cell(cells, distance=distance, method=method, metric=metric)
         for i, idx in clusters.items():
             clustered_ds = [ds[i] for i in idx]
             fout = f"cells_cluster_{i}_{len(idx)}-items.yaml"
