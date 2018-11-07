@@ -16,6 +16,7 @@ except ImportError:
     pass
 
 DEVNULL = open(os.devnull, 'w')
+platform = sys.platform
 
 rlock = threading.RLock()
 
@@ -74,21 +75,18 @@ def parse_xds(path):
 
 
 def xds_index(path):
-    plat = sys.platform
-    if plat == "linux":
-        try:
-            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
-            p.wait()
-        except Exception as e:
-            print("ERROR in subprocess call:", e)
-    elif plat == "win32":
+    if platform == "win32":
         try:
             p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=str(path))
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
     else:
-        raise RuntimeError
+        try:
+            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
+            p.wait()
+        except Exception as e:
+            print("ERROR in subprocess call:", e)
 
     try:
         parse_xds(path)

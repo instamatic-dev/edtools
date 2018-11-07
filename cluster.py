@@ -6,6 +6,24 @@ import subprocess as sp
 import numpy as np
 import matplotlib.pyplot as plt
 from types import SimpleNamespace
+import sys
+
+platform = sys.platform
+
+
+def check_for_pointless():
+    if platform == "win32":
+        # -i to run bash in interactive mode, i.e. .bashrc is loaded
+        p = sp.run("bash -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
+    else:
+        p = sp.run("which pointless", stdout=sp.PIPE, shell=True)  # check if pointless can be run
+
+    if p.stdout:
+        return True
+    else:
+        return False
+
+POINTLESS = check_for_pointless()
 
 
 xscale_keys = (
@@ -71,11 +89,15 @@ eof""", file=f)
 
     d = {}
 
-    # -i to run bash in interactive mode, i.e. .bashrc is loaded
-    p = sp.run("bash -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
+
+
     if p.stdout:
         print(f"Running pointless on cluster {i}\n")
-        sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
+        if platform = "win32":
+            sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
+        else:
+            sp.run("bash ./pointless.sh > pointless.log", cwd=drc, shell=True)
+
         with open(drc / "pointless.log", "r") as f:
             output = False
             for line in f:
@@ -99,7 +121,10 @@ eof""", file=f)
                     print(line, end="")
         print("-----\n")
 
-    return d
+        return d
+
+    else:
+        return {}
 
 
 def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
@@ -148,10 +173,16 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
     
         f.close()
         filelist.close()
-    
-        d = run_pointless(drc, i=i)
+        
+        d = {}
 
-        sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
+        if POINTLESS:
+            d.update(run_pointless(drc, i=i))
+
+        if platform == "win32":
+            sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
+        else:
+            sp.run("xscale 2>&1 >/dev/null", cwd=drc, shell=True)
     
         with open(drc / "XDSCONV.INP", "w") as f:
             print("""
@@ -159,9 +190,11 @@ INPUT_FILE= MERGED.HKL
 INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
 OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
-    
-        sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
-    
+        if platform == "win32":
+                sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
+            else:
+                sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
+
         d.update(parse_xscale_lp(drc / "XSCALE.LP"))
         d["number"] = i
         d["n_clust"] = item["n_clust"]
