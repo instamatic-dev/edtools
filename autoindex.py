@@ -28,7 +28,7 @@ def parse_fns(fns):
             new_fns.extend(list(fn.glob("**/XDS.INP")))
         else:  
             new_fns.append(fn)
-    new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
+    #new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
     new_fns = [fn.resolve() for fn in new_fns]
     return new_fns
 
@@ -77,6 +77,9 @@ def xds_index(path):
     plat = sys.platform
     if plat == "linux":
         try:
+            corr = path / "CORRECT.LP"
+            if corr.exists():
+                os.remove(corr)
             p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
             p.wait()
         except Exception as e:
@@ -113,8 +116,8 @@ def main():
 
         for fn in fns:
             drc = fn.parent
-            f = executor.submit(connect, drc)
-            # f = executor.submit(xds_index, drc)
+            #f = executor.submit(connect, drc)
+            f = executor.submit(xds_index, drc)
             futures.append(f)
  
         for future in futures:

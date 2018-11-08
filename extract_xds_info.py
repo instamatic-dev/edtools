@@ -248,7 +248,7 @@ def parse_fns(fns):
             new_fns.extend(list(fn.glob("**/CORRECT.LP")))
         else:  
             new_fns.append(fn)
-    new_fns = [fn for fn in new_fns if "reprocessed" in str(fn)]
+    #new_fns = [fn for fn in new_fns if "reprocessed" in str(fn)]
     new_fns = [fn.resolve() for fn in new_fns]
     return new_fns
 

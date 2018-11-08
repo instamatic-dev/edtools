@@ -41,7 +41,9 @@ def update_xds(fn, cell=None, spgr=None, comment=False):
             line = spgr_line
 
         new_lines.append(line)
-
+		
+    new_lines.append("MAX_CELL_AXIS_ERROR= 0.1")
+    new_lines.append("MAX_CELL_ANGLE_ERROR= 5.0")
     open(fn, "w").writelines(new_lines)
 
 
@@ -88,6 +90,7 @@ def main():
     for fn in fns:
         print("\033[K", fn, end='\r')  # "\033[K" clears line
         update_xds(fn, cell=cell, spgr=spgr, comment=comment)
+    print("Done")
 
 
 if __name__ == '__main__':
