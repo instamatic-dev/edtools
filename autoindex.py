@@ -29,7 +29,7 @@ def parse_fns(fns):
             new_fns.extend(list(fn.glob("**/XDS.INP")))
         else:  
             new_fns.append(fn)
-    new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
+    #new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
     new_fns = [fn.resolve() for fn in new_fns]
     return new_fns
 
@@ -44,7 +44,7 @@ def connect(payload):
             s.send(payload)
             data = s.recv(BUFF).decode()
             print(data)
-        
+
         data = s.recv(BUFF).decode()
 
         with rlock:
@@ -75,9 +75,12 @@ def parse_xds(path):
 
 
 def xds_index(path):
+    corr = path / "CORRECT.LP"
+    if corr.exists():
+        os.remove(corr)
     if platform == "win32":
         try:
-            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=str(path))
+            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
@@ -111,8 +114,8 @@ def main():
 
         for fn in fns:
             drc = fn.parent
-            f = executor.submit(connect, drc)
-            # f = executor.submit(xds_index, drc)
+            #f = executor.submit(connect, drc)
+            f = executor.submit(xds_index, drc)
             futures.append(f)
  
         for future in futures:

@@ -89,11 +89,9 @@ eof""", file=f)
 
     d = {}
 
-
-
-    if p.stdout:
+    if POINTLESS:
         print(f"Running pointless on cluster {i}\n")
-        if platform = "win32":
+        if platform == "win32":
             sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
         else:
             sp.run("bash ./pointless.sh > pointless.log", cwd=drc, shell=True)
@@ -173,11 +171,10 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
     
         f.close()
         filelist.close()
-        
+
         d = {}
 
-        if POINTLESS:
-            d.update(run_pointless(drc, i=i))
+        d.update(run_pointless(drc, i=i))
 
         if platform == "win32":
             sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
@@ -190,10 +187,11 @@ INPUT_FILE= MERGED.HKL
 INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
 OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
+        
         if platform == "win32":
                 sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
-            else:
-                sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
+        else:
+            sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
 
         d.update(parse_xscale_lp(drc / "XSCALE.LP"))
         d["number"] = i
@@ -391,9 +389,14 @@ def main():
         p3 = "*" if d["R_meas"] < 0.30 else " "
         p0 = "".join(sorted(p1+p2+p3, reverse=True))
 
-        print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
+        if POINTLESS:
+            print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
 {Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}  | \
 {laue_group:>7s} {probability:5.2f} {confidence:6.2f}  {reindex_operator}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
+        else:
+            print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
+{Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
+
 
 
 if __name__ == '__main__':
