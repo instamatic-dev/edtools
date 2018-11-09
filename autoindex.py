@@ -3,6 +3,7 @@ import threading
 import socket
 import sys, os
 from pathlib import Path
+from utils import parse_args_for_fns
 
 import subprocess as sp
 from extract_xds_info import xds_parser
@@ -13,25 +14,12 @@ try:
     PORT = config.cfg.indexing_server_port
     BUFF = 1024
 except ImportError:
-    pass
+    HOST, PORT = None, None
 
 DEVNULL = open(os.devnull, 'w')
 platform = sys.platform
 
 rlock = threading.RLock()
-
-
-def parse_fns(fns):
-    """Parse list of filenames and resolve wildcards"""
-    new_fns = []
-    for fn in fns:
-        if fn.is_dir():
-            new_fns.extend(list(fn.glob("**/XDS.INP")))
-        else:  
-            new_fns.append(fn)
-    #new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
-    new_fns = [fn.resolve() for fn in new_fns]
-    return new_fns
 
 
 def connect(payload):
@@ -51,7 +39,7 @@ def connect(payload):
             print(data)
 
 
-def parse_xds(path):
+def parse_xds(path, sequence=0):
     """Parse the XDS output file `CORRECT.LP` and print a summary"""
     fn = Path(path) / "CORRECT.LP"
     
@@ -67,55 +55,83 @@ def parse_xds(path):
                 msg = f"{path}: Automatic indexing completed but no cell reported..."
             else:
                 msg = "\n"
-                msg += p.cell_info()
+                msg += p.cell_info(sequence=sequence)
                 msg += "\n"
-                msg += p.integration_info()
+                msg += p.integration_info(sequence=sequence)
 
     print(msg)
 
 
-def xds_index(path):
+def xds_index(path, i=0):
     corr = path / "CORRECT.LP"
     if corr.exists():
         os.remove(corr)
+
+    cwd = str(path)
+
     if platform == "win32":
         try:
-            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
+            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=cwd)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
     else:
         try:
-            p = sp.Popen("xds", cwd=str(path), stdout=DEVNULL)
+            p = sp.Popen("xds", cwd=cwd, stdout=DEVNULL)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
 
     try:
-        parse_xds(path)
+        parse_xds(path, sequence=i)
     except Exception as e:
         print("ERROR parsing CORRECT.LP:", e)
 
 
 def main():
-    fns = sys.argv[1:]
-    
-    if not fns:
-        fns = [Path(".")]
-    else:
-        fns = [Path(fn) for fn in fns]
+    import argparse
 
-    fns = parse_fns(fns)
+    description = "Program for to automate the indexing of a large series of data sets from a serial crystallography experiment."
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+        
+    parser.add_argument("args",
+                        type=str, nargs="*", metavar="FILE",
+                        help="List of XDS.INP files or list of directories. If a list of directories is given "
+                        "the program will find all XDS.INP files in the subdirectories. If no arguments are given "
+                        "the current directory is used as a starting point.")
+
+    parser.add_argument("-s","--server",
+                        action="store_true", dest="use_server",
+                        help="Use instamatic server for indexing")
+
+    parser.add_argument("--match",
+                        action="store", type=str, dest="match",
+                        help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+
+    parser.set_defaults(use_server=False,
+                        match=None)
+    
+    options = parser.parse_args()
+
+    use_server = options.use_server
+    match = options.match
+    args = options.args
+
+    fns = parse_args_for_fns(args, name="XDS.INP", match=match)
 
     max_connections = 4
 
     with ThreadPoolExecutor(max_workers=max_connections) as executor:
         futures = []
 
-        for fn in fns:
+        for i, fn in enumerate(fns):
             drc = fn.parent
-            #f = executor.submit(connect, drc)
-            f = executor.submit(xds_index, drc)
+
+            if use_server:
+                f = executor.submit(connect, drc)
+            else:
+                f = executor.submit(xds_index, drc, i)
             futures.append(f)
  
         for future in futures:
