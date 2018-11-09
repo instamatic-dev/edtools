@@ -91,7 +91,7 @@ def xds_index(path, i=0):
 def main():
     import argparse
 
-    description = "Program for to automate the indexing of a large series of data sets from a serial crystallography experiment."
+    description = "Program to automate the indexing of a large series of data sets from a serial crystallography experiment."
     parser = argparse.ArgumentParser(description=description,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
         

@@ -47,7 +47,7 @@ def main():
     args = argv[1:]
 
     if not args:
-        fn = "cells_largest_cluster.yaml"
+        fn = "cells.yaml"
     else:
         fn = args[0]
 

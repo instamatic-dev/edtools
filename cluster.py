@@ -76,9 +76,10 @@ def parse_xscale_lp(fn):
     return d
 
 
-def run_pointless(drc, i=0):
+def run_pointless(filepat, i=0, verbose=True):
+    drc = filepat.parent
     with open(drc / "pointless.sh", "w") as f:
-        print("""pointless *_XDS_ASCII.HKL << eof
+        print(f"""pointless {filepat.name} << eof
 SETTING SYMMETRY-BASED
 CHIRALITY NONCHIRAL
 NEIGHBOUR 0.02
@@ -100,10 +101,10 @@ eof""", file=f)
             output = False
             for line in f:
                 if "Best Solution" in line:
-                    output = True
+                    # output = True
                     d["laue_group"] = line.split("point group")[-1].replace(" ", "").strip()
                 elif "Laue Group        Lklhd" in line:
-                    output = True
+                    output = verbose
                 
                 if line.startswith("   Reindex operator:"):
                     d["reindex_operator"] = line.split(":")[-1].strip()
@@ -111,11 +112,13 @@ eof""", file=f)
                     d["probability"] = float(line.split(":")[-1])
                 if line.startswith("   Confidence:"):
                     d["confidence"] = float(line.split(":")[-1])
+                if line.startswith("   Unit cell:"):
+                    d["unit_cell"] = line.split(":")[-1].strip()
 
                 if "<!--SUMMARY_END-->" in line:
                     output = False
 
-                if output:
+                if output and line.strip():
                     print(line, end="")
         print("-----\n")
 
@@ -174,7 +177,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
 
         d = {}
 
-        d.update(run_pointless(drc, i=i))
+        d.update(run_pointless(drc / "*_XDS_ASCII.HKL", i=i))
 
         if platform == "win32":
             sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
@@ -273,6 +276,9 @@ def parse_xscale_lp_initial(fn="XSCALE.LP"):
     corrmat[i,j] = ccs
     corrmat[j,i] = ccs
     np.fill_diagonal(corrmat, 1.0)
+
+    # clip negative values to 0
+    corrmat = corrmat.clip(min=0)
 
     obj = SimpleNamespace()
     obj.filenames = fns
