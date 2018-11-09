@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import time
 import shutil
-from utils import volume
+from utils import volume, parse_args_for_fns
 
 
 class xds_parser(object):
@@ -240,29 +240,31 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0):
             print(f" {i: 3d} {dst} {dmax:8.2f} {dmin:8.2f}  # {fn}", file=f)  
 
 
-def parse_fns(fns):
-    """Parse list of filenames"""
-    new_fns = []
-    for fn in fns:
-        if fn.is_dir():
-            new_fns.extend(list(fn.glob("**/CORRECT.LP")))
-        else:  
-            new_fns.append(fn)
-    #new_fns = [fn for fn in new_fns if "reprocessed" in str(fn)]
-    new_fns = [fn.resolve() for fn in new_fns]
-    return new_fns
-
-
 def main():
-    fns = sys.argv[1:]
+    import argparse
+
+    description = "Program to consolidate data from a large series of data sets from a serial crystallography experiment."
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+        
+    parser.add_argument("args",
+                        type=str, nargs="*", metavar="FILE",
+                        help="List of CORRECT.LP files or list of directories. If a list of directories is given "
+                        "the program will find all CORRECT.LP files in the subdirectories. If no arguments are given "
+                        "the current directory is used as a starting point.")
+
+    parser.add_argument("--match",
+                        action="store", type=str, dest="match",
+                        help="Include the CORRECT.LP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+
+    parser.set_defaults(match=None)
     
-    if not fns:
-        fns = [Path(".")]
-    else:
-        fns = [Path(fn) for fn in fns]
-    
-    fns = parse_fns(fns)
-    print(f"Found {len(fns)} files matching CORRECT.LP\n")
+    options = parser.parse_args()
+
+    match = options.match
+    args = options.args
+
+    fns = parse_args_for_fns(args, name="CORRECT.LP", match=match)
     
     xdsall = []
     for fn in fns:
