@@ -1,18 +1,6 @@
 from pathlib import Path
 import shutil
-
-
-def parse_fns(fns, name="XDS.INP"):
-    """Parse list of filenames and resolve wildcards"""
-    new_fns = []
-    for fn in fns:
-        if fn.is_dir():
-            new_fns.extend(list(fn.glob(f"**/{name}")))
-        else:  
-            new_fns.append(fn)
-    # new_fns = [fn for fn in new_fns if "reprocess" in str(fn)]
-    new_fns = [fn.resolve() for fn in new_fns]
-    return new_fns
+from utils import parse_args_for_fns
 
 
 def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None):
@@ -56,7 +44,9 @@ def main():
     
     parser.add_argument("args",
                         type=str, nargs="*", metavar="FILE",
-                        help="Path to XDS.INP")
+                        help="List of XDS.INP files or list of directories. If a list of directories is given "
+                        "the program will find all XDS.INP files in the subdirectories. If no arguments are given "
+                        "the current directory is used as a starting point.")
 
     parser.add_argument("-s","--spgr",
                         action="store", type=str, dest="spgr",
@@ -74,10 +64,15 @@ def main():
                         action="store", type=float, nargs=2, dest="cell_error",
                         help="Update the maximum cell error MAX_CELL_AXIS_ERROR / MAX_CELL_ANGLE_ERROR (default: 0.03 / 2.0)")
 
+    parser.add_argument("--match",
+                        action="store", type=str, dest="match",
+                        help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+
     parser.set_defaults(cell=None,
                         spgr=None,
                         comment=False,
-                        cell_error=(None, None))
+                        cell_error=(None, None),
+                        match=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -85,13 +80,9 @@ def main():
     comment = options.comment
     fns = options.args
     axis_error, angle_error = options.cell_error
+    match = options.match
 
-    if not fns:
-        fns = [Path(".")]
-    else:
-        fns = [Path(fn) for fn in fns]
-
-    fns = parse_fns(fns)
+    fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
     for fn in fns:
         print("\033[K", fn, end='\r')  # "\033[K" clears line
