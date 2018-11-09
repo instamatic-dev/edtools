@@ -35,10 +35,13 @@ def parse_args_for_fns(args, name="XDS.INP", match=None):
             new_fns.extend(list(fn.rglob(f"{name}")))
         else:  
             new_fns.append(fn)
+    
     if match:
         new_fns = [fn for fn in new_fns if fn.match(f"{match}/*")]
+    
     new_fns = [fn.resolve() for fn in new_fns]
-    print(f"{len(new_fns)} files found.")
+
+    print(f"{len(new_fns)} files named {name} (subdir: {match}) found.")
 
     return new_fns
 

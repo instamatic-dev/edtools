@@ -166,7 +166,7 @@ class xds_parser(object):
         return d
 
 
-def cells_to_excel(ps, out="cells.xlsx"):
+def cells_to_excel(ps, fn="cells.xlsx"):
     """Takes a list of `xds_parser` instances and writes the cell
     parameters to an excel file `cells.xlsx`.
     """
@@ -177,17 +177,20 @@ def cells_to_excel(ps, out="cells.xlsx"):
     import pandas as pd
     df = pd.DataFrame(d).T
     df = df["spgr a b c al be ga volume".split()]
-    if not os.path.exists(out):
-        df.to_excel(out)
+    if not os.path.exists(fn):
+        df.to_excel(fn)
+
+    print(f"Wrote {i+1} cells to file {fn}")
 
 
 def cells_to_cellparm(ps):
     """Takes a list of `xds_parser` instances and writes the cell
     parameters to an instruction file `CELLPARM.INP` for the program
     `cellparm`.
-    """    
+    """
+    fn = "CELLPARM.INP"
     # write cellparm input file
-    with open("CELLPARM.INP", "w") as f:
+    with open(fn, "w") as f:
         for i, p in enumerate(ps):
             fn = p.filename
             # cell = p.unit_cell
@@ -196,8 +199,10 @@ def cells_to_cellparm(ps):
             print(f"! {i: 3d} from {fn}", file=f)
             print("UNIT_CELL_CONSTANTS= {:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f} WEIGHT= {ntot}".format(*cell, ntot=ntot), file=f)
 
+    print(f"Wrote file {fn}")
 
-def cells_to_yaml(ps):
+
+def cells_to_yaml(ps, fn="cells.yaml"):
     import yaml
     ds = []
     for i, p in enumerate(ps):
@@ -210,16 +215,21 @@ def cells_to_yaml(ps):
         d["weight"] = p.d["total"]["ntot"]
         ds.append(d)
 
-    yaml.dump(ds, open("cells.yaml", "w"))
+    yaml.dump(ds, open(fn, "w"))
+
+    print(f"Wrote {i+1} cells to file {fn}")
 
 
-def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0):
+def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
     """Takes a list of `xds_parser` instances and gathers the 
     corresponding `XDS_ASCII.HKL` files into the current directory.
     The data source and numbering scheme is summarized in the file `filelist.txt`.
     """
+    fn = "filelist.txt"
+
     # gather xds_ascii and prepare filelist
-    with open("filelist.txt", "w") as f:
+    n = 0
+    with open(fn, "w") as f:
         for i, p in enumerate(ps):
 
             completeness = p.d["total"]["completeness"]
@@ -231,13 +241,19 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0):
             if completeness < min_completeness:
                 continue
 
-            fn = p.filename
-            src = fn.with_name("XDS_ASCII.HKL")
+            src = p.filename.with_name("XDS_ASCII.HKL")
             dst = f"{i:02d}_XDS_ASCII.HKL"
-            shutil.copy(src, dst)
-    
+            if gather:
+                shutil.copy(src, dst)
+                ascii_name = dst.name
+            else:
+                ascii_name = src
+
             dmax, dmin = p.d["res_range"]
-            print(f" {i: 3d} {dst} {dmax:8.2f} {dmin:8.2f}  # {fn}", file=f)  
+            print(f" {i: 3d} {ascii_name} {dmax:8.2f} {dmin:8.2f}  # {p.filename}", file=f)
+            n += 1
+
+    print(f"Wrote {n} entries to file {fn} (completeness > {min_completeness}%, CC(1/2) > {min_cchalf}%)")
 
 
 def main():
@@ -257,11 +273,16 @@ def main():
                         action="store", type=str, dest="match",
                         help="Include the CORRECT.LP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
 
+    parser.add_argument("-g", "--gather",
+                        action="store_true", dest="gather",
+                        help="Gather XDS_ASCII.HKL files in local directory.")
+
     parser.set_defaults(match=None)
     
     options = parser.parse_args()
 
     match = options.match
+    gather = options.gather
     args = options.args
 
     fns = parse_args_for_fns(args, name="CORRECT.LP", match=match)
@@ -287,9 +308,10 @@ def main():
     print()
     
     cells_to_excel(xdsall)
-    cells_to_cellparm(xdsall)
+    # cells_to_cellparm(xdsall)
     cells_to_yaml(xdsall)
-    gather_xds_ascii(xdsall)
+
+    gather_xds_ascii(xdsall, gather=gather)
 
 
 if __name__ == '__main__':
