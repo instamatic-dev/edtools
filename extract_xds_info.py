@@ -4,6 +4,9 @@ import os
 import time
 import shutil
 from utils import volume, parse_args_for_fns
+from utils import space_group_lib
+
+spglib = space_group_lib()
 
 
 class xds_parser(object):
@@ -256,6 +259,38 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
     print(f"Wrote {n} entries to file {fn} (completeness > {min_completeness}%, CC(1/2) > {min_cchalf}%)")
 
 
+def lattice_to_space_group(lattice):
+    return { 'aP':  1, 'mP':  3, 'mC':  5, 'mI':  5,   
+             'oP': 16, 'oC': 21, 'oI': 23, 'oF': 22,
+             'tP': 75, 'tI': 79, 'hP':143, 'hR':146, 
+             'cP':195, 'cF':196, 'cI':197 }[lattice]
+
+
+def evaluate_symmetry(ps):
+    from collections import Counter
+
+    c_score = Counter()
+    c_freq = Counter()
+
+    for p in ps:
+        spgr = p.d["spgr"]
+        weight = p.d["total"]["ntot"]
+        d = spglib[spgr]
+        lattice = d["lattice"]
+        c_score[lattice] += weight
+        c_freq[lattice] += 1
+
+    print("\nMost likely lattice types:")
+    n = 1
+    for lattice, score in c_score.most_common(100):
+        count = c_freq[lattice]
+        spgr = lattice_to_space_group(lattice)
+        print(f"{n:3} Lattice type `{lattice}` (spgr: {spgr:3}) was found {count:3} times (score: {score:7})")
+        n += 1
+
+    return lattice_to_space_group(c_score.most_common()[0][0])
+
+
 def main():
     import argparse
 
@@ -305,13 +340,14 @@ def main():
     for i, p in enumerate(xdsall):
         print(p.integration_info(sequence=i, filename=True))
     
-    print()
-    
     cells_to_excel(xdsall)
     # cells_to_cellparm(xdsall)
     cells_to_yaml(xdsall)
 
     gather_xds_ascii(xdsall, gather=gather)
+
+    evaluate_symmetry(xdsall)
+    print("\n ** the score corresponds to the total number of indexed reflections.")
 
 
 if __name__ == '__main__':
