@@ -5,7 +5,10 @@ from math import radians, cos
 import numpy as np
 import yaml
 from collections import Counter
+from utils import space_group_lib
 
+
+spglib = space_group_lib()
 
 threshold = 2.0
 
@@ -32,10 +35,10 @@ def parse_xds_ascii(fn):
 def get_xds_ascii_names(lst):
     ret = []
     for d in lst:
-        try:
+        if "xds_ascii" in d:
             ret.append(d["xds_ascii"])
-        except KeyError:
-            ret.append(d["directory"] / "XDS_ASCII.HKL")
+        else:
+            ret.append(Path(d["directory"]) / "XDS_ASCII.HKL")
     return ret
 
 
@@ -43,21 +46,25 @@ def write_xscale_inp(fns, unit_cell, space_group):
     cwd = Path(".").resolve()
 
     cell_str = " ".join((f"{val:.3f}" for val in unit_cell))
+
+    print("\nUsing:")
+    print(f"  SPACE_GROUP_NUMBER= {space_group}")
+    print(f"  UNIT_CELL_CONSTANTS= {cell_str}")
+    print()
+
     with open("XSCALE.INP", "w") as f:
 
         print("MINIMUM_I/SIGMA= 2", file=f)
         print("SAVE_CORRECTION_IMAGES= FALSE", file=f)  # prevent local directory being littered with .cbf files
         print(f"SPACE_GROUP_NUMBER= {space_group}", file=f)
-        print(f"SPACE_GROUP_NUMBER= {space_group}")
         print(f"UNIT_CELL_CONSTANTS= {cell_str}", file=f)
-        print(f"UNIT_CELL_CONSTANTS= {cell_str}")
+        
         print(file=f)
         print("OUTPUT_FILE= MERGED.HKL", file=f)
         print(file=f)
         
         for i, fn in enumerate(fns):
             fn = fn.absolute()
-            print(fn.absolute())
             fn = fn.relative_to(cwd)
             print(f"    INPUT_FILE= {fn.as_posix()}", file=f)
             print(f"    INCLUDE_RESOLUTION_RANGE= 20 0.8", file=f)
@@ -133,10 +140,19 @@ def main():
         cell = np.mean(cells, axis=0)
 
     if not spgr:
-        c = Counter([d["space_group"] for d in lst])
-        for key, count in c.most_common(5):
-            print(f"Space group {key} was found {count} times")
-        spgr =  c.most_common()[0][0]
+        c = Counter([spglib[d["space_group"]]["laue_symmetry"] for d in lst])
+        for key, count in c.most_common(10):
+            d = spglib[key]
+            lattice = d["lattice"]
+            laue_symm = d["laue_symmetry"]
+            print(f"Lattice type `{lattice}` was found {count:3} times (space group number: {laue_symm})")
+        spgr =  spglib[c.most_common()[0][0]]["laue_symmetry"]
+
+    else:
+        d = spglib[spgr]
+        lattice = d["lattice"]
+        laue_symm = d["laue_symmetry"]
+        print(f"Lowest possible symmetry for {spgr} ({lattice}): {laue_symm}")
 
     write_xscale_inp(fns, unit_cell=cell, space_group=spgr)
     write_xdsconv_inp()

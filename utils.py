@@ -1,5 +1,11 @@
 from math import radians, cos
 from pathlib import Path
+import yaml
+
+
+def space_group_lib():
+    fn = Path(__file__).parent / "spglib.yaml"
+    return yaml.load(open(fn, "r"))
 
 
 def volume(cell):
