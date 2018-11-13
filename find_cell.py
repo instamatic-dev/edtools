@@ -284,7 +284,7 @@ def main():
         
     parser.add_argument("args",
                         type=str, nargs="*", metavar="FILE",
-                        help="Path to CELLPARM.INP")
+                        help="Path to cells.yaml file")
 
     parser.add_argument("-b","--binsize",
                         action="store", type=float, dest="binsize",

@@ -76,7 +76,7 @@ def parse_xscale_lp(fn):
     return d
 
 
-def run_pointless(filepat, i=0, verbose=True):
+def run_pointless(filepat, verbose=True):
     drc = filepat.parent
     with open(drc / "pointless.sh", "w") as f:
         print(f"""pointless {filepat.name} << eof
@@ -91,7 +91,6 @@ eof""", file=f)
     d = {}
 
     if POINTLESS:
-        print(f"Running pointless on cluster {i}\n")
         if platform == "win32":
             sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
         else:
@@ -177,7 +176,8 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
 
         d = {}
 
-        d.update(run_pointless(drc / "*_XDS_ASCII.HKL", i=i))
+        print(f"Running pointless on cluster {i}\n")
+        d.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
 
         if platform == "win32":
             sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)

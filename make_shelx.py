@@ -61,7 +61,7 @@ def main():
 
     parser.add_argument("-c","--cell",
                         action="store", type=float, nargs=6, dest="cell",
-                        help="Unit cell, can be minimal representation")
+                        help="Unit cell")
 
     parser.add_argument("-m","--composition",
                         action="store", type=str, nargs="+", dest="composition",
