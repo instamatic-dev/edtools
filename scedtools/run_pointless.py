@@ -1,7 +1,7 @@
 from pathlib import Path
-from cluster import run_pointless
 import yaml
 import os
+from .cluster import run_pointless
 
 
 def main():

@@ -21,14 +21,14 @@ setup(
 
     entry_points={
         'console_scripts': [
-            "scedtools.autoindex        = autoindex:main",
-            "scedtools.cluster          = cluster:main",
-            "scedtools.find_cell        = find_cell:main",
-            "scedtools.extract_xds_info = extract_xds_info:main",
-            "scedtools.run_pointless    = run_pointless:main",
-            "scedtools.make_xscale      = make_xscale:main",
-            "scedtools.make_shelx       = make_shelx:main",
-            "scedtools.update_xds       = update_xds:main",
+            "scedtools.autoindex        = scedtools.autoindex:main",
+            "scedtools.cluster          = scedtools.cluster:main",
+            "scedtools.find_cell        = scedtools.find_cell:main",
+            "scedtools.extract_xds_info = scedtools.extract_xds_info:main",
+            "scedtools.run_pointless    = scedtools.run_pointless:main",
+            "scedtools.make_xscale      = scedtools.make_xscale:main",
+            "scedtools.make_shelx       = scedtools.make_shelx:main",
+            "scedtools.update_xds       = scedtools.update_xds:main",
         ]
     }
 )

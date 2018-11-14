@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil
-from utils import parse_args_for_fns
+from .utils import parse_args_for_fns
 
 
 def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None):

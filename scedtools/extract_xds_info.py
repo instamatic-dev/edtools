@@ -1,10 +1,9 @@
-import sys
 from pathlib import Path
 import os
 import time
 import shutil
-from utils import volume, parse_args_for_fns
-from utils import space_group_lib
+from .utils import volume, parse_args_for_fns
+from .utils import space_group_lib
 
 spglib = space_group_lib()
 

@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 
 exe = "sginfo"
-fin  = Path(__file__).parent / "data.yaml"
+fin  = Path(__file__).parent / "atomlib.yaml"
 TABLE = yaml.load(open(fin, "r"))
 
 

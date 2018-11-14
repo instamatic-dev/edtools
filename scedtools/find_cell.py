@@ -5,7 +5,7 @@ from matplotlib.widgets import SpanSelector
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from collections import defaultdict
 import yaml
-from utils import volume
+from .utils import volume
 
 
 def weighted_average(values, weights=None):

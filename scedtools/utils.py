@@ -4,6 +4,11 @@ import yaml
 
 
 def space_group_lib():
+    """Initialize simple space group library mapping the space group 
+    number to a dict with information on the `class` (crystal class),
+    `lattice` (lattice symbol), `laue_symmetry` (number of the lowest 
+    symmetry space group for this lattice), `name` (space group name), 
+    and `number` (space group number)."""
     fn = Path(__file__).parent / "spglib.yaml"
     return yaml.load(open(fn, "r"))
 
