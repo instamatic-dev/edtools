@@ -38,7 +38,7 @@ def parse_args_for_fns(args, name="XDS.INP", match=None):
     if not args:
         fns = [Path(".")]
     else:
-        fns = [Path(fn) for fn in fns]
+        fns = [Path(fn) for fn in args]
 
     new_fns = []
     for fn in fns:

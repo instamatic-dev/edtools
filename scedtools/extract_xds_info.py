@@ -106,7 +106,8 @@ class xds_parser(object):
     
         return d
 
-    def info_header(self):
+    @staticmethod
+    def info_header():
         s  = "  #   dmax  dmin    ntot   nuniq   compl   i/sig   rmeas CC(1/2)     ISa   B(ov)\n"
         s += "--------------------------------------------------------------------------------\n"
         return s
@@ -174,6 +175,7 @@ def cells_to_excel(ps, fn="cells.xlsx"):
     """
     d = {}
     for i, p in enumerate(ps):
+        i += 1
         d[i] = p.cell_as_dict()
 
     import pandas as pd
@@ -182,7 +184,7 @@ def cells_to_excel(ps, fn="cells.xlsx"):
     if not os.path.exists(fn):
         df.to_excel(fn)
 
-    print(f"Wrote {i+1} cells to file {fn}")
+    print(f"Wrote {i} cells to file {fn}")
 
 
 def cells_to_cellparm(ps):
@@ -194,6 +196,7 @@ def cells_to_cellparm(ps):
     # write cellparm input file
     with open(fn, "w") as f:
         for i, p in enumerate(ps):
+            i += 1
             fn = p.filename
             # cell = p.unit_cell
             cell = p.d["raw_cell"]
@@ -208,6 +211,7 @@ def cells_to_yaml(ps, fn="cells.yaml"):
     import yaml
     ds = []
     for i, p in enumerate(ps):
+        i += 1
         d = {}
         d["directory"] = str(p.filename.parent)
         d["number"] = i
@@ -219,7 +223,7 @@ def cells_to_yaml(ps, fn="cells.yaml"):
 
     yaml.dump(ds, open(fn, "w"))
 
-    print(f"Wrote {i+1} cells to file {fn}")
+    print(f"Wrote {i} cells to file {fn}")
 
 
 def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
@@ -233,6 +237,7 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
     n = 0
     with open(fn, "w") as f:
         for i, p in enumerate(ps):
+            i += 1
 
             completeness = p.d["total"]["completeness"]
             cchalf = p.d["total"]["cchalf"]
@@ -247,7 +252,7 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
             dst = f"{i:02d}_XDS_ASCII.HKL"
             if gather:
                 shutil.copy(src, dst)
-                ascii_name = dst.name
+                ascii_name = dst
             else:
                 ascii_name = src
 
@@ -332,11 +337,12 @@ def main():
                 xdsall.append(p)
     
     for i, p in enumerate(xdsall):
+        i += 1
         print(p.cell_info(sequence=i))
     
-    print()
-    
+    print(xds_parser.info_header())
     for i, p in enumerate(xdsall):
+        i += 1
         print(p.integration_info(sequence=i, filename=True))
     
     cells_to_excel(xdsall)

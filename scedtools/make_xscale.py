@@ -65,7 +65,10 @@ def write_xscale_inp(fns, unit_cell, space_group):
         
         for i, fn in enumerate(fns):
             fn = fn.absolute()
-            fn = fn.relative_to(cwd)
+            try:
+                fn = fn.relative_to(cwd)
+            except ValueError:
+                pass
             print(f"    INPUT_FILE= {fn.as_posix()}", file=f)
             print(f"    INCLUDE_RESOLUTION_RANGE= 20 0.8", file=f)
             print(file=f)

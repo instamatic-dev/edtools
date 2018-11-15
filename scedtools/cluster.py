@@ -305,10 +305,12 @@ def distance_from_dendrogram(z):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     
-    tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue")
+    labels = range(1, int(max(z[:,3]))+1)
+
+    tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue", labels=labels)
     ax.set_xlabel("Index")
     ax.set_ylabel("Distance $(1-CC^2)^{1/2}$")
-    ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
+    ax.set_title(f"Dendrogram ($t={distance:.2f}$)")
     hline = ax.axhline(y=distance)
 
     def get_cutoff(event):
@@ -318,14 +320,14 @@ def distance_from_dendrogram(z):
 
         if event.ydata:
             distance = round(event.ydata, 4)
-            ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
+            ax.set_title(f"Dendrogram ($t={distance:.2f}$)")
             hline.remove()
             hline = ax.axhline(y=distance)
 
             for c in ax.collections:
                 c.remove()
 
-            tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue")
+            tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue", labels=labels)
 
             fig.canvas.draw()
     
@@ -403,6 +405,9 @@ def main():
             print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
 {Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
 
+    print()
+    for d in results:
+        print("Cluster {number}: {items}".format(**d))
 
 
 if __name__ == '__main__':
