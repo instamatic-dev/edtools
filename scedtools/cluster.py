@@ -174,10 +174,8 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
         f.close()
         filelist.close()
 
-        d = {}
-
         print(f"Running pointless on cluster {i}\n")
-        d.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
+        item.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
 
         if platform == "win32":
             sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
@@ -196,10 +194,9 @@ FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
         else:
             sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
 
-        d.update(parse_xscale_lp(drc / "XSCALE.LP"))
-        d["number"] = i
-        d["n_clust"] = item["n_clust"]
-        results.append(d)
+        item.update(parse_xscale_lp(drc / "XSCALE.LP"))
+        item["number"] = i
+        results.append(item)
 
         shelx_ins = Path("shelx.ins")
         if shelx_ins.exists():
@@ -220,7 +217,7 @@ def get_clusters(z, distance=0.5, fns=[], method="average"):
         if len(items) == 1:
             continue
 
-        cluster_dict[key] = {"n_clust": len(items), "clust": items, 
+        cluster_dict[key] = {"n_clust": len(items), "clust": [item+1 for item in items],  # use 1-based indexing for output
                              "files": [fns[i] for i in items], "distance_cutoff":distance,
                              "method": method}
     
@@ -384,13 +381,14 @@ def main():
     
     clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method)
     results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin))
-    
+
     print("Clustering results")
     print("")
-    print(f"Cutoff distance: {distance}")
+    print(f"Cutoff distance: {distance:.3f}")
+    print(f"Equivalent CC(I): {(1-distance**2)**0.5:.3f}")
     print(f"Method: {method}")
     print("")
-    print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp    R_meas   d_min   i/sigma  | Lauegr.  prob. conf.  idx")
+    print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp    R_meas    d_min  i/sigma  | Lauegr.  prob. conf.  idx")
     for d in results:
         p1 = "*" if d["CC(1/2)"] > 90 else " "
         p2 = "*" if d["Completeness"] > 80 else " "
@@ -407,7 +405,7 @@ def main():
 
     print()
     for d in results:
-        print("Cluster {number}: {items}".format(**d))
+        print("Cluster {number}: {clust}".format(**d))
 
 
 if __name__ == '__main__':
