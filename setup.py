@@ -15,6 +15,10 @@ setup(
 
     install_requires=["numpy", "matplotlib", "scipy", "pandas"],
 
+    extras_require = {
+        'uncertainties':  ["uncertainties"]
+    },
+
     package_data={
         "": ["setup.py"],
     },

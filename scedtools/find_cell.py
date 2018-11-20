@@ -355,6 +355,21 @@ def main():
         for e in esds:
             print(f"{e:8.3f}", end="")
         print()
+
+        try:
+            import uncertainties as u
+        except ImportError:
+            pass
+        else:
+            print()
+            names = (("a"," Å"), ("b"," Å"), ("c"," Å"),
+                     ("α", "°"), ("β", "°"), ("γ", "°"))
+            for i, (c, e) in enumerate(zip(constants, esds)):
+                name, unit = names[i]
+                val = u.ufloat(c, e)
+                end = ", " if i < 5 else "\n"
+                print(f"{name}={val:.2uS}{unit}", end=end)
+
         print()
         print("UNIT_CELL_CONSTANTS= " + " ".join(f"{val:.3f}" for val in constants))
 
