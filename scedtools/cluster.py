@@ -305,6 +305,12 @@ def distance_from_dendrogram(z):
     labels = range(1, int(max(z[:,3]))+1)
 
     tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue", labels=labels)
+
+    # use 1-based indexing for display by incrementing label
+    _, labels = plt.xticks()
+    for l in labels:
+        l.set_text(str(int(l.get_text())+1))
+
     ax.set_xlabel("Index")
     ax.set_ylabel("Distance $(1-CC^2)^{1/2}$")
     ax.set_title(f"Dendrogram ($t={distance:.2f}$)")
@@ -395,11 +401,11 @@ def main():
         p3 = "*" if d["R_meas"] < 0.30 else " "
         p0 = "".join(sorted(p1+p2+p3, reverse=True))
 
-        if POINTLESS:
+        try:
             print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
 {Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}  | \
 {laue_group:>7s} {probability:5.2f} {confidence:6.2f}  {reindex_operator}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
-        else:
+        except KeyError:
             print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
 {Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
 

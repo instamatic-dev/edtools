@@ -83,7 +83,7 @@ def main():
     composition = options.composition
 
     atoms = comp2dict(composition)
-    wavelength = 0.02508
+    wavelength = options.wavelength
     
     a, b, c, al, be, ga = cell
 

@@ -2,7 +2,7 @@
 - - - sfac_mapping
     - [a1, b1, a2, b2, a3, b3, a4, b4, c]
   - [source_sfac_xray, 'Int. Tab. C, 6.1.1.4']
-  - [source_sfac_electron, Doyle & Turner]
+  - [source_sfac_electron, 'Int. Tab. C, 4.3.2.2']
   - [source_sfac_neutron, 'Int. Tab. C, 4.4.4.1']
   - [source_vdw_radius, 'A. Bondi, J. Phys. Chem., 68, 441-452, 1964; R. S. Rowland
       & R. Taylor, J. Phys. Chem., 100, 7384 - 7391, 1996; else 2.0 if not available']

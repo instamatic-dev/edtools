@@ -180,7 +180,7 @@ def get_clusters(z, cells, distance=0.5):
             cell = cells[j]
             vol = volume(cell)
             vols.append(vol)
-            print(f"{j:5d} {cell}  Vol.: {vol:6.1f}")
+            print(f"{j+1:5d} {cell}  Vol.: {vol:6.1f}")
         print(" ---")
         print("Mean: {}  Vol.: {:6.1f}".format(np.mean(cells[cluster], axis=0), np.mean(vols)))
         print(" Min: {}  Vol.: {:6.1f}".format(np.min(cells[cluster], axis=0), np.min(vols)))
@@ -207,6 +207,12 @@ def distance_from_dendrogram(z, ylabel: str="", initial_distance: float=None) ->
     ax = fig.add_subplot(111)
     
     tree = dendrogram(z, color_threshold=distance, ax=ax)
+
+    # use 1-based indexing for display by incrementing label
+    _, labels = plt.xticks()
+    for l in labels:
+        l.set_text(str(int(l.get_text())+1))
+
     ax.set_xlabel("Index")
     ax.set_ylabel(f"Distance ({ylabel})")
     ax.set_title(f"Dendrogram (cutoff={distance:.2f})")
@@ -307,12 +313,17 @@ def main():
                         action="store", type=str, dest="metric",
                         choices="euclidean lcv volume".split(),
                         help="Metric for calculating the distance between items (see `scipy.cluster.hierarchy.linkage`)")
+    
+    #parser.add_argument("-w","--raw-cell",
+    #                    action="store_true", dest="raw_cell",
+    #                    help="Use the raw lattice (from IDXREF as opposed to the refined one from CORRECT) for unit cell finding and clustering")
 
     parser.set_defaults(binsize=0.5,
                         cluster=False,
                         distance=None,
                         method="average",
-                        metric="euclidean")
+                        metric="euclidean",
+                        raw=False)
     
     options = parser.parse_args()
 

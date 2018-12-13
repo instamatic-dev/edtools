@@ -45,7 +45,7 @@ class xds_parser(object):
             elif line.startswith("     a        b          ISa"):
                 line = next(f)
                 inp = line.split()
-                ISa = float(inp[2])
+                ISa = float(inp[-1])
             elif line.startswith("   WILSON LINE (using all data)"):
                 inp = line.split()
                 Boverall = float(inp[-3])
@@ -57,10 +57,7 @@ class xds_parser(object):
             if in_block:
                 if line:
                     block.append(line.strip("\n"))
-    
-        vol = volume(cell)
-        raw_vol = volume(raw_cell)
-    
+      
         d["ISa"] = ISa
         d["Boverall"] = Boverall
     
@@ -96,12 +93,15 @@ class xds_parser(object):
     
         d["outer"] = dmin
         d["outer_shell"] = shell
-        d["res_range"] = resolution_range
-        d["volume"] = vol
-        d["cell"] = cell
-        d["raw_cell"] = raw_cell
-        d["raw_volume"] = raw_vol
-        d["spgr"] = spgr
+        try:
+            d["res_range"] = resolution_range
+            d["volume"] = volume(cell)
+            d["cell"] = cell
+            d["raw_cell"] = raw_cell
+            d["raw_volume"] = volume(raw_cell)
+            d["spgr"] = spgr
+        except UnboundLocalError:
+            return
         d["fn"] = fn
     
         return d
@@ -333,7 +333,7 @@ def main():
         except UnboundLocalError:
             continue
         else:
-            if p.d:
+            if p and p.d:
                 xdsall.append(p)
     
     for i, p in enumerate(xdsall):
