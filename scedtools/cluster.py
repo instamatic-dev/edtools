@@ -178,7 +178,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
         item.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
 
         if platform == "win32":
-            sp.run("bash -c xscale 2>&1 >/dev/null", cwd=drc)
+            sp.run("bash -ic xscale 2>&1 >/dev/null", cwd=drc)
         else:
             sp.run("xscale 2>&1 >/dev/null", cwd=drc, shell=True)
     
@@ -190,7 +190,7 @@ OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
         
         if platform == "win32":
-                sp.run("bash -c xdsconv 2>&1 >/dev/null", cwd=drc)
+                sp.run("bash -ic xdsconv 2>&1 >/dev/null", cwd=drc)
         else:
             sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
 
