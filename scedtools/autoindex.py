@@ -71,7 +71,7 @@ def xds_index(path, i=0):
 
     if platform == "win32":
         try:
-            p = sp.Popen("bash -c xds 2>&1 >/dev/null", cwd=cwd)
+            p = sp.Popen("bash -ic xds 2>&1 >/dev/null", cwd=cwd)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
