@@ -1,13 +1,13 @@
 from setuptools import setup
 
 setup(
-    name="scedtools",
+    name="edtools",
     version="0.1.0",
     description="Collection of tools for automated processing and clustering of single-crystal electron diffraction data",
 
     author="Stef Smeets",
     author_email="stef.smeets@mmk.su.se",
-    url="https://github.com/stefsmeets/scedtools",
+    url="https://github.com/stefsmeets/edtools",
 
     classifiers=[
         'Programming Language :: Python :: 3.6',
@@ -25,14 +25,14 @@ setup(
 
     entry_points={
         'console_scripts': [
-            "scedtools.autoindex        = scedtools.autoindex:main",
-            "scedtools.cluster          = scedtools.cluster:main",
-            "scedtools.find_cell        = scedtools.find_cell:main",
-            "scedtools.extract_xds_info = scedtools.extract_xds_info:main",
-            "scedtools.run_pointless    = scedtools.run_pointless:main",
-            "scedtools.make_xscale      = scedtools.make_xscale:main",
-            "scedtools.make_shelx       = scedtools.make_shelx:main",
-            "scedtools.update_xds       = scedtools.update_xds:main",
+            "edtools.autoindex        = edtools.autoindex:main",
+            "edtools.cluster          = edtools.cluster:main",
+            "edtools.find_cell        = edtools.find_cell:main",
+            "edtools.extract_xds_info = edtools.extract_xds_info:main",
+            "edtools.run_pointless    = edtools.run_pointless:main",
+            "edtools.make_xscale      = edtools.make_xscale:main",
+            "edtools.make_shelx       = edtools.make_shelx:main",
+            "edtools.update_xds       = edtools.update_xds:main",
         ]
     }
 )

@@ -1,4 +1,4 @@
-# scedtools
+# edtools
 Collection of tools for automated processing and clustering of single-crystal electron diffraction data
 
 ## Pipeline tools
@@ -62,7 +62,7 @@ Creates a shelx input file. Requires `sginfo` to be available on the system path
 Usage:
 
 ```
-scedtools.make_shelx -c 10.0 20.0 30.0 90.0 90.0 90.0 -s Cmmm -m Si180 O360
+edtools.make_shelx -c 10.0 20.0 30.0 90.0 90.0 90.0 -s Cmmm -m Si180 O360
 ```
 
 ### run_pointless.py
@@ -82,7 +82,7 @@ Looks files matching `CORRECT.LP` in all subdirectories, and updates the cell pa
 Usage:
 
 ```
-scedtools.update_xds -c 10.0 20.0 30.0 90.0 90.0 90.0 -s Cmmm
+edtools.update_xds -c 10.0 20.0 30.0 90.0 90.0 90.0 -s Cmmm
 ```
 
 ## Requirements
