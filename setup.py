@@ -6,7 +6,7 @@ setup(
     description="Collection of tools for automated processing and clustering of single-crystal electron diffraction data",
 
     author="Stef Smeets",
-    author_email="stef.smeets@mmk.su.se",
+    author_email="s.smeets@tudelft.nl",
     url="https://github.com/stefsmeets/edtools",
 
     classifiers=[
