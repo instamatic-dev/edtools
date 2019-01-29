@@ -60,7 +60,7 @@ def clean_params(inp):
 def parse_xscale_lp(fn):
     f = open(fn, "r")
     
-    d = {}
+    d = {key: 0 for key in xscale_keys}
     
     prev = ""
     
@@ -91,6 +91,7 @@ eof""", file=f)
     d = {}
 
     if POINTLESS:
+        print(f"Running pointless on cluster {i}\n")
         if platform == "win32":
             sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
         else:
@@ -174,9 +175,9 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
         f.close()
         filelist.close()
 
-        print(f"Running pointless on cluster {i}\n")
         item.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
 
+        print(f"Running XSCALE on cluster {i}\n")
         if platform == "win32":
             sp.run("bash -ic xscale 2>&1 >/dev/null", cwd=drc)
         else:
@@ -205,22 +206,27 @@ FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
     return results
 
 
-def get_clusters(z, distance=0.5, fns=[], method="average"):
+def get_clusters(z, distance=0.5, fns=[], method="average", min_size=1):
     clusters = fcluster(z, distance, criterion='distance')
     
     grouped = defaultdict(list)
     for i, c in enumerate(clusters):
         grouped[c].append(i)
     
+    ignored = []
+
     cluster_dict = {}
     for key, items in grouped.items():
-        if len(items) == 1:
+        if len(items) <= min_size:
             continue
 
         cluster_dict[key] = {"n_clust": len(items), "clust": [item+1 for item in items],  # use 1-based indexing for output
                              "files": [fns[i] for i in items], "distance_cutoff":distance,
                              "method": method}
     
+    for key in ignored:
+        print(f"Ignored {len(ignored)} clusters smaller than {min_size} items")
+
     return cluster_dict
 
 
@@ -295,9 +301,10 @@ def get_condensed_distance_matrix(corrmat):
     return d
 
 
-def distance_from_dendrogram(z):
+def distance_from_dendrogram(z, distance=None):
     # corresponding with MATLAB behavior
-    distance = round(0.7*max(z[:,2]), 4)
+    if not distance:
+        distance = round(0.7*max(z[:,2]), 4)
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -349,43 +356,52 @@ def main():
         
     parser.add_argument("-d","--distance",
                         action="store", type=float, dest="distance",
-                        help="Cutoff distance to use, bypass dendrogram")
+                        help="Use this to set the cut-off distance to use. This will bypass the dendrogram. If '-g' is also given, this will put the bar at the given value.")
+
+    parser.add_argument("-s","--min_size",
+                        action="store", type=int, dest="min_size",
+                        help="Ignore clusters smaller than the given size (default=1).")
 
     parser.add_argument("-m","--method",
                         action="store", type=str, dest="method",
                         choices="single average complete median weighted centroid ward".split(),
-                        help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`)")
+                        help="Method for calculating the clustering distance (see `scipy.cluster.hierarchy.linkage`). The default (`average`) is usually a good choice.")
     
     parser.add_argument("-r","--resolution",
                         action="store", type=float, nargs=2, dest="resolution",
-                        help="Resolution range for XSCALE (dmax, dmin)")
+                        help="The script will run XSCALE on every cluster, and this option sets the resolution range for scaling _only_ (defaults: dmax=20.0, dmin=0.80). Note that it does not affect the merged data resolution (which is defined by XDSCONV).")
 
     parser.add_argument("-g","--dendrogram",
                         action="store_true", dest="show_dendrogram_only",
-                        help="Quit after showing dendrogram")
+                        help="Just show the dendrogram and then quit.")
 
     parser.set_defaults(distance=None,
                         method="average",
                         resolution=(20, 0.8),
-                        show_dendrogram_only=False)
+                        show_dendrogram_only=False,
+                        minsize=1)
     
     options = parser.parse_args()
     distance = options.distance
+    min_size = options.min_size
     method = options.method
     dmax, dmin = options.resolution
     show_dendrogram_only = options.show_dendrogram_only
+
+    sort_key = "Completeness"
 
     obj = parse_xscale_lp_initial(fn="XSCALE.LP")
     d = get_condensed_distance_matrix(obj.correlation_matrix)
   
     z = linkage(d, method=method)
 
-    if not distance:
-        distance = distance_from_dendrogram(z)
-        if show_dendrogram_only:
-            exit()
-    
-    clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method)
+    if show_dendrogram_only:
+        distance_from_dendrogram(z, distance=distance)
+        exit()
+    elif not distance:
+        distance = distance_from_dendrogram(z, distance=distance)
+
+    clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method, min_size=min_size)
     results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin))
 
     print("Clustering results")
@@ -395,7 +411,8 @@ def main():
     print(f"Method: {method}")
     print("")
     print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp    R_meas    d_min  i/sigma  | Lauegr.  prob. conf.  idx")
-    for d in results:
+    
+    for d in sorted(results, key=lambda x: x["Completeness"]):
         p1 = "*" if d["CC(1/2)"] > 90 else " "
         p2 = "*" if d["Completeness"] > 80 else " "
         p3 = "*" if d["R_meas"] < 0.30 else " "
@@ -409,6 +426,7 @@ def main():
             print("{number:3d}{p0} {n_clust:5d} {CC(1/2):8.1f}{p1} {N_obs:8d} {N_uniq:8d} {N_possible:8d} \
 {Completeness:8.1f}{p2} {N_comp:8d} {R_meas:8.3f}{p3} {d_min:8.2f} {i/sigma:8.2f}".format(p0=p0, p1=p1, p2=p2, p3=p3, **d))
 
+    print(f"(Sorted by '{sort_key}')")
     print()
     for d in results:
         print("Cluster {number}: {clust}".format(**d))
