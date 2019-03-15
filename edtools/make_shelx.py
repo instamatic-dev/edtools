@@ -4,7 +4,7 @@ import yaml
 
 exe = "sginfo"
 fin  = Path(__file__).parent / "atomlib.yaml"
-TABLE = yaml.load(open(fin, "r"))
+TABLE = yaml.load(open(fin, "r"), Loader=yaml.Loader)
 
 
 def comp2dict(composition):

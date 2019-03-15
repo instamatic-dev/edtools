@@ -339,7 +339,7 @@ def main():
     else:
         fn = "cells.yaml"
 
-    ds = yaml.load(open(fn, "r"))
+    ds = yaml.load(open(fn, "r"), Loader=yaml.Loader)
 
     cells = np.array([d["raw_unit_cell"] for d in ds])
     weights = np.array([d["weight"] for d in ds])

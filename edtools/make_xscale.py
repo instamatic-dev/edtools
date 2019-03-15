@@ -128,7 +128,7 @@ def main():
             fn = Path(arg)
             extension = fn.suffix.lower()
             if extension == ".yaml":
-                d = yaml.load(open(fn, "r"))
+                d = yaml.load(open(fn, "r"), Loader=yaml.Loader)
                 lst.extend(d)
             if extension == ".hkl":
                 lst.append(parse_xds_ascii(fn))
