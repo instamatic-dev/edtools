@@ -10,11 +10,14 @@ import sys
 
 platform = sys.platform
 
+if platform == "win32":
+    from .wsl import bash_exe
+
 
 def check_for_pointless():
     if platform == "win32":
         # -i to run bash in interactive mode, i.e. .bashrc is loaded
-        p = sp.run("bash -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
+        p = sp.run(f"{bash_exe} -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
     else:
         p = sp.run("which pointless", stdout=sp.PIPE, shell=True)  # check if pointless can be run
 
@@ -93,7 +96,7 @@ eof""", file=f)
     if POINTLESS:
         print(f"Running pointless on cluster {i}\n")
         if platform == "win32":
-            sp.run("bash -ic ./pointless.sh > pointless.log", cwd=drc)
+            sp.run(f"{bash_exe} -ic ./pointless.sh > pointless.log", cwd=drc)
         else:
             sp.run("bash ./pointless.sh > pointless.log", cwd=drc, shell=True)
 
@@ -179,7 +182,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
 
         print(f"Running XSCALE on cluster {i}\n")
         if platform == "win32":
-            sp.run("bash -ic xscale 2>&1 >/dev/null", cwd=drc)
+            sp.run(f"{bash_exe} -ic xscale 2>&1 >/dev/null", cwd=drc)
         else:
             sp.run("xscale 2>&1 >/dev/null", cwd=drc, shell=True)
     
@@ -191,7 +194,7 @@ OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
         
         if platform == "win32":
-                sp.run("bash -ic xdsconv 2>&1 >/dev/null", cwd=drc)
+            sp.run(f"{bash_exe} -ic xdsconv 2>&1 >/dev/null", cwd=drc)
         else:
             sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
 
