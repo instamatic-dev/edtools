@@ -188,9 +188,14 @@ def parse_xds_inp(fn):
             if "DETECTOR_DISTANCE=" in line:
                 distance = float(line.rsplit("DETECTOR_DISTANCE=")[1].split()[0])
 
+            if "ROTATION_AXIS=" in line:
+                inp = line.rsplit("ROTATION_AXIS=")[1].split()[0:3]
+                rotx, roty, rotz = [float(val) for val in inp]
+
+    omega_current = np.degrees(np.arctan2(roty, rotx))
     pixelsize = qx / (distance * wavelength)
 
-    return np.array((orgx, orgy)), osc_angle, pixelsize, wavelength
+    return np.array((orgx, orgy)), osc_angle, pixelsize, wavelength, omega_current
 
 
 def load_spot_xds(fn, beam_center: [float, float], osc_angle: float, pixelsize: float):
@@ -219,28 +224,61 @@ def load_spot_xds(fn, beam_center: [float, float], osc_angle: float, pixelsize: 
 
 
 def main():
-    usage = """Use this script to find the rotation axis
+    import argparse
+
+    description = """Use this script to find the rotation axis
 Reads XDS.INP for parameters and SPOT.XDS (COLSPOT) for spot positions
 
 Usage: python find_rotation_axis.py XDS.INP"""
 
-    xds_inp = sys.argv[1:2]
+    parser = argparse.ArgumentParser(description=description,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+        
+    parser.add_argument("args",
+                        type=str, nargs="?", metavar="FILE",
+                        help="Path to XDS.INP file (also reads SPOT.XDS in the same directory)")
+
+    parser.add_argument("-v","--view",
+                        action="store_true", dest="view",
+                        help="View phi/theta histogram with current rotation axis (omega)")
+
+    parser.add_argument("-f","--finetune",
+                        action="store_true", dest="finetune",
+                        help="Fine-tune rotation axis from the value in XDS.INP or given with -o)")
+
+    parser.add_argument("-o","--omega",
+                        action="store", type=float, dest="omega_input",
+                        help="Use the given value of omega to plot the histogram or as starting point for the optimization")
+
+    parser.set_defaults(args="XDS.INP",
+                        view=False,
+                        optimize=True,
+                        finetune=False,
+                        omega_input=None)
+    
+    options = parser.parse_args()
+
+    xds_inp = options.args
     if not xds_inp:
         xds_inp = Path("XDS.INP")
     else:
-        xds_inp = Path(xds_inp[0])
+        xds_inp = Path(xds_inp)
 
     if not xds_inp.exists():
         print(f"No such file: {xds_inp}\n")
-        print(usage)
+        print(description)
         sys.exit()
 
-    beam_center, osc_angle, pixelsize, wavelength = parse_xds_inp(xds_inp)
+    beam_center, osc_angle, pixelsize, wavelength, omega_current = parse_xds_inp(xds_inp)
+
+    if options.omega_input is not None:
+        omega_current = options.omega_input
 
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
     print(f"Oscillation angle (degrees): {osc_angle}")
     print(f"Pixelsize: {pixelsize:.4f} px/Angstrom")
     print(f"Wavelength: {wavelength:.5f} Angstrom")
+    print(f"Omega (current): {omega_current:.5f} degrees")
 
     spot_xds = xds_inp.with_name("SPOT.XDS")
 
@@ -252,37 +290,44 @@ Usage: python find_rotation_axis.py XDS.INP"""
 
     hist_bins = 1000, 500
     
-    global xvals
-    global vvals
-    xvals = []
-    vvals = []
-    
-    omega_start = omega_tmp = 0
-    omega_global = omega_local = omega_fine = 0
-    
-    omega_global = omega_tmp = optimize(arr, omega_tmp, beam_center, osc_angle, pixelsize, wavelength, plusminus=180, step=5, hist_bins=hist_bins)
-    
-    omega_local = omega_tmp = optimize(arr, omega_tmp, beam_center, osc_angle, pixelsize, wavelength, plusminus=5, step=1, hist_bins=hist_bins)
-    
-    omega_fine = omega_tmp = optimize(arr, omega_tmp, beam_center, osc_angle, pixelsize, wavelength, plusminus=1, step=0.1, hist_bins=hist_bins)
-    
-    omega_final = omega_tmp
-    
-    print("---")
-    print(f"Best omega (global search): {omega_global:.3f}")
-    print(f"Best omega (local search): {omega_local:.3f}")
-    print(f"Best omega (fine search): {omega_fine:.3f}")
+    if options.view:
+        omega_final = omega_current  
+    elif options.optimize:
+        global xvals
+        global vvals
+        xvals = []
+        vvals = []
+        
+        omega_global = omega_local = omega_fine = 0
+        
+        if options.finetune:
+            omega_start = omega_tmp = omega_global = omega_current
+        else:
+            omega_start = omega_tmp = 0
+            omega_global = omega_tmp = optimize(arr, omega_tmp, wavelength, plusminus=180, step=5, hist_bins=hist_bins)
+
+        omega_local = omega_tmp = optimize(arr, omega_tmp, wavelength, plusminus=5, step=1, hist_bins=hist_bins)
+        
+        omega_fine = omega_tmp = optimize(arr, omega_tmp, wavelength, plusminus=1, step=0.1, hist_bins=hist_bins)
+        
+        omega_final = omega_tmp
+        
+        print("---")
+        print(f"Best omega (global search): {omega_global:.3f}")
+        print(f"Best omega (local search): {omega_local:.3f}")
+        print(f"Best omega (fine search): {omega_fine:.3f}")
     
     xyz = make(arr, omega_final, wavelength)
     H, xedges, yedges = cylinder_histo(xyz)
     plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$")
 
-    # Plot rotation axis distribution curve
-    plt.scatter(xvals, vvals, marker="+", lw=1.0, color="red")
-    plt.xlabel("Rotation axis position ($^\circ$)")
-    plt.ylabel("Variance of the polar coordinate histogram")
-    plt.title(f"Rotation axis determination | Maximum @ {omega_final:.2f}$^\circ$")
-    plt.show()
+    if options.optimize and not options.view:
+        # Plot rotation axis distribution curve
+        plt.scatter(xvals, vvals, marker="+", lw=1.0, color="red")
+        plt.xlabel("Rotation axis position ($^\circ$)")
+        plt.ylabel("Variance of the polar coordinate histogram")
+        plt.title(f"Rotation axis determination | Maximum @ {omega_final:.2f}$^\circ$")
+        plt.show()
 
     omega_deg = omega_final
     omega_rad = np.radians(omega_final)
@@ -310,11 +355,17 @@ Usage: python find_rotation_axis.py XDS.INP"""
     print(" - PETS (.pts)")
     omega_pets = omega_deg
     if omega_pets < 0:
-        omega_pets += 360 
+        omega_pets += 360
+    elif omega_pets > 360:
+        omega_pets -= 360 
     print(f"    omega {omega_pets:.2f}")
     
     print(" - RED (.ed3d)")
     omega_red = omega_deg
+    if omega_red < 180:
+        omega_red += 360
+    elif omega_red > 180:
+        omega_red -= 360
     print(f"    ROTATIONAXIS    {omega_red:.4f}")
 
 
