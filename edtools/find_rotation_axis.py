@@ -89,7 +89,27 @@ def plot_histo(H, xedges, yedges, title="Histogram"):
     plt.show()
 
 
-def make(arr, omega, beam_center, osc_angle, pixelsize, wavelength):  
+def make(arr, omega: float, beam_center: [float, float], osc_angle: float, pixelsize: float, wavelength: float):  
+    """
+    Prepare xyz (reciprocal space coordinates) from `arr`, 
+    which is the list of reflections read from XDS (SPOT.XDS)
+
+    omega: rotation axis (degrees), which is defined by the angle between x 
+        (horizontal axis pointing right) and the rotation axis going in clockwise direction
+    beam_center: coordinates of the primary beam, read from XDS.INP
+    osc_angle: oscillation_angle (degrees) per frame, multiplied by the average frame number
+        that a reflection appears on (column 3 in arr)
+    pixelsize: defined in px/Angstrom
+    wavelength: in Angstrom
+
+    Note that:
+        1. omega is flipped
+        2. x<->y are flipped
+    This is to ensure to match the XDS convention with the one I'm used to
+    """
+
+    omega = -omega  # NOTE 1
+
     osc_angle_rad = np.radians(osc_angle)
     omega_rad = np.radians(omega)
     r = make_2d_rotmat(omega_rad)
@@ -100,17 +120,27 @@ def make(arr, omega, beam_center, osc_angle, pixelsize, wavelength):
     reflections *= pixelsize
     refs_ = np.dot(reflections, r)
     
-    x, y = refs_.T
-    
+    y, x = refs_.T  # NOTE 2
+
     R = 1/wavelength
     C = R - np.sqrt(R**2 - x**2 - y**2).reshape(-1,1)
-    xyz = np.c_[y * np.cos(angle), x, -y*np.sin(angle)] + C * np.c_[-np.sin(angle), np.zeros_like(angle), -np.cos(angle)]
+    xyz = np.c_[x * np.cos(angle), y, -x*np.sin(angle)] + C * np.c_[-np.sin(angle), np.zeros_like(angle), -np.cos(angle)]
     
     return xyz, angle
 
 
-def optimize(arr, val, beam_center, osc_angle, pixelsize, wavelength, plusminus=180, step=10, hist_bins=(1000, 500), plot=False):
-    r = np.arange(val-plusminus, val+plusminus, step)
+def optimize(arr, omega_start: float, beam_center: [float, float], osc_angle: float, pixelsize: float, wavelength: float, 
+             plusminus: int=180, step: int=10, hist_bins: (int, int)=(1000, 500), plot: bool=False) -> float:
+    """
+    Optimize the value of omega around the given point.
+
+    omega_start: defines the starting angle
+    step, plusminus: together with omega_start define the range of values to loop over
+    hist_bins: size of the 2d histogram to produce the final phi/theta plot
+    plot: toggle to plot the histogram after each step
+    """
+
+    r = np.arange(omega_start-plusminus, omega_start+plusminus, step)
     
     best_score = 0
     best_omega = 0
@@ -142,6 +172,10 @@ def optimize(arr, val, beam_center, osc_angle, pixelsize, wavelength, plusminus=
 
 
 def parse_xds_inp(fn):
+    """
+    Parse the XDS.INP file to find the required numbers for the optimization
+    Looks for wavelength, pixelsize, beam_center, oscillation range
+    """
     with open(fn, "r") as f:
         for line in f:
             line = line.split("!", 1)[0]
@@ -232,9 +266,6 @@ Usage: python find_rotation_axis.py XDS.INP"""
     plt.ylabel("Variance of the polar coordinate histogram")
     plt.title(f"Rotation axis determination | Maximum @ {omega_final:.2f}$^\circ$")
     plt.show()
-
-    # omega must be flipped to match convention (in XDS, x and y pixel coordinates are flipped)
-    omega_final = -omega_final
 
     omega_deg = omega_final
     omega_rad = np.radians(omega_final)

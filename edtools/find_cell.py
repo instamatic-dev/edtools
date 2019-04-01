@@ -313,6 +313,10 @@ def main():
                         action="store", type=str, dest="metric",
                         choices="euclidean lcv volume".split(),
                         help="Metric for calculating the distance between items (see `scipy.cluster.hierarchy.linkage`)")
+
+    parser.add_argument("-l", "--use_bravais_lattice",
+                        action="store_false", dest="use_raw_cell",
+                        help="Use the bravais lattice (symmetry applied)")
     
     #parser.add_argument("-w","--raw-cell",
     #                    action="store_true", dest="raw_cell",
@@ -323,6 +327,7 @@ def main():
                         distance=None,
                         method="average",
                         metric="euclidean",
+                        use_raw_cell=True,
                         raw=False)
     
     options = parser.parse_args()
@@ -332,6 +337,7 @@ def main():
     cluster = options.cluster
     method = options.method
     metric = options.metric
+    use_raw_cell = options.use_raw_cell
     args = options.args
 
     if args:
@@ -341,7 +347,9 @@ def main():
 
     ds = yaml.load(open(fn, "r"), Loader=yaml.Loader)
 
-    cells = np.array([d["raw_unit_cell"] for d in ds])
+    key = "raw_unit_cell" if use_raw_cell else "unit_cell"
+
+    cells = np.array([d[key] for d in ds])
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:

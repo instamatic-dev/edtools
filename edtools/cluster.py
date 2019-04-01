@@ -382,7 +382,7 @@ def main():
                         method="average",
                         resolution=(20, 0.8),
                         show_dendrogram_only=False,
-                        minsize=1)
+                        min_size=1)
     
     options = parser.parse_args()
     distance = options.distance
