@@ -89,18 +89,13 @@ def plot_histo(H, xedges, yedges, title="Histogram"):
     plt.show()
 
 
-def make(arr, omega: float, beam_center: [float, float], osc_angle: float, pixelsize: float, wavelength: float):  
+def make(arr, omega: float, wavelength: float):  
     """
-    Prepare xyz (reciprocal space coordinates) from `arr`, 
+    Prepare xyz (reciprocal space coordinates) from reflection positions/angle (`arr`), 
     which is the list of reflections read from XDS (SPOT.XDS)
 
     omega: rotation axis (degrees), which is defined by the angle between x 
         (horizontal axis pointing right) and the rotation axis going in clockwise direction
-    beam_center: coordinates of the primary beam, read from XDS.INP
-    osc_angle: oscillation_angle (degrees) per frame, multiplied by the average frame number
-        that a reflection appears on (column 3 in arr)
-    pixelsize: defined in px/Angstrom
-    wavelength: in Angstrom
 
     Note that:
         1. omega is flipped
@@ -108,16 +103,14 @@ def make(arr, omega: float, beam_center: [float, float], osc_angle: float, pixel
     This is to ensure to match the XDS convention with the one I'm used to
     """
 
+    reflections = arr[:,0:2]
+    angle = arr[:,2]
+
     omega = -omega  # NOTE 1
 
-    osc_angle_rad = np.radians(osc_angle)
     omega_rad = np.radians(omega)
     r = make_2d_rotmat(omega_rad)
     
-    reflections = arr[:,0:2] - beam_center
-    angle = arr[:,2] * osc_angle_rad
-    
-    reflections *= pixelsize
     refs_ = np.dot(reflections, r)
     
     y, x = refs_.T  # NOTE 2
@@ -126,10 +119,10 @@ def make(arr, omega: float, beam_center: [float, float], osc_angle: float, pixel
     C = R - np.sqrt(R**2 - x**2 - y**2).reshape(-1,1)
     xyz = np.c_[x * np.cos(angle), y, -x*np.sin(angle)] + C * np.c_[-np.sin(angle), np.zeros_like(angle), -np.cos(angle)]
     
-    return xyz, angle
+    return xyz
 
 
-def optimize(arr, omega_start: float, beam_center: [float, float], osc_angle: float, pixelsize: float, wavelength: float, 
+def optimize(arr, omega_start: float, wavelength=float,
              plusminus: int=180, step: int=10, hist_bins: (int, int)=(1000, 500), plot: bool=False) -> float:
     """
     Optimize the value of omega around the given point.
@@ -146,7 +139,7 @@ def optimize(arr, omega_start: float, beam_center: [float, float], osc_angle: fl
     best_omega = 0
     
     for omega in r:
-        xyz, c = make(arr, omega, beam_center, osc_angle, pixelsize, wavelength)
+        xyz = make(arr, omega, wavelength)
         
         nvectors = sum(range(len(xyz)))
         
@@ -200,6 +193,31 @@ def parse_xds_inp(fn):
     return np.array((orgx, orgy)), osc_angle, pixelsize, wavelength
 
 
+def load_spot_xds(fn, beam_center: [float, float], osc_angle: float, pixelsize: float):
+    """
+    Load the given SPOT.XDS file (`fn`) and return an array with the reciprocal
+        x, y, and angle for the centroid of each reflection
+
+    beam_center: coordinates of the primary beam, read from XDS.INP
+    osc_angle: oscillation_angle (degrees) per frame, will be multiplied by the average frame number
+        that a reflection appears on (column 3 in `arr`)
+    pixelsize: defined in px/Angstrom
+
+    http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#SPOT.XDS
+    """
+    arr = np.loadtxt(fn)
+    print(arr.shape)
+
+    osc_angle_rad = np.radians(osc_angle)
+
+    reflections = arr[:,0:2] - beam_center
+    angle = arr[:,2] * osc_angle_rad
+    
+    reflections *= pixelsize
+
+    return np.c_[reflections, angle]
+
+
 def main():
     usage = """Use this script to find the rotation axis
 Reads XDS.INP for parameters and SPOT.XDS (COLSPOT) for spot positions
@@ -230,8 +248,7 @@ Usage: python find_rotation_axis.py XDS.INP"""
         print(f"Cannot find file: {spot_xds}")
         sys.exit()
 
-    arr = np.loadtxt(spot_xds)
-    print(arr.shape)
+    arr = load_spot_xds(spot_xds, beam_center, osc_angle, pixelsize)
 
     hist_bins = 1000, 500
     
@@ -256,7 +273,7 @@ Usage: python find_rotation_axis.py XDS.INP"""
     print(f"Best omega (local search): {omega_local:.3f}")
     print(f"Best omega (fine search): {omega_fine:.3f}")
     
-    xyz, c = make(arr, omega_final, beam_center, osc_angle, pixelsize, wavelength)
+    xyz = make(arr, omega_final, wavelength)
     H, xedges, yedges = cylinder_histo(xyz)
     plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$")
 
