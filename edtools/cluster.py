@@ -131,7 +131,7 @@ eof""", file=f)
         return {}
 
 
-def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
+def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8), ioversigma=2):
     results = []
     
     dmax, dmin = resolution
@@ -155,7 +155,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8)):
         print(f"! Cluster distance cutoff: {item['distance_cutoff']}", file=f)
         print(f"! Cluster method: {item['method']}", file=f)
         print(file=f)
-        print("MINIMUM_I/SIGMA= 2", file=f)
+        print(f"MINIMUM_I/SIGMA= {ioversigma}", file=f)
         print("SAVE_CORRECTION_IMAGES= FALSE", file=f)  # prevent local directory being littered with .cbf files
         print(f"! {spgr}", file=f)
         print(f"! {cell}", file=f)
@@ -374,6 +374,10 @@ def main():
                         action="store", type=float, nargs=2, dest="resolution",
                         help="The script will run XSCALE on every cluster, and this option sets the resolution range for scaling _only_ (defaults: dmax=20.0, dmin=0.80). Note that it does not affect the merged data resolution (which is defined by XDSCONV).")
 
+    parser.add_argument("-i","--ioversigma",
+                        action="store", type=float, dest="ioversigma",
+                        help="Run XSCALE with the given i/sigma. As with the resolution above, this selects the reflections for scaling _only_ (default: 2).")
+
     parser.add_argument("-g","--dendrogram",
                         action="store_true", dest="show_dendrogram_only",
                         help="Just show the dendrogram and then quit.")
@@ -381,21 +385,23 @@ def main():
     parser.set_defaults(distance=None,
                         method="average",
                         resolution=(20, 0.8),
+                        ioversigma=2,
                         show_dendrogram_only=False,
                         min_size=1)
-    
+
     options = parser.parse_args()
     distance = options.distance
     min_size = options.min_size
     method = options.method
     dmax, dmin = options.resolution
+    ioversigma = options.ioversigma
     show_dendrogram_only = options.show_dendrogram_only
 
     sort_key = "Completeness"
 
     obj = parse_xscale_lp_initial(fn="XSCALE.LP")
     d = get_condensed_distance_matrix(obj.correlation_matrix)
-  
+
     z = linkage(d, method=method)
 
     if show_dendrogram_only:
@@ -405,7 +411,7 @@ def main():
         distance = distance_from_dendrogram(z, distance=distance)
 
     clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method, min_size=min_size)
-    results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin))
+    results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin), ioversigma=ioversigma)
 
     print("Clustering results")
     print("")
