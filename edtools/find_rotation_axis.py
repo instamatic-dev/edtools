@@ -362,7 +362,7 @@ Usage: python find_rotation_axis.py XDS.INP"""
     
     print(" - RED (.ed3d)")
     omega_red = omega_deg
-    if omega_red < 180:
+    if omega_red < -180:
         omega_red += 360
     elif omega_red > 180:
         omega_red -= 360
