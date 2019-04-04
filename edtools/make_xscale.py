@@ -1,12 +1,13 @@
 from pathlib import Path, PurePosixPath
 from sys import argv
-import os, time
+import os, sys, time
 from math import radians, cos
 import numpy as np
 import yaml
 from collections import Counter
 from .utils import space_group_lib
 
+platform = sys.platform
 
 spglib = space_group_lib()
 
@@ -66,10 +67,14 @@ def write_xscale_inp(fns, unit_cell, space_group):
         for i, fn in enumerate(fns):
             fn = fn.absolute()
             try:
-                fn = fn.relative_to(cwd)
+                fn = fn.relative_to(cwd).as_posix()
             except ValueError:
-                pass
-            print(f"    INPUT_FILE= {fn.as_posix()}", file=f)
+                if platform == "win32":
+                    drive = fn.drive
+                    drive_letter = drive.lower()[0]
+                    fn = fn.as_posix().replace(f"{drive}", f"/mnt/{drive_letter}")
+
+            print(f"    INPUT_FILE= {fn}", file=f)
             print(f"    INCLUDE_RESOLUTION_RANGE= 20 0.8", file=f)
             print(file=f)
 

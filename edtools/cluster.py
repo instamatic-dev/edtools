@@ -164,6 +164,11 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8), ioversigma=2):
         print(file=f)
     
         for j, fn in enumerate(fns):
+            if (platform == "win32") and (str(fn).startswith("/mnt/")):
+                s = str(fn)
+                drive_letter = s[5]
+                drive = f"{drive_letter.upper()}:"
+                fn = s.replace(f"/mnt/{drive_letter}", drive)
             j += 1
             fn = Path(fn)
             dst = drc / f"{j}_{fn.name}"
