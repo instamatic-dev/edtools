@@ -10,7 +10,7 @@ def space_group_lib():
     symmetry space group for this lattice), `name` (space group name), 
     and `number` (space group number)."""
     fn = Path(__file__).parent / "spglib.yaml"
-    return yaml.load(open(fn, "r"))
+    return yaml.load(open(fn, "r"), Loader=yaml.Loader)
 
 
 def volume(cell):

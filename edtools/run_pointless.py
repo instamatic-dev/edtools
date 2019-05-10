@@ -33,7 +33,7 @@ def main():
             fn = Path(arg)
             extension = fn.suffix.lower()
             if extension == ".yaml":
-                cells = yaml.load(open(fn, "r"))
+                cells = yaml.load(open(fn, "r"), Loader=yaml.Loader)
                 lst.extend([Path(cell["directory"]) / "XDS_ASCII.HKL" for cell in cells])
             if extension == ".hkl":
                 lst.append(fn)

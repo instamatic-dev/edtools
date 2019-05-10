@@ -3,11 +3,10 @@ import threading
 import socket
 import sys, os
 from pathlib import Path
-from .utils import parse_args_for_fns
+from utils import parse_args_for_fns
 
 import subprocess as sp
-from .extract_xds_info import xds_parser
-import platform
+from extract_xds_info import xds_parser
 
 try:
     from instamatic import config
@@ -18,12 +17,11 @@ except ImportError:
     HOST, PORT = None, None
 
 DEVNULL = open(os.devnull, 'w')
-platform_sys = sys.platform
+platform = sys.platform
 
-"""Check the bit version of the system so that command bash does not get confused"""
-is32bit = (platform.architecture()[0] == '32bit')
-system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is32bit else 'System32')
-bash = os.path.join(system32, 'bash.exe')
+if platform == "win32":
+    from .wsl import bash_exe
+
 
 rlock = threading.RLock()
 
@@ -75,9 +73,9 @@ def xds_index(path, i=0):
 
     cwd = str(path)
 
-    if platform_sys == "win32":
+    if platform == "win32":
         try:
-            p = sp.Popen("%s -ic xds 2>&1 >/dev/null" % bash, cwd=cwd)
+            p = sp.Popen(f"{bash_exe} -ic xds 2>&1 >/dev/null", cwd=cwd)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
