@@ -14,7 +14,7 @@ def rotation_axis_to_xyz(rotation_axis, invert=False, setting='xds'):
         rotation_axis += np.pi
 
     rot_x = np.cos(rotation_axis)
-    rot_y = np.cos(rotation_axis+np.pi/2)
+    rot_y = np.sin(rotation_axis)
     rot_z = 0
 
     if setting == 'dials':
@@ -98,22 +98,19 @@ def make(arr, omega: float, wavelength: float):
         (horizontal axis pointing right) and the rotation axis going in clockwise direction
 
     Note that:
-        1. omega is flipped
-        2. x<->y are flipped
+        1. x<->y are flipped
     This is to ensure to match the XDS convention with the one I'm used to
     """
 
     reflections = arr[:,0:2]
     angle = arr[:,2]
 
-    omega = -omega  # NOTE 1
-
     omega_rad = np.radians(omega)
     r = make_2d_rotmat(omega_rad)
     
     refs_ = np.dot(reflections, r)
     
-    y, x = refs_.T  # NOTE 2
+    y, x = refs_.T  # NOTE 1
 
     R = 1/wavelength
     C = R - np.sqrt(R**2 - x**2 - y**2).reshape(-1,1)
@@ -171,26 +168,37 @@ def parse_xds_inp(fn):
     """
     with open(fn, "r") as f:
         for line in f:
-            line = line.split("!", 1)[0]
+            line = line.split("!", 1)[0].strip()
+            match = False
             
             if "X-RAY_WAVELENGTH" in line:
+                match = True
                 wavelength = float(line.rsplit("X-RAY_WAVELENGTH=")[1].split()[0])
             if "ORGX=" in line:
+                match = True
                 orgx = float(line.rsplit("ORGX=")[1].split()[0])
             if "ORGY=" in line:
+                match = True
                 orgy = float(line.rsplit("ORGY=")[1].split()[0])
             if "OSCILLATION_RANGE=" in line:
+                match = True
                 osc_angle = float(line.rsplit("OSCILLATION_RANGE=")[1].split()[0])
             if "QX=" in line:
+                match = True
                 qx = float(line.rsplit("QX=")[1].split()[0])
             if "QY=" in line:
+                match = True
                 qy = float(line.rsplit("QY=")[1].split()[0])
             if "DETECTOR_DISTANCE=" in line:
+                match = True
                 distance = float(line.rsplit("DETECTOR_DISTANCE=")[1].split()[0])
-
             if "ROTATION_AXIS=" in line:
+                match = True
                 inp = line.rsplit("ROTATION_AXIS=")[1].split()[0:3]
                 rotx, roty, rotz = [float(val) for val in inp]
+            
+            if match:
+                print(line)
 
     omega_current = np.degrees(np.arctan2(roty, rotx))
     pixelsize = qx / (distance * wavelength)
@@ -274,11 +282,13 @@ Usage: python find_rotation_axis.py XDS.INP"""
     if options.omega_input is not None:
         omega_current = options.omega_input
 
+    print()
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
     print(f"Oscillation angle (degrees): {osc_angle}")
     print(f"Pixelsize: {pixelsize:.4f} px/Angstrom")
     print(f"Wavelength: {wavelength:.5f} Angstrom")
     print(f"Omega (current): {omega_current:.5f} degrees")
+    print(f"                 {np.radians(omega_current):.5f} radians")
 
     spot_xds = xds_inp.with_name("SPOT.XDS")
 
@@ -338,17 +348,17 @@ Usage: python find_rotation_axis.py XDS.INP"""
     omega_instamatic = omega_rad
     print(f"    rotation_axis_vs_stage_xy: {omega_instamatic:.3f}")
     
-    print(" - XDS (positive rotation)")
+    print(" - XDS")
     rot_x_xds, rot_y_xds, rot_z_xds = rotation_axis_to_xyz(omega_rad, setting="xds")
     print(f"    ROTATION_AXIS= {rot_x_xds:.4f} {rot_y_xds:.4f} {rot_z_xds:.4f}")
-    print(" - XDS (negative rotation)")
+    print(" - XDS (opposite rotation)")
     rot_x_xds, rot_y_xds, rot_z_xds = rotation_axis_to_xyz(omega_rad, setting="xds", invert=True)
     print(f"    ROTATION_AXIS= {rot_x_xds:.4f} {rot_y_xds:.4f} {rot_z_xds:.4f}")
     
-    print(" - DIALS (positive rotation)")
+    print(" - DIALS")
     rot_x_dials, rot_y_dials, rot_z_dials = rotation_axis_to_xyz(omega_rad, setting="dials")
     print(f"    geometry.goniometer.axes={rot_x_dials:.4f},{rot_y_dials:.4f},{rot_z_dials:.4f}")
-    print(" - DIALS (negative rotation)")
+    print(" - DIALS (opposite rotation)")
     rot_x_dials, rot_y_dials, rot_z_dials = rotation_axis_to_xyz(omega_rad, setting="dials", invert=True)
     print(f"    geometry.goniometer.axes={rot_x_dials:.4f},{rot_y_dials:.4f},{rot_z_dials:.4f}")
     
