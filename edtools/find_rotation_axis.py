@@ -258,10 +258,15 @@ Usage: python find_rotation_axis.py XDS.INP"""
                         action="store", type=float, dest="omega_input",
                         help="Use the given value of omega to plot the histogram or as starting point for the optimization")
 
+    parser.add_argument("-p","--opposite",
+                        action="store_true", dest="opposite",
+                        help="Try the opposite value as the one defined in XDS.INP (or as given by `--omega`")
+
     parser.set_defaults(args="XDS.INP",
                         view=False,
                         optimize=True,
                         finetune=False,
+                        opposite=False,
                         omega_input=None)
     
     options = parser.parse_args()
@@ -281,6 +286,12 @@ Usage: python find_rotation_axis.py XDS.INP"""
 
     if options.omega_input is not None:
         omega_current = options.omega_input
+
+    if options.opposite:
+        omega_current += 180
+
+    if omega_current > 180:
+        omega_current -= 360
 
     print()
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
@@ -329,7 +340,11 @@ Usage: python find_rotation_axis.py XDS.INP"""
     
     xyz = make(arr, omega_final, wavelength)
     H, xedges, yedges = cylinder_histo(xyz)
-    plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$")
+    
+    var = np.var(H)
+    print(f"Variance: {var:.2f}")
+
+    plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$ | var={var:.2f}")
 
     if options.optimize and not options.view:
         # Plot rotation axis distribution curve
