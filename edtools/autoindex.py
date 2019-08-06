@@ -20,7 +20,7 @@ DEVNULL = open(os.devnull, 'w')
 platform = sys.platform
 
 if platform == "win32":
-    from .wsl import bash_exe
+    from wsl import bash_exe
 
 
 rlock = threading.RLock()
