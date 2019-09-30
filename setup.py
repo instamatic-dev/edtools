@@ -1,4 +1,6 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
+packages = find_packages(exclude=["scripts"])
 
 setup(
     name="edtools",
@@ -18,6 +20,8 @@ setup(
     extras_require = {
         'uncertainties':  ["uncertainties"]
     },
+
+    packages=packages,
 
     package_data={
         "": ["setup.py"],
