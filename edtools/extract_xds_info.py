@@ -42,6 +42,10 @@ class xds_parser(object):
                 raw_cell = list(map(float, line.strip("\n").split()[1:7]))
             elif line.startswith(" SPACE GROUP NUMBER"):
                 spgr = int(line.strip("\n").split()[-1])
+            elif line.startswith(" DATA_RANGE="):
+                datarange = list(map(float, line.strip("\n").split()[1:]))
+            elif line.startswith(" OSCILLATION_RANGE"):
+                osc_angle = float(line.strip("\n").split()[-1])
             elif line.startswith("     a        b          ISa"):
                 line = next(f)
                 inp = line.split()
@@ -103,6 +107,10 @@ class xds_parser(object):
         except UnboundLocalError:
             return
         d["fn"] = fn
+
+        nframes = datarange[1] - datarange[0]
+        rotationrange = nframes * osc_angle
+        d["rot_range"] = rotationrange
     
         return d
 
@@ -166,6 +174,8 @@ class xds_parser(object):
         d = dict(zip("a b c al be ga".split(), self.unit_cell))
         d["volume"] = self.volume
         d["spgr"] = self.space_group
+        d["rotation_angle"] = self.d["rot_range"]
+        d["file"] = self.d["fn"]
         return d
 
 
@@ -180,8 +190,12 @@ def cells_to_excel(ps, fn="cells.xlsx"):
 
     import pandas as pd
     df = pd.DataFrame(d).T
-    df = df["spgr a b c al be ga volume".split()]
+    df = df["spgr a b c al be ga volume rotation_angle file".split()]
     if not os.path.exists(fn):
+        df.to_excel(fn)
+    else:
+        """To address that cells.xlsx does not overwrite"""
+        os.remove(fn)
         df.to_excel(fn)
 
     print(f"Wrote {i} cells to file {fn}")
