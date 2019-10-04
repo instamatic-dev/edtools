@@ -124,7 +124,7 @@ def main():
 
     fns = parse_args_for_fns(args, name="XDS.INP", match=match)
 
-    max_connections = 4
+    max_connections = 1
 
     with ThreadPoolExecutor(max_workers=max_connections) as executor:
         futures = []
