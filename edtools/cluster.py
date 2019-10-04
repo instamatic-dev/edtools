@@ -11,8 +11,7 @@ import sys
 platform = sys.platform
 
 if platform == "win32":
-    from wsl import bash_exe
-
+    from .wsl import bash_exe
 
 def check_for_pointless():
     if platform == "win32":

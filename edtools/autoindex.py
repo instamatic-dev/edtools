@@ -6,7 +6,8 @@ from pathlib import Path
 from utils import parse_args_for_fns
 
 import subprocess as sp
-from extract_xds_info import xds_parser
+
+from .extract_xds_info import xds_parser
 
 try:
     from instamatic import config
@@ -20,7 +21,7 @@ DEVNULL = open(os.devnull, 'w')
 platform = sys.platform
 
 if platform == "win32":
-    from wsl import bash_exe
+    from .wsl import bash_exe
 
 
 rlock = threading.RLock()
