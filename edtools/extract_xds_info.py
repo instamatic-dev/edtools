@@ -175,6 +175,7 @@ class xds_parser(object):
         d["volume"] = self.volume
         d["spgr"] = self.space_group
         d["rotation_angle"] = self.d["rot_range"]
+        d["total_completeness"] = self.d["total"]["completeness"]
         d["file"] = self.d["fn"]
         return d
 
@@ -190,7 +191,7 @@ def cells_to_excel(ps, fn="cells.xlsx"):
 
     import pandas as pd
     df = pd.DataFrame(d).T
-    df = df["spgr a b c al be ga volume rotation_angle file".split()]
+    df = df["spgr a b c al be ga volume rotation_angle total_completeness file".split()]
     if not os.path.exists(fn):
         df.to_excel(fn)
     else:
