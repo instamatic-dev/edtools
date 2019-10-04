@@ -13,7 +13,6 @@ platform = sys.platform
 if platform == "win32":
     from .wsl import bash_exe
 
-
 def check_for_pointless():
     if platform == "win32":
         # -i to run bash in interactive mode, i.e. .bashrc is loaded
@@ -79,7 +78,7 @@ def parse_xscale_lp(fn):
     return d
 
 
-def run_pointless(filepat, verbose=True):
+def run_pointless(filepat, verbose=True, i=0):
     drc = filepat.parent
     with open(drc / "pointless.sh", "w") as f:
         print(f"""pointless {filepat.name} << eof

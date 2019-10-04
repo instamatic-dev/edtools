@@ -3,9 +3,10 @@ import threading
 import socket
 import sys, os
 from pathlib import Path
-from .utils import parse_args_for_fns
+from utils import parse_args_for_fns
 
 import subprocess as sp
+
 from .extract_xds_info import xds_parser
 
 try:
@@ -124,7 +125,7 @@ def main():
 
     fns = parse_args_for_fns(args, name="XDS.INP", match=match)
 
-    max_connections = 4
+    max_connections = 1
 
     with ThreadPoolExecutor(max_workers=max_connections) as executor:
         futures = []
