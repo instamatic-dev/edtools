@@ -280,6 +280,15 @@ def cluster_cell(cells: list, distance: float=None, method: str="average", metri
 
     return get_clusters(z, cells, distance=distance)
 
+def to_radian(cells):
+    """convert all angles in unit cell parameter list to radians
+    cells: the cell parameters that are parsed from cells.yaml as np array"""
+    angles = cells[:, 3:6]
+    angles_radian = np.radians(angles)
+    cells[:, 3:6] = angles_radian
+
+    return cells
+
 
 def main():
     import argparse
@@ -317,6 +326,10 @@ def main():
     parser.add_argument("-l", "--use_bravais_lattice",
                         action="store_false", dest="use_raw_cell",
                         help="Use the bravais lattice (symmetry applied)")
+
+    parser.add_argument("-r", "--use_radian_for_angles",
+                        action="store_true", dest="use_radian_for_clustering",
+                        help="Use radians for unit cell clustering (to downweight the difference in angles)")
     
     #parser.add_argument("-w","--raw-cell",
     #                    action="store_true", dest="raw_cell",
@@ -328,7 +341,8 @@ def main():
                         method="average",
                         metric="euclidean",
                         use_raw_cell=True,
-                        raw=False)
+                        raw=False,
+                        use_radian_for_clustering=False)
     
     options = parser.parse_args()
 
@@ -338,6 +352,7 @@ def main():
     method = options.method
     metric = options.metric
     use_raw_cell = options.use_raw_cell
+    use_radian = options.use_radian_for_clustering
     args = options.args
 
     if args:
@@ -353,7 +368,11 @@ def main():
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:
-        clusters = cluster_cell(cells, distance=distance, method=method, metric=metric)
+        if use_radian:
+            cells_radians = to_radian(cells)
+            clusters = cluster_cell(cells_radians, distance=distance, method=method, metric=metric)
+        else:
+            clusters = cluster_cell(cells, distance=distance, method=method, metric=metric)
         for i, idx in clusters.items():
             clustered_ds = [ds[i] for i in idx]
             fout = f"cells_cluster_{i}_{len(idx)}-items.yaml"
