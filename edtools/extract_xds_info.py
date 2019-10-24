@@ -142,7 +142,7 @@ class xds_parser(object):
         
         dmax, dmin = d["res_range"]
 
-        s += "{k: 3d} {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}{ISa: 8.2f}{Boverall: 8.2f}".format(
+        s += "{k: 4d} {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}{ISa: 8.2f}{Boverall: 8.2f}".format(
         k=k, dmax=dmax, dmin=dmin, **d["total"], **d)
 
         if filename:
@@ -153,7 +153,7 @@ class xds_parser(object):
         if outer_shell:
             outer = d["outer"]
             dmax_sh, dmin_sh = d["outer_shell"]
-            s +="  - {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}\n".format(
+            s +="   - {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}\n".format(
                 k=k, dmax=dmax_sh, dmin=dmin_sh, **d[outer])
 
         return s
