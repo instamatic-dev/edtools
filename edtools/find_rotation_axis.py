@@ -287,11 +287,16 @@ Usage: python find_rotation_axis.py XDS.INP"""
     if options.omega_input is not None:
         omega_current = options.omega_input
 
+    omega_opposite = omega_current + 180
+
     if options.opposite:
-        omega_current += 180
+        omega_current = omega_opposite
 
     if omega_current > 180:
         omega_current -= 360
+
+    if omega_opposite > 180:
+        omega_opposite -= 360
 
     print()
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
@@ -343,6 +348,16 @@ Usage: python find_rotation_axis.py XDS.INP"""
     
     var = np.var(H)
     print(f"Variance: {var:.2f}")
+    
+    # check opposite
+    xyz_opp = make(arr, omega_final+180, wavelength)
+    H_opp, xedges_opp, yedges_opp = cylinder_histo(xyz_opp)
+    
+    var_opp = np.var(H_opp)
+    print(f"Variance (opposite): {var_opp:.2f}")
+
+    if var < var_opp:
+        print(f"\nOpposite angle ({omega_opposite:.2f} deg.) has higher variance!\n")
 
     plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$ | var={var:.2f}")
 
