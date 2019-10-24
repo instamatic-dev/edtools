@@ -3,7 +3,19 @@ import shutil
 from .utils import parse_args_for_fns
 
 
-def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None, overload=None, lo_res=None, hi_res=None, cut_frames=None, wfac1=None, apd=None):
+def update_xds(fn, 
+               cell=None, 
+               spgr=None, 
+               comment=False, 
+               axis_error=None, 
+               angle_error=None, 
+               overload=None, 
+               lo_res=None, 
+               hi_res=None, 
+               cut_frames=None, 
+               wfac1=None, 
+               apd=None,
+               jobs=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -13,6 +25,12 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
     pre = "!" if comment else ""
 
     new_lines = []
+
+    if jobs:
+        jobs = [job.upper() for job in jobs]
+        jobs_line = "JOB= " + " ".join(jobs) + "\n\n"
+        new_lines.append(jobs_line)
+
     for line in lines:
         if cell and "UNIT_CELL_CONSTANTS" in line:
             cell_str = " ".join((f"{val:.3f}" for val in cell))
@@ -40,6 +58,8 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
             line = pre + line
         elif comment and "SPACE_GROUP_NUMBER" in line:
             line = pre + line
+        elif jobs and ("JOB=" in line):
+            continue
 
         new_lines.append(line)
 
@@ -99,9 +119,13 @@ def main():
                         action="store", type=str, dest="append",
                         help="Append any VALID XDS input parameters")
 
-    parser.add_argument("--match",
+    parser.add_argument("-m" "--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+
+    parser.add_argument("-j", "--jobs",
+                        action="store", type=str, nargs="+", 
+                        help="Specify which JOB should be performed by XDS")
 
     parser.set_defaults(cell=None,
                         spgr=None,
@@ -111,7 +135,9 @@ def main():
                         overload_value=None,
                         resolution=(None, None),
                         wfac1=None,
-                        apd=None)
+                        apd=None,
+                        jobs=(),
+                        )
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -125,12 +151,26 @@ def main():
     cut_frames = options.cut_frames
     wfac1 = options.wfac1
     apd = options.append
+    jobs = options.jobs
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
     for fn in fns:
         print("\033[K", fn, end='\r')  # "\033[K" clears line
-        update_xds(fn, cell=cell, spgr=spgr, comment=comment, axis_error=axis_error, angle_error=angle_error, overload=overload, lo_res=lo_res, hi_res=hi_res, cut_frames=cut_frames, wfac1=wfac1, apd=apd)
+        update_xds(fn, 
+                   cell=cell, 
+                   spgr=spgr, 
+                   comment=comment, 
+                   axis_error=axis_error, 
+                   angle_error=angle_error, 
+                   overload=overload, 
+                   lo_res=lo_res, 
+                   hi_res=hi_res, 
+                   cut_frames=cut_frames, 
+                   wfac1=wfac1, 
+                   apd=apd,
+                   jobs=jobs)
+
     print(f"\033[KUpdated {len(fns)} files")
 
 
