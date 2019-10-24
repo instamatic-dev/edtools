@@ -110,20 +110,37 @@ def main():
                         action="store_true", dest="use_server",
                         help="Use instamatic server for indexing")
 
-    parser.add_argument("--match",
+    parser.add_argument("-m", "--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
 
+    parser.add_argument("-u", "--unprocessed_only",
+                        action="store_true", dest="unprocessed_only",
+                        help="Run XDS only in unprocessed directories (i.e. no XYCORR.LP)")
+
+    parser.add_argument("-j", "--jobs",
+                        action="store", type=int, dest="n_jobs",
+                        help="Number of jobs to run in parallel")
+
     parser.set_defaults(use_server=False,
-                        match=None)
+                        match=None,
+                        unprocessed_only=False,
+                        n_jobs=1,
+                        )
     
     options = parser.parse_args()
 
     use_server = options.use_server
     match = options.match
+    unprocessed_only = options.unprocessed_only
+    n_jobs = options.n_jobs
     args = options.args
 
     fns = parse_args_for_fns(args, name="XDS.INP", match=match)
+
+    if unprocessed_only:
+        fns = [fn for fn in fns if not fn.with_name("XYCORR.LP").exists()]
+        print(f"Filtered directories which have already been processed, {len(fns)} left")
 
     max_connections = 1
 
