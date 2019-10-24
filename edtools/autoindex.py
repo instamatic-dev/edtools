@@ -3,7 +3,7 @@ import threading
 import socket
 import sys, os
 from pathlib import Path
-from utils import parse_args_for_fns
+from .utils import parse_args_for_fns
 
 import subprocess as sp
 
