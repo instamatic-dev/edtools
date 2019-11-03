@@ -3,7 +3,7 @@ import shutil
 from utils import parse_args_for_fns
 
 
-def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None, overload=None, lo_res=None, hi_res=None, cut_frames=None, wfac1=None, apd=None):
+def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None, overload=None, lo_res=None, hi_res=None, cut_frames=None, wfac1=None, apd=None, sp=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -31,6 +31,9 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
             line = f"INCLUDE_RESOLUTION_RANGE= {lo_res:.1f} {hi_res:.1f}\n"
         elif wfac1 and "WFAC1" in line:
             line = f"WFAC1= {wfac1:.1f}\n"
+        elif sp and "STRONG_PIXEL" in line:
+            sp_line = f"{pre}STRONG_PIXEL= {sp}\n"
+            line = sp_line
         elif cut_frames and any(s in line[0:16] for s in ["DATA_RANGE","SPOT_RANGE","BACKGROUND_RANGE"]):
             data_begin, data_end = line[20:].split()
             data_begin_cf = round(int(data_begin)*0.98)
@@ -39,6 +42,8 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
         elif comment and "UNIT_CELL_CONSTANTS" in line:
             line = pre + line
         elif comment and "SPACE_GROUP_NUMBER" in line:
+            line = pre + line
+        elif comment and "STRONG_PIXEL" in line:
             line = pre + line
 
         new_lines.append(line)
@@ -99,6 +104,10 @@ def main():
                         action="store", type=str, dest="append",
                         help="Append any VALID XDS input parameters")
 
+    parser.add_argument("-sp","--StrongPixel",
+                        action="store", type=float, dest="StrongPixel",
+                        help="Parameter used for strong pixel threshold")
+
     parser.add_argument("--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
@@ -110,8 +119,10 @@ def main():
                         match=None,
                         overload_value=None,
                         resolution=(None, None),
+                        cut_frames=None,
                         wfac1=None,
-                        apd=None)
+                        append=None,
+                        StrongPixel=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -124,13 +135,15 @@ def main():
     lo_res, hi_res = options.resolution
     cut_frames = options.cut_frames
     wfac1 = options.wfac1
-    apd = options.append
+    append = options.append
+    StrongPixel = options.StrongPixel
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
     for fn in fns:
         print("\033[K", fn, end='\r')  # "\033[K" clears line
-        update_xds(fn, cell=cell, spgr=spgr, comment=comment, axis_error=axis_error, angle_error=angle_error, overload=overload, lo_res=lo_res, hi_res=hi_res, cut_frames=cut_frames, wfac1=wfac1, apd=apd)
+        update_xds(fn, cell=cell, spgr=spgr, comment=comment, axis_error=axis_error, angle_error=angle_error, overload=overload, lo_res=lo_res, hi_res=hi_res, 
+            cut_frames=cut_frames, wfac1=wfac1, apd=append, sp=StrongPixel)
     print(f"\033[KUpdated {len(fns)} files")
 
 
