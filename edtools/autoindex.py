@@ -24,6 +24,8 @@ if platform == "win32":
     from .wsl import bash_exe
 
 
+XDSJOBS = ("XYCORR", "INIT", "COLSPOT", "IDXREF", "DEFPIX", "INTEGRATE", "CORRECT")
+
 rlock = threading.RLock()
 
 
@@ -59,27 +61,58 @@ def connect(payload: str) -> None:
             print(data)
 
 
-def parse_xds(path, sequence=0):
-    """Parse the XDS output file `CORRECT.LP` and print a summary"""
-    fn = Path(path) / "CORRECT.LP"
+def parse_xds(path: str, sequence: int=0) -> None:
+    """Parse XDS output (CORRECT.LP) and print summary about indexing progress
+    to the screen.
     
+    Parameters
+    ----------
+    path : str
+        Path in which XDS has been run
+    sequence : int
+        Sequence number, needed for output and house-keeping
+    """
+    drc = Path(path)
+    correct_lp = drc / "CORRECT.LP"
+
+    lookBack = 160
+
     # rlock prevents messages getting mangled with 
     # simultaneous print statements from different threads
     with rlock:
-        if not fn.exists():
-            msg = f"{path}: Automatic indexing failed..."
-        else:
+        if correct_lp.exists():
+        # if all files exist, try parsing CORRECT.LP
             try:
-                p = xds_parser(fn)
+                p = xds_parser(correct_lp)
             except UnboundLocalError:
-                msg = f"{path}: Automatic indexing completed but no cell reported..."
+                msg = f"{sequence:4d} | {drc}: Indexing completed but no cell reported..."
             else:
                 msg = "\n"
                 msg += p.cell_info(sequence=sequence)
                 msg += "\n"
                 msg += p.integration_info(sequence=sequence)
 
-    print(msg)
+            print(msg)
+        else:
+            for i, job in enumerate(XDSJOBS):
+                error = None
+                fn = (drc / job).with_suffix(".LP")
+                if fn.exists():
+                    with open(fn, "rb") as f:
+                        f.seek(-lookBack, 2)
+                        lines = f.readlines()
+
+                    for line in lines:
+                        if b"ERROR" in line:
+                            error = line.decode()
+                            error = error.split("!!!")[-1].strip()
+
+                    if error:
+                        msg = f"{sequence:4d} | {drc}: Error in {job} -> {error}"
+                        print(msg)
+                        return
+
+
 
 def xds_index(path: str, sequence: int=0, clear: bool=True, parallel: bool=True) -> None:
     """Run XDS at given path.
