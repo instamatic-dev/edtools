@@ -320,11 +320,6 @@ def distance_from_dendrogram(z, distance=None):
 
     tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue", labels=labels)
 
-    # use 1-based indexing for display by incrementing label
-    _, labels = plt.xticks()
-    for l in labels:
-        l.set_text(str(int(l.get_text())+1))
-
     ax.set_xlabel("Index")
     ax.set_ylabel("Distance $(1-CC^2)^{1/2}$")
     ax.set_title(f"Dendrogram ($t={distance:.2f}$)")
