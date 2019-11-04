@@ -85,11 +85,12 @@ def parse_xds(path: str, sequence: int=0) -> None:
             try:
                 p = xds_parser(correct_lp)
             except UnboundLocalError:
-                msg = f"{sequence:4d} | {drc}: Indexing completed but no cell reported..."
+                msg = f"{sequence: 4d}: {drc} -> Indexing completed but no cell reported..."
             else:
                 msg = "\n"
                 msg += p.cell_info(sequence=sequence)
                 msg += "\n"
+                msg += p.info_header(hline=False)
                 msg += p.integration_info(sequence=sequence)
 
             print(msg)
@@ -108,7 +109,7 @@ def parse_xds(path: str, sequence: int=0) -> None:
                             error = error.split("!!!")[-1].strip()
 
                     if error:
-                        msg = f"{sequence:4d} | {drc}: Error in {job} -> {error}"
+                        msg = f"{sequence: 4d}: {drc} -> Error in {job}: {error}"
                         print(msg)
                         return
 

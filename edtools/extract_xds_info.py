@@ -127,9 +127,10 @@ class xds_parser(object):
         return d
 
     @staticmethod
-    def info_header():
-        s  = "  #   dmax  dmin    ntot   nuniq   compl   i/sig   rmeas CC(1/2)     ISa   B(ov)\n"
-        s += "--------------------------------------------------------------------------------\n"
+    def info_header(hline=True):
+        s  = "   #   dmax  dmin    ntot   nuniq   compl   i/sig   rmeas CC(1/2)     ISa   B(ov)\n"
+        if hline:
+            s += "---------------------------------------------------------------------------------\n"
         return s
 
     def print_filename(self):
@@ -139,7 +140,7 @@ class xds_parser(object):
         d = self.d
         i = sequence
         fn = self.filename
-        s = f"{i: 3d}: {fn.parents[0]} # {time.ctime(os.path.getmtime(fn))}\n"
+        s = f"{i: 4d}: {fn.parents[0]}  # {time.ctime(os.path.getmtime(fn))}\n"
         s += "Spgr {: 4d} - Cell {:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f} - Vol {:10.2f}\n".format(d["spgr"], *d["cell"], d["volume"])
         return s
 
