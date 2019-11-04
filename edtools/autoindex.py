@@ -27,7 +27,22 @@ if platform == "win32":
 rlock = threading.RLock()
 
 
-def connect(payload):
+def clear_files(path: str) -> None:
+    """Clear  LP files"""
+    for job in "DEFPIX", "INTEGRATE", "CORRECT":
+        fn = (path / job).with_suffix(".LP")
+        if fn.exists():
+            os.remove(fn)
+
+
+def connect(payload: str) -> None:
+    """Try to connect to `instamatic` indexing server
+
+    Parameters
+    ----------
+    payload : str
+        Directory where XDS should be run.
+    """
     payload = str(payload).encode()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -66,31 +81,45 @@ def parse_xds(path, sequence=0):
 
     print(msg)
 
+def xds_index(path: str, sequence: int=0, clear: bool=True, parallel: bool=True) -> None:
+    """Run XDS at given path.
+    
+    Parameters
+    ----------
+    path : str
+        Run XDS in this directory, expects XDS.INP in this directory
+    sequence : int
+        Sequence number, needed for output and house-keeping
+    clear : bool
+        Clear some LP files before running XDS
+    parallel : bool
+        Call `xds_par` rather than `xds`
+    """
+    if clear:
+        clear_files(path)
 
-def xds_index(path, i=0):
-    corr = path / "CORRECT.LP"
-    if corr.exists():
-        os.remove(corr)
+    cmd = "xds_par" if parallel else "xds"
 
     cwd = str(path)
 
     if platform == "win32":
         try:
-            p = sp.Popen(f"{bash_exe} -ic xds 2>&1 >/dev/null", cwd=cwd)
+            p = sp.Popen(f"{bash_exe} -ic {cmd} 2>&1 >/dev/null", cwd=cwd)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
     else:
         try:
-            p = sp.Popen("xds", cwd=cwd, stdout=DEVNULL)
+            p = sp.Popen(cmd, cwd=cwd, stdout=DEVNULL)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
 
     try:
-        parse_xds(path, sequence=i)
+        parse_xds(path, sequence=sequence)
     except Exception as e:
-        print("ERROR parsing CORRECT.LP:", e)
+        print("ERROR:", e)
+
 
 
 def main():
