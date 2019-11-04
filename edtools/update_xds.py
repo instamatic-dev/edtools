@@ -2,6 +2,8 @@ from pathlib import Path
 import shutil
 from .utils import parse_args_for_fns
 
+XDSJOBS = ("XYCORR", "INIT", "COLSPOT", "IDXREF", "DEFPIX", "INTEGRATE", "CORRECT")
+
 
 def update_xds(fn, 
                cell=None, 
@@ -25,6 +27,9 @@ def update_xds(fn,
     pre = "!" if comment else ""
 
     new_lines = []
+
+    if "all" in jobs:
+        jobs = XDSJOBS
 
     if jobs:
         jobs = [job.upper() for job in jobs]
@@ -131,7 +136,7 @@ def main():
 
     parser.add_argument("-j", "--jobs",
                         action="store", type=str, nargs="+", 
-                        help="Specify which JOB should be performed by XDS")
+                        help="Specify which JOB should be performed by XDS: XYCORR, INIT, COLSPOT, IDXREF, DEFPIX, INTEGRATE, CORRECT. Specify `all` for all jobs.")
 
     parser.set_defaults(cell=None,
                         spgr=None,

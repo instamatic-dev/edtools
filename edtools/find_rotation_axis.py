@@ -214,7 +214,7 @@ def load_spot_xds(fn, beam_center: [float, float], osc_angle: float, pixelsize: 
     beam_center: coordinates of the primary beam, read from XDS.INP
     osc_angle: oscillation_angle (degrees) per frame, will be multiplied by the average frame number
         that a reflection appears on (column 3 in `arr`)
-    pixelsize: defined in px/Angstrom
+    pixelsize: defined in px/Ångström
 
     http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#SPOT.XDS
     """
@@ -301,8 +301,8 @@ Usage: python find_rotation_axis.py XDS.INP"""
     print()
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
     print(f"Oscillation angle (degrees): {osc_angle}")
-    print(f"Pixelsize: {pixelsize:.4f} px/Angstrom")
-    print(f"Wavelength: {wavelength:.5f} Angstrom")
+    print(f"Pixelsize: {pixelsize:.4f} px/Ångström")
+    print(f"Wavelength: {wavelength:.5f} Ångström")
     print(f"Omega (current): {omega_current:.5f} degrees")
     print(f"                 {np.radians(omega_current):.5f} radians")
 
