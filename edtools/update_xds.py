@@ -3,7 +3,7 @@ import shutil
 from utils import parse_args_for_fns
 
 
-def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None, overload=None, lo_res=None, hi_res=None, cut_frames=None, wfac1=None, apd=None, sp=None):
+def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_error=None, overload=None, lo_res=None, hi_res=None, cut_frames=None, wfac1=None, apd=None, sp=None, indnumthre=None, d=False, dl=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -34,17 +34,25 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
         elif sp and "STRONG_PIXEL" in line:
             sp_line = f"{pre}STRONG_PIXEL= {sp}\n"
             line = sp_line
+        elif intnumthre and "MINIMUM_FRACTION_OF_INDEXED_SPOTS" in line:
+            line = f"MINIMUM_FRACTION_OF_INDEXED_SPOTS= {intnumthre:.2f'}\n" 
         elif cut_frames and any(s in line[0:16] for s in ["DATA_RANGE","SPOT_RANGE","BACKGROUND_RANGE"]):
             data_begin, data_end = line[20:].split()
             data_begin_cf = round(int(data_begin)*0.98)
             data_end_cf = round(int(data_end)*0.98)
             line = f"DATA_RANGE            {data_begin_cf:d} {data_end_cf:d}\n"
+        elif d and "J. Appl. Cryst. (2018)." in line:
+            line = ""
         elif comment and "UNIT_CELL_CONSTANTS" in line:
             line = pre + line
         elif comment and "SPACE_GROUP_NUMBER" in line:
             line = pre + line
         elif comment and "STRONG_PIXEL" in line:
             line = pre + line
+        elif comment and "MINIMUM_FRACTION_OF_INDEXED_SPOTS" in line:
+            line = pre + line
+        elif dl and dl in line:
+            line = ""
 
         new_lines.append(line)
 
@@ -104,6 +112,10 @@ def main():
                         action="store", type=str, dest="append",
                         help="Append any VALID XDS input parameters")
 
+    parser.add_argument("-dl","--delete_line",
+                        action="store", type=str, dest="delete_line",
+                        help="delete any line that is in the input file. BE CAREFUL when using this. Use it only to delete appended lines.")
+
     parser.add_argument("-sp","--StrongPixel",
                         action="store", type=float, dest="StrongPixel",
                         help="Parameter used for strong pixel threshold")
@@ -111,6 +123,14 @@ def main():
     parser.add_argument("--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+
+    parser.add_argument("-it", "--indexingNumberThreshold",
+                        action="store", type=float, dest="indexingNumberThreshold",
+                        help="Parameter to tune the threshold for percentage of spots that is indexed")
+
+    parser.add_argument("-d","--delete_ref_line",
+                        action="store_true", dest="delete_ref_line",
+                        help="Delete the reference line since it is sometimes problematic")
 
     parser.set_defaults(cell=None,
                         spgr=None,
@@ -122,7 +142,10 @@ def main():
                         cut_frames=None,
                         wfac1=None,
                         append=None,
-                        StrongPixel=None)
+                        StrongPixel=None,
+                        indexingNumberThreshold=None,
+                        delete_ref_line=False,
+                        delete_line=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -137,13 +160,16 @@ def main():
     wfac1 = options.wfac1
     append = options.append
     StrongPixel = options.StrongPixel
+    indnumthre = options.indexingNumberThreshold
+    del_ref = options.delete_ref_line
+    del_line = options.delete_line
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
     for fn in fns:
         print("\033[K", fn, end='\r')  # "\033[K" clears line
         update_xds(fn, cell=cell, spgr=spgr, comment=comment, axis_error=axis_error, angle_error=angle_error, overload=overload, lo_res=lo_res, hi_res=hi_res, 
-            cut_frames=cut_frames, wfac1=wfac1, apd=append, sp=StrongPixel)
+            cut_frames=cut_frames, wfac1=wfac1, apd=append, sp=StrongPixel, indnumthre = indnumthre, d=del_ref, dl=del_line)
     print(f"\033[KUpdated {len(fns)} files")
 
 
