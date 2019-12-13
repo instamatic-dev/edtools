@@ -34,8 +34,8 @@ def update_xds(fn, cell=None, spgr=None, comment=False, axis_error=None, angle_e
         elif sp and "STRONG_PIXEL" in line:
             sp_line = f"{pre}STRONG_PIXEL= {sp}\n"
             line = sp_line
-        elif intnumthre and "MINIMUM_FRACTION_OF_INDEXED_SPOTS" in line:
-            line = f"MINIMUM_FRACTION_OF_INDEXED_SPOTS= {intnumthre:.2f'}\n" 
+        elif indnumthre and "MINIMUM_FRACTION_OF_INDEXED_SPOTS" in line:
+            line = f"MINIMUM_FRACTION_OF_INDEXED_SPOTS= {indnumthre:.2f}\n" 
         elif cut_frames and any(s in line[0:16] for s in ["DATA_RANGE","SPOT_RANGE","BACKGROUND_RANGE"]):
             data_begin, data_end = line[20:].split()
             data_begin_cf = round(int(data_begin)*0.98)
