@@ -289,6 +289,27 @@ def to_radian(cells):
 
     return cells
 
+def to_sin(cells):
+    """convert all angles in unit cell parameter list to radians
+    cells: the cell parameters that are parsed from cells.yaml as np array"""
+    angles = cells[:, 3:6]
+    angles_sine = np.sin(np.radians(angles))
+    cells[:, 3:6] = angles_sine
+
+    return cells
+
+def put_in_order(cells):
+    """order cell parameters in order to eliminate difference in cell distance because of parameter order"""
+    ordered_cells = []
+    for i in range(0, len(cells)):
+        cell = cells[i, :]
+        cell_lengths = np.array(cell[:3])
+        cell_angles = np.array(cell[3:])
+        cell_array = np.vstack((cell_lengths, cell_angles))
+        sortedArr = cell_array[:, np.argsort(cell_array[0, :])]
+        sortedArr = sortedArr.ravel()
+        ordered_cells.append(sortedArr)
+    return np.array(ordered_cells)
 
 def main():
     import argparse
@@ -330,6 +351,10 @@ def main():
     parser.add_argument("-r", "--use_radian_for_angles",
                         action="store_true", dest="use_radian_for_clustering",
                         help="Use radians for unit cell clustering (to downweight the difference in angles)")
+
+    parser.add_argument("-r", "--use_sine_for_angles",
+                        action="store_true", dest="use_sine_for_clustering",
+                        help="Use sine for unit cell clustering (to disambiguousize the difference in angles)")
     
     #parser.add_argument("-w","--raw-cell",
     #                    action="store_true", dest="raw_cell",
@@ -342,7 +367,8 @@ def main():
                         metric="euclidean",
                         use_raw_cell=True,
                         raw=False,
-                        use_radian_for_clustering=False)
+                        use_radian_for_clustering=False,
+                        use_sine_for_angles=False)
     
     options = parser.parse_args()
 
@@ -353,6 +379,7 @@ def main():
     metric = options.metric
     use_raw_cell = options.use_raw_cell
     use_radian = options.use_radian_for_clustering
+    use_sine = options.use_sine_for_angles
     args = options.args
 
     if args:
@@ -365,10 +392,14 @@ def main():
     key = "raw_unit_cell" if use_raw_cell else "unit_cell"
 
     cells = np.array([d[key] for d in ds])
+    cells = put_in_order(cells)
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:
-        if use_radian:
+        if use_sine:
+            cells_sine = to_sin(cells)
+            clusters = cluster_cell(cells_sine, distance=distance, method=method, metric=metric)
+        elif use_radian:
             cells_radians = to_radian(cells)
             clusters = cluster_cell(cells_radians, distance=distance, method=method, metric=metric)
         else:
