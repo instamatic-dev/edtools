@@ -2,8 +2,8 @@ from pathlib import Path
 import os
 import time
 import shutil
-from utils import volume, parse_args_for_fns
-from utils import space_group_lib
+from .utils import volume, parse_args_for_fns
+from .utils import space_group_lib
 
 spglib = space_group_lib()
 
@@ -28,6 +28,8 @@ class xds_parser(object):
         block = []
     
         d = {}
+
+        cell, spgr = None, None
     
         for line in f:
             if line.startswith(" SUBSET OF INTENSITY DATA WITH SIGNAL/NOISE >= -3.0 AS FUNCTION OF RESOLUTION"):
@@ -36,12 +38,16 @@ class xds_parser(object):
             elif line.startswith("    total"):
                 block.append(line.strip("\n"))
                 in_block = False
-            elif line.startswith(" UNIT CELL PARAMETERS"):
-                cell = list(map(float, line.strip("\n").split()[3:9]))
             elif line.endswith("as used by INTEGRATE\n"):
                 raw_cell = list(map(float, line.strip("\n").split()[1:7]))
+            elif line.startswith(" UNIT_CELL_CONSTANTS="):
+                cell = list(map(float, line.strip("\n").split()[1:7]))
+            elif line.startswith(" UNIT CELL PARAMETERS"):
+                cell = list(map(float, line.strip("\n").split()[3:9]))
             elif line.startswith(" SPACE GROUP NUMBER"):
                 spgr = int(line.strip("\n").split()[-1])
+            elif line.startswith(" SPACE_GROUP_NUMBER="):
+                spgr = int(line.strip("\n").split()[1])
             elif line.startswith(" DATA_RANGE="):
                 datarange = list(map(float, line.strip("\n").split()[1:]))
             elif line.startswith(" OSCILLATION_RANGE"):
@@ -61,7 +67,7 @@ class xds_parser(object):
             if in_block:
                 if line:
                     block.append(line.strip("\n"))
-      
+
         d["ISa"] = ISa
         d["Boverall"] = Boverall
     
@@ -94,7 +100,12 @@ class xds_parser(object):
     
         if dmin == 999:
             return
-    
+
+        if not cell:
+            raise ValueError("No cell found")
+        if not spgr:
+            raise ValueError("No space group found")
+
         d["outer"] = dmin
         d["outer_shell"] = shell
         try:
@@ -104,7 +115,8 @@ class xds_parser(object):
             d["raw_cell"] = raw_cell
             d["raw_volume"] = volume(raw_cell)
             d["spgr"] = spgr
-        except UnboundLocalError:
+        except UnboundLocalError as e:
+            print(e)
             return
         d["fn"] = fn
 
@@ -115,9 +127,10 @@ class xds_parser(object):
         return d
 
     @staticmethod
-    def info_header():
-        s  = "  #   dmax  dmin    ntot   nuniq   compl   i/sig   rmeas CC(1/2)     ISa   B(ov)\n"
-        s += "--------------------------------------------------------------------------------\n"
+    def info_header(hline=True):
+        s  = "   #   dmax  dmin    ntot   nuniq   compl   i/sig   rmeas CC(1/2)     ISa   B(ov)\n"
+        if hline:
+            s += "---------------------------------------------------------------------------------\n"
         return s
 
     def print_filename(self):
@@ -127,7 +140,7 @@ class xds_parser(object):
         d = self.d
         i = sequence
         fn = self.filename
-        s = f"{i: 3d}: {fn.parents[0]} # {time.ctime(os.path.getmtime(fn))}\n"
+        s = f"{i: 4d}: {fn.parents[0]}  # {time.ctime(os.path.getmtime(fn))}\n"
         s += "Spgr {: 4d} - Cell {:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f}{:10.2f} - Vol {:10.2f}\n".format(d["spgr"], *d["cell"], d["volume"])
         return s
 
@@ -142,7 +155,7 @@ class xds_parser(object):
         
         dmax, dmin = d["res_range"]
 
-        s += "{k: 3d} {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}{ISa: 8.2f}{Boverall: 8.2f}".format(
+        s += "{k: 4d} {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}{ISa: 8.2f}{Boverall: 8.2f}".format(
         k=k, dmax=dmax, dmin=dmin, **d["total"], **d)
 
         if filename:
@@ -153,7 +166,7 @@ class xds_parser(object):
         if outer_shell:
             outer = d["outer"]
             dmax_sh, dmin_sh = d["outer_shell"]
-            s +="  - {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}\n".format(
+            s +="   - {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}\n".format(
                 k=k, dmax=dmax_sh, dmin=dmin_sh, **d[outer])
 
         return s
@@ -345,7 +358,8 @@ def main():
     for fn in fns:
         try:
             p = xds_parser(fn)
-        except UnboundLocalError:
+        except UnboundLocalError as e:
+            print(e)
             continue
         else:
             if p and p.d:

@@ -69,7 +69,7 @@ def main():
 
     parser.add_argument("-w","--wavelength",
                         action="store", type=float, dest="wavelength",
-                        help="Set the wavelength in Angstroms, default=0.02508")
+                        help="Set the wavelength in Ångströms, default=0.02508 [120 kV: 0.03349 Å, 200 kV: 0.02508 Å, 300 kV: 0.01969 Å")
 
     parser.set_defaults(cell=(10, 10, 10, 90, 90, 90),
                         spgr="P1",

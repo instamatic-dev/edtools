@@ -214,7 +214,7 @@ def load_spot_xds(fn, beam_center: [float, float], osc_angle: float, pixelsize: 
     beam_center: coordinates of the primary beam, read from XDS.INP
     osc_angle: oscillation_angle (degrees) per frame, will be multiplied by the average frame number
         that a reflection appears on (column 3 in `arr`)
-    pixelsize: defined in px/Angstrom
+    pixelsize: defined in px/Ångström
 
     http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#SPOT.XDS
     """
@@ -287,17 +287,22 @@ Usage: python find_rotation_axis.py XDS.INP"""
     if options.omega_input is not None:
         omega_current = options.omega_input
 
+    omega_opposite = omega_current + 180
+
     if options.opposite:
-        omega_current += 180
+        omega_current = omega_opposite
 
     if omega_current > 180:
         omega_current -= 360
 
+    if omega_opposite > 180:
+        omega_opposite -= 360
+
     print()
     print(f"Beam center: {beam_center[0]:.2f} {beam_center[1]:.2f}")
     print(f"Oscillation angle (degrees): {osc_angle}")
-    print(f"Pixelsize: {pixelsize:.4f} px/Angstrom")
-    print(f"Wavelength: {wavelength:.5f} Angstrom")
+    print(f"Pixelsize: {pixelsize:.4f} px/Ångström")
+    print(f"Wavelength: {wavelength:.5f} Ångström")
     print(f"Omega (current): {omega_current:.5f} degrees")
     print(f"                 {np.radians(omega_current):.5f} radians")
 
@@ -343,6 +348,16 @@ Usage: python find_rotation_axis.py XDS.INP"""
     
     var = np.var(H)
     print(f"Variance: {var:.2f}")
+    
+    # check opposite
+    xyz_opp = make(arr, omega_final+180, wavelength)
+    H_opp, xedges_opp, yedges_opp = cylinder_histo(xyz_opp)
+    
+    var_opp = np.var(H_opp)
+    print(f"Variance (opposite): {var_opp:.2f}")
+
+    if var < var_opp:
+        print(f"\nOpposite angle ({omega_opposite:.2f} deg.) has higher variance!\n")
 
     plot_histo(H, xedges, yedges, title=f"omega={omega_final:.2f}$^\circ$ | var={var:.2f}")
 

@@ -5,7 +5,7 @@ from matplotlib.widgets import SpanSelector
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from collections import defaultdict
 import yaml
-from utils import volume
+from .utils import volume
 
 
 def weighted_average(values, weights=None):
@@ -249,25 +249,33 @@ def volume_difference(cell1: list, cell2: list):
     return abs(v1-v2)
 
 
-def cluster_cell(cells: list, distance: float=None, method: str="average", metric: str="euclidean"):
+def cluster_cell(cells: list, distance: float=None, method: str="average", metric: str="euclidean", use_radian: bool=False, use_sine: bool=False):
     """Perform hierarchical cluster analysis on a list of cells. 
     method: lcv, volume, euclidean
     distance: cutoff distance, if it is not given, pop up a dendrogram to
         interactively choose a cutoff distance
+    use_radian: Use radian instead of degrees to downweight difference
     """
 
     from scipy.spatial.distance import pdist
 
+    if use_sine:
+        _cells = to_sin(cells)
+    elif use_radian:
+        _cells = to_radian(cells)
+    else:
+        _cells = cells
+
     if metric == "lcv":
-        dist = pdist(cells, metric=unit_cell_lcv_distance)
+        dist = pdist(_cells, metric=unit_cell_lcv_distance)
         z = linkage(dist,  method=method)
         initial_distance = None
     elif metric == "volume":
-        dist = pdist(cells, metric=volume_difference)
+        dist = pdist(_cells, metric=volume_difference)
         z = linkage(dist,  method=method)
         initial_distance = 250.0
     else:
-        z = linkage(cells,  metric=metric, method=method)
+        z = linkage(_cells,  metric=metric, method=method)
         initial_distance = 2.0
 
     if not distance:
@@ -283,11 +291,10 @@ def cluster_cell(cells: list, distance: float=None, method: str="average", metri
 def to_radian(cells):
     """convert all angles in unit cell parameter list to radians
     cells: the cell parameters that are parsed from cells.yaml as np array"""
-    angles = cells[:, 3:6]
-    angles_radian = np.radians(angles)
-    cells[:, 3:6] = angles_radian
+    cells_radian = cells.copy()
+    cells_radian[:, 3:6] = np.radians(cells[:, 3:6])
 
-    return cells
+    return cells_radian
 
 def to_sin(cells):
     """convert all angles in unit cell parameter list to radians
@@ -396,14 +403,7 @@ def main():
     weights = np.array([d["weight"] for d in ds])
 
     if cluster:
-        if use_sine:
-            cells_sine = to_sin(cells)
-            clusters = cluster_cell(cells_sine, distance=distance, method=method, metric=metric)
-        elif use_radian:
-            cells_radians = to_radian(cells)
-            clusters = cluster_cell(cells_radians, distance=distance, method=method, metric=metric)
-        else:
-            clusters = cluster_cell(cells, distance=distance, method=method, metric=metric)
+        clusters = cluster_cell(cells, distance=distance, method=method, metric=metric, use_radian=use_radian, use_sine=use_sine)
         for i, idx in clusters.items():
             clustered_ds = [ds[i] for i in idx]
             fout = f"cells_cluster_{i}_{len(idx)}-items.yaml"

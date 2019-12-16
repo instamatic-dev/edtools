@@ -5,7 +5,7 @@ from math import radians, cos
 import numpy as np
 import yaml
 from collections import Counter
-from utils import space_group_lib
+from .utils import space_group_lib
 
 platform = sys.platform
 

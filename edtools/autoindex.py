@@ -3,7 +3,7 @@ import threading
 import socket
 import sys, os
 from pathlib import Path
-from utils import parse_args_for_fns
+from .utils import parse_args_for_fns
 
 import subprocess as sp
 
@@ -24,10 +24,27 @@ if platform == "win32":
     from .wsl import bash_exe
 
 
+XDSJOBS = ("XYCORR", "INIT", "COLSPOT", "IDXREF", "DEFPIX", "INTEGRATE", "CORRECT")
+
 rlock = threading.RLock()
 
 
-def connect(payload):
+def clear_files(path: str) -> None:
+    """Clear  LP files"""
+    for job in "DEFPIX", "INTEGRATE", "CORRECT":
+        fn = (path / job).with_suffix(".LP")
+        if fn.exists():
+            os.remove(fn)
+
+
+def connect(payload: str) -> None:
+    """Try to connect to `instamatic` indexing server
+
+    Parameters
+    ----------
+    payload : str
+        Directory where XDS should be run.
+    """
     payload = str(payload).encode()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -44,53 +61,99 @@ def connect(payload):
             print(data)
 
 
-def parse_xds(path, sequence=0):
-    """Parse the XDS output file `CORRECT.LP` and print a summary"""
-    fn = Path(path) / "CORRECT.LP"
+def parse_xds(path: str, sequence: int=0) -> None:
+    """Parse XDS output (CORRECT.LP) and print summary about indexing progress
+    to the screen.
     
+    Parameters
+    ----------
+    path : str
+        Path in which XDS has been run
+    sequence : int
+        Sequence number, needed for output and house-keeping
+    """
+    drc = Path(path)
+    correct_lp = drc / "CORRECT.LP"
+
+    lookBack = 160
+
     # rlock prevents messages getting mangled with 
     # simultaneous print statements from different threads
     with rlock:
-        if not fn.exists():
-            msg = f"{path}: Automatic indexing failed..."
-        else:
+        if correct_lp.exists():
+        # if all files exist, try parsing CORRECT.LP
             try:
-                p = xds_parser(fn)
+                p = xds_parser(correct_lp)
             except UnboundLocalError:
-                msg = f"{path}: Automatic indexing completed but no cell reported..."
+                msg = f"{sequence: 4d}: {drc} -> Indexing completed but no cell reported..."
             else:
                 msg = "\n"
                 msg += p.cell_info(sequence=sequence)
                 msg += "\n"
+                msg += p.info_header(hline=False)
                 msg += p.integration_info(sequence=sequence)
 
-    print(msg)
+            print(msg)
+        else:
+            for i, job in enumerate(XDSJOBS):
+                error = None
+                fn = (drc / job).with_suffix(".LP")
+                if fn.exists():
+                    with open(fn, "rb") as f:
+                        f.seek(-lookBack, 2)
+                        lines = f.readlines()
+
+                    for line in lines:
+                        if b"ERROR" in line:
+                            error = line.decode()
+                            error = error.split("!!!")[-1].strip()
+
+                    if error:
+                        msg = f"{sequence: 4d}: {drc} -> Error in {job}: {error}"
+                        print(msg)
+                        return
 
 
-def xds_index(path, i=0):
-    corr = path / "CORRECT.LP"
-    if corr.exists():
-        os.remove(corr)
+
+def xds_index(path: str, sequence: int=0, clear: bool=True, parallel: bool=True) -> None:
+    """Run XDS at given path.
+    
+    Parameters
+    ----------
+    path : str
+        Run XDS in this directory, expects XDS.INP in this directory
+    sequence : int
+        Sequence number, needed for output and house-keeping
+    clear : bool
+        Clear some LP files before running XDS
+    parallel : bool
+        Call `xds_par` rather than `xds`
+    """
+    if clear:
+        clear_files(path)
+
+    cmd = "xds_par" if parallel else "xds"
 
     cwd = str(path)
 
     if platform == "win32":
         try:
-            p = sp.Popen(f"{bash_exe} -ic xds 2>&1 >/dev/null", cwd=cwd)
+            p = sp.Popen(f"{bash_exe} -ic {cmd} 2>&1 >/dev/null", cwd=cwd)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
     else:
         try:
-            p = sp.Popen("xds", cwd=cwd, stdout=DEVNULL)
+            p = sp.Popen(cmd, cwd=cwd, stdout=DEVNULL)
             p.wait()
         except Exception as e:
             print("ERROR in subprocess call:", e)
 
     try:
-        parse_xds(path, sequence=i)
+        parse_xds(path, sequence=sequence)
     except Exception as e:
-        print("ERROR parsing CORRECT.LP:", e)
+        print("ERROR:", e)
+
 
 
 def main():
@@ -110,20 +173,37 @@ def main():
                         action="store_true", dest="use_server",
                         help="Use instamatic server for indexing")
 
-    parser.add_argument("--match",
+    parser.add_argument("-m", "--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
 
+    parser.add_argument("-u", "--unprocessed_only",
+                        action="store_true", dest="unprocessed_only",
+                        help="Run XDS only in unprocessed directories (i.e. no XYCORR.LP)")
+
+    parser.add_argument("-j", "--jobs",
+                        action="store", type=int, dest="n_jobs",
+                        help="Number of jobs to run in parallel")
+
     parser.set_defaults(use_server=False,
-                        match=None)
+                        match=None,
+                        unprocessed_only=False,
+                        n_jobs=1,
+                        )
     
     options = parser.parse_args()
 
     use_server = options.use_server
     match = options.match
+    unprocessed_only = options.unprocessed_only
+    n_jobs = options.n_jobs
     args = options.args
 
     fns = parse_args_for_fns(args, name="XDS.INP", match=match)
+
+    if unprocessed_only:
+        fns = [fn for fn in fns if not fn.with_name("XYCORR.LP").exists()]
+        print(f"Filtered directories which have already been processed, {len(fns)} left")
 
     max_connections = 1
 

@@ -184,7 +184,7 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8), ioversigma=2):
 
         item.update(run_pointless(drc / "*_XDS_ASCII.HKL"))
 
-        print(f"Running XSCALE on cluster {i}\n")
+        print(f"Running XSCALE on cluster {i}")
         if platform == "win32":
             sp.run(f"{bash_exe} -ic xscale 2>&1 >/dev/null", cwd=drc)
         else:
@@ -320,11 +320,6 @@ def distance_from_dendrogram(z, distance=None):
 
     tree = dendrogram(z, color_threshold=distance, ax=ax, above_threshold_color="lightblue", labels=labels)
 
-    # use 1-based indexing for display by incrementing label
-    _, labels = plt.xticks()
-    for l in labels:
-        l.set_text(str(int(l.get_text())+1))
-
     ax.set_xlabel("Index")
     ax.set_ylabel("Distance $(1-CC^2)^{1/2}$")
     ax.set_title(f"Dendrogram ($t={distance:.2f}$)")
@@ -417,6 +412,7 @@ def main():
     clusters = get_clusters(z, distance=distance, fns=obj.filenames, method=method, min_size=min_size)
     results = run_xscale(clusters, cell=obj.unit_cell, spgr=obj.space_group, resolution=(dmax, dmin), ioversigma=ioversigma)
 
+    print("")
     print("Clustering results")
     print("")
     print(f"Cutoff distance: {distance:.3f}")
@@ -425,7 +421,7 @@ def main():
     print("")
     print("  #  N_clust   CC(1/2)    N_obs   N_uniq   N_poss    Compl.   N_comp    R_meas    d_min  i/sigma  | Lauegr.  prob. conf.  idx")
     
-    for d in sorted(results, key=lambda x: x["Completeness"]):
+    for d in sorted(results, key=lambda x: x[sort_key]):
         p1 = "*" if d["CC(1/2)"] > 90 else " "
         p2 = "*" if d["Completeness"] > 80 else " "
         p3 = "*" if d["R_meas"] < 0.30 else " "
