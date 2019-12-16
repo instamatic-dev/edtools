@@ -63,11 +63,6 @@ def update_xds(fn,
             line = sp_line
         elif indnumthre and "MINIMUM_FRACTION_OF_INDEXED_SPOTS" in line:
             line = f"MINIMUM_FRACTION_OF_INDEXED_SPOTS= {indnumthre:.2f}\n" 
-        elif cut_frames and any(s in line[0:16] for s in ["DATA_RANGE","SPOT_RANGE","BACKGROUND_RANGE"]):
-            data_begin, data_end = line[20:].split()
-            data_begin_cf = round(int(data_begin)*0.98)
-            data_end_cf = round(int(data_end)*0.98)
-            line = f"DATA_RANGE            {data_begin_cf:d} {data_end_cf:d}\n"
         elif d and "J. Appl. Cryst. (2018)." in line:
             line = ""
         elif cut_frames:
@@ -187,7 +182,7 @@ def main():
                         match=None,
                         overload_value=None,
                         resolution=(None, None),
-                        cut_frames=None,
+                        cut_frames=False,
                         wfac1=None,
                         append=None,
                         StrongPixel=None,

@@ -249,12 +249,19 @@ def volume_difference(cell1: list, cell2: list):
     return abs(v1-v2)
 
 
-def cluster_cell(cells: list, distance: float=None, method: str="average", metric: str="euclidean", use_radian: bool=False, use_sine: bool=False):
+def cluster_cell(cells: list, 
+                 distance: float=None, 
+                 method: str="average", 
+                 metric: str="euclidean", 
+                 use_radian: bool=False,
+                 use_sine: bool=False):
     """Perform hierarchical cluster analysis on a list of cells. 
+
     method: lcv, volume, euclidean
     distance: cutoff distance, if it is not given, pop up a dendrogram to
         interactively choose a cutoff distance
     use_radian: Use radian instead of degrees to downweight difference
+    use_sine: Use sine for unit cell clustering (to disambiguousize the difference in angles)
     """
 
     from scipy.spatial.distance import pdist
@@ -301,9 +308,12 @@ def to_sin(cells):
     cells: the cell parameters that are parsed from cells.yaml as np array"""
     angles = cells[:, 3:6]
     angles_sine = np.sin(np.radians(angles))
+
+    cells_sine = cells.copy()
     cells[:, 3:6] = angles_sine
 
     return cells
+
 
 def put_in_order(cells):
     """order cell parameters in order to eliminate difference in cell distance because of parameter order"""
@@ -317,6 +327,7 @@ def put_in_order(cells):
         sortedArr = sortedArr.ravel()
         ordered_cells.append(sortedArr)
     return np.array(ordered_cells)
+
 
 def main():
     import argparse
