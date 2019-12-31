@@ -315,6 +315,7 @@ def put_in_order(cells):
         cell_array = np.vstack((cell_lengths, cell_angles))
         sortedArr = cell_array[:, np.argsort(cell_array[0, :])]
         sortedArr = sortedArr.ravel()
+        print(sortedArr)
         ordered_cells.append(sortedArr)
     return np.array(ordered_cells)
 
@@ -359,7 +360,7 @@ def main():
                         action="store_true", dest="use_radian_for_clustering",
                         help="Use radians for unit cell clustering (to downweight the difference in angles)")
 
-    parser.add_argument("-r", "--use_sine_for_angles",
+    parser.add_argument("-s", "--use_sine_for_angles",
                         action="store_true", dest="use_sine_for_clustering",
                         help="Use sine for unit cell clustering (to disambiguousize the difference in angles)")
     

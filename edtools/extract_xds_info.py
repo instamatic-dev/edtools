@@ -322,6 +322,34 @@ def evaluate_symmetry(ps):
 
     return lattice_to_space_group(c_score.most_common()[0][0])
 
+def parse_xparm_for_uc(fn):
+    with open(fn, "r") as f:
+        f.readline()
+        f.readline()
+        f.readline()
+
+        line = f.readline().split()
+        uc = line[1:]
+        uc = [float(i) for i in uc]
+        return uc
+
+def cells_to_yaml_xparm(uc, fn="cells_xparm.yaml"):
+    import yaml
+    ds = []
+    for i, p in enumerate(uc):
+        i += 1
+        d = {}
+        d["directory"] = ""
+        d["number"] = i
+        d["unit_cell"] = 1
+        d["raw_unit_cell"] = p
+        d["space_group"] = "P1"
+        d["weight"] = 1
+        ds.append(d)
+
+    yaml.dump(ds, open(fn, "w"))
+
+    print(f"Wrote {i} cells to file {fn}")
 
 def main():
     import argparse
@@ -344,44 +372,61 @@ def main():
                         action="store_true", dest="gather",
                         help="Gather XDS_ASCII.HKL files in local directory.")
 
+    parser.add_argument("-x", "--xparm",
+                        action="store_true", dest="xparm",
+                        help="extract unit cell info from XPARM.XDS instead of CORRECT.LP. NOTE!! Only aimed for first step clustering.")
+
     parser.set_defaults(match=None)
     
     options = parser.parse_args()
 
     match = options.match
     gather = options.gather
+    xparm = options.xparm
     args = options.args
 
-    fns = parse_args_for_fns(args, name="CORRECT.LP", match=match)
-    
-    xdsall = []
-    for fn in fns:
-        try:
-            p = xds_parser(fn)
-        except UnboundLocalError as e:
-            print(e)
-            continue
-        else:
-            if p and p.d:
-                xdsall.append(p)
-    
-    for i, p in enumerate(xdsall):
-        i += 1
-        print(p.cell_info(sequence=i))
-    
-    print(xds_parser.info_header())
-    for i, p in enumerate(xdsall):
-        i += 1
-        print(p.integration_info(sequence=i, filename=True))
-    
-    cells_to_excel(xdsall)
-    # cells_to_cellparm(xdsall)
-    cells_to_yaml(xdsall)
+    if xparm:
+        fns = parse_args_for_fns(args, name="XPARM.XDS", match=match)
+        foundCells = []
 
-    gather_xds_ascii(xdsall, gather=gather)
+        for fn in fns:
+            uc = parse_xparm_for_uc(fn)
+            foundCells.append(uc)
 
-    evaluate_symmetry(xdsall)
-    print("\n ** the score corresponds to the total number of indexed reflections.")
+        cells_to_yaml_xparm(uc = foundCells, fn = "cells_xparm.yaml")
+        print("Cell information from XPARM.XDS parsed to cells_xparm.yaml")
+
+    else:
+        fns = parse_args_for_fns(args, name="CORRECT.LP", match=match)
+    
+        xdsall = []
+        for fn in fns:
+            try:
+                p = xds_parser(fn)
+            except UnboundLocalError as e:
+                print(e)
+                continue
+            else:
+                if p and p.d:
+                    xdsall.append(p)
+        
+        for i, p in enumerate(xdsall):
+            i += 1
+            print(p.cell_info(sequence=i))
+        
+        print(xds_parser.info_header())
+        for i, p in enumerate(xdsall):
+            i += 1
+            print(p.integration_info(sequence=i, filename=True))
+        
+        cells_to_excel(xdsall)
+        # cells_to_cellparm(xdsall)
+        cells_to_yaml(xdsall)
+
+        gather_xds_ascii(xdsall, gather=gather)
+
+        evaluate_symmetry(xdsall)
+        print("\n ** the score corresponds to the total number of indexed reflections.")
 
 
 if __name__ == '__main__':
