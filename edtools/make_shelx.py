@@ -1,8 +1,17 @@
 import subprocess as sp
 from pathlib import Path
 import yaml
+from shutil import which
+import sys
 
-exe = "sginfo"
+
+if which("sginfo"):
+    exe = "sginfo"
+elif which("cctbx.python"):
+    exe = "cctbx.python"
+else:
+    sys.exit("Either sginfo or cctbx.python must be in the path")
+
 fin  = Path(__file__).parent / "atomlib.yaml"
 TABLE = yaml.load(open(fin, "r"), Loader=yaml.Loader)
 
@@ -17,12 +26,20 @@ def comp2dict(composition):
 
 
 def get_latt_symm_cards(spgr):
-    cmd = [exe, spgr, '-Shelx']
+    if exe == "sginfo":
+        cmd = [exe, spgr, '-Shelx']
+    elif exe == "cctbx.python":
+        script = ("from cctbx import sgtbx\n"
+                  "from iotbx.shelx.write_ins import LATT_SYMM\n"
+                  "import sys\n"
+                  "space_group_info = sgtbx.space_group_info(\n"
+                  f"    symbol='{spgr}')\n"
+                  "LATT_SYMM(sys.stdout, space_group_info.group())\n")
+        cmd = [exe, "-c", script]
 
     p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
     out, err = p.communicate()
     out = out.decode()
-
     SYMM = []
 
     for line in out.split("\n"):
@@ -54,7 +71,7 @@ def main():
     description = ""
     parser = argparse.ArgumentParser(description=description,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-        
+
     parser.add_argument("-s","--spgr",
                         action="store", type=str, dest="spgr",
                         help="Space group (default P1)")
@@ -75,7 +92,7 @@ def main():
                         spgr="P1",
                         composition="",
                         wavelength=0.02508)
-    
+
     options = parser.parse_args()
 
     spgr = options.spgr
@@ -84,28 +101,28 @@ def main():
 
     atoms = comp2dict(composition)
     wavelength = options.wavelength
-    
+
     a, b, c, al, be, ga = cell
 
     out = "shelx.ins"
     f = open(out, "w")
-    
+
     print(f"TITL {spgr}", file=f)
     print(f"CELL {wavelength:.4f} {a:6.3f} {b:6.3f} {c:6.3f} {al:7.3f} {be:7.3f} {ga:7.3f}", file=f)
     print(f"ZERR 1.00    0.000  0.000  0.000   0.000   0.000   0.000", file=f)
 
     LATT, SYMM = get_latt_symm_cards(spgr)
-    
+
     print(LATT, file=f)
     for line in SYMM:
         print(line, file=f)
-    
+
     UNIT = "UNIT"
     for name, number in atoms.items():
         SFAC = get_sfac(name)
         print(SFAC, file=f)
         UNIT += f" {number}"
-    
+
     print(UNIT, file=f)
     print("TREF 5000", file=f)
     print("HKLF 4", file=f)
