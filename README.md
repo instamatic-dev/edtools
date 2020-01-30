@@ -102,7 +102,7 @@ edtools.find_rotation_axis [XDS.INP]
 ## Requirements
 
 - Python3.6 including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
-- `sginfo` must be available on the system path
+- `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
 - (Windows 10) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 - (Windows 10) XDS and related tools must be available under WSL
 
