@@ -27,6 +27,8 @@ setup(
         "": ["setup.py"],
     },
 
+    include_package_data=True,
+
     entry_points={
         'console_scripts': [
             "edtools.autoindex           = edtools.autoindex:main",
