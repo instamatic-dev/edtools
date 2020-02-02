@@ -13,24 +13,24 @@ class xds_parser(object):
     def __init__(self, filename):
         super(xds_parser, self).__init__()
         self.ios_threshold = 0.8
-        
+
         self.filename = Path(filename).resolve()
         self.d = self.parse()
-        
+
     def parse(self):
         ios_threshold = self.ios_threshold
 
         fn = self.filename
-    
+
         f = open(fn, "r")
-    
+
         in_block = False
         block = []
-    
+
         d = {}
 
         cell, spgr = None, None
-    
+
         for line in f:
             if line.startswith(" SUBSET OF INTENSITY DATA WITH SIGNAL/NOISE >= -3.0 AS FUNCTION OF RESOLUTION"):
                 in_block = True
@@ -63,41 +63,41 @@ class xds_parser(object):
                 line = next(f)
                 inp = line.split()
                 resolution_range = float(inp[0]), float(inp[1])
-    
+
             if in_block:
                 if line:
                     block.append(line.strip("\n"))
 
         d["ISa"] = ISa
         d["Boverall"] = Boverall
-    
+
         dmin = 999
-    
+
         for line in block:
             inp = line.split()
             if len(inp) != 14:
                 continue
-    
+
             try:
                 res = float(inp[0])
             except ValueError:
                 res = inp[0]
                 if res != "total":
                     continue
-    
+
             res = float(inp[0]) if inp[0] != "total" else inp[0]
             ntot, nuniq, completeness = int(inp[1]), int(inp[2]), float(inp[4].strip("%"))
             ios, rmeas, cchalf = float(inp[8]), float(inp[9].strip("%")), float(inp[10].strip("*"))
-    
+
             if ios < ios_threshold and res != "total":
                 continue
-    
+
             if (res != "total") and (res < dmin):
                 shell = (dmin, res)
                 dmin = res
-    
+
             d[res] = {"ntot": ntot, "nuniq": nuniq, "completeness": completeness, "ios": ios, "rmeas": rmeas, "cchalf": cchalf}
-    
+
         if dmin == 999:
             return
 
@@ -123,7 +123,7 @@ class xds_parser(object):
         nframes = datarange[1] - datarange[0]
         rotationrange = nframes * osc_angle
         d["rot_range"] = rotationrange
-    
+
         return d
 
     @staticmethod
@@ -152,7 +152,7 @@ class xds_parser(object):
 
         if k == 0:
             s += self.info_header()
-        
+
         dmax, dmin = d["res_range"]
 
         s += "{k: 4d} {dmax: 6.2f}{dmin: 6.2f}{ntot: 8d}{nuniq: 8d}{completeness: 8.1f}{ios: 8.2f}{rmeas: 8.1f}{cchalf: 8.1f}{ISa: 8.2f}{Boverall: 8.2f}".format(
@@ -255,7 +255,7 @@ def cells_to_yaml(ps, fn="cells.yaml"):
 
 
 def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
-    """Takes a list of `xds_parser` instances and gathers the 
+    """Takes a list of `xds_parser` instances and gathers the
     corresponding `XDS_ASCII.HKL` files into the current directory.
     The data source and numbering scheme is summarized in the file `filelist.txt`.
     """
@@ -292,9 +292,9 @@ def gather_xds_ascii(ps, min_completeness=10.0, min_cchalf=90.0, gather=False):
 
 
 def lattice_to_space_group(lattice):
-    return { 'aP':  1, 'mP':  3, 'mC':  5, 'mI':  5,   
+    return { 'aP':  1, 'mP':  3, 'mC':  5, 'mI':  5,
              'oP': 16, 'oC': 21, 'oI': 23, 'oF': 22,
-             'tP': 75, 'tI': 79, 'hP':143, 'hR':146, 
+             'tP': 75, 'tI': 79, 'hP':143, 'hR':146,
              'cP':195, 'cF':196, 'cI':197 }[lattice]
 
 
@@ -339,10 +339,23 @@ def cells_to_yaml_xparm(uc, fn="cells_xparm.yaml"):
     for i, p in enumerate(uc):
         i += 1
         d = {}
-        d["directory"] = ""
+
+        d["directory"] = Path(p[1]).parent.resolve()
+
+        """get rotation range from XDS.INP"""
+        xdsinp = Path(p[1]).parent / "XDS.INP"
+        with open(xdsinp, "r") as f:
+            for line in f:
+                if line.startswith("DATA_RANGE="):
+                    datarange = list(map(float, line.strip("\n").split()[1:]))
+                elif line.startswith("OSCILLATION_RANGE="):
+                    osc_angle = float(line.strip("\n").split()[1])
+
+        rr = osc_angle * (datarange[1] - datarange[0] + 1)
+
         d["number"] = i
-        d["unit_cell"] = 1
-        d["raw_unit_cell"] = p
+        d["rotation_range"] = rr
+        d["raw_unit_cell"] = p[0]
         d["space_group"] = "P1"
         d["weight"] = 1
         ds.append(d)
@@ -357,7 +370,7 @@ def main():
     description = "Program to consolidate data from a large series of data sets from a serial crystallography experiment."
     parser = argparse.ArgumentParser(description=description,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-        
+
     parser.add_argument("args",
                         type=str, nargs="*", metavar="FILE",
                         help="List of CORRECT.LP files or list of directories. If a list of directories is given "
@@ -377,7 +390,7 @@ def main():
                         help="extract unit cell info from XPARM.XDS instead of CORRECT.LP. NOTE!! Only aimed for first step clustering.")
 
     parser.set_defaults(match=None)
-    
+
     options = parser.parse_args()
 
     match = options.match
@@ -387,18 +400,18 @@ def main():
 
     if xparm:
         fns = parse_args_for_fns(args, name="XPARM.XDS", match=match)
-        foundCells = []
+        foundCells_and_Path = []
 
         for fn in fns:
             uc = parse_xparm_for_uc(fn)
-            foundCells.append(uc)
+            foundCells_and_Path.append(uc, fn)
 
-        cells_to_yaml_xparm(uc = foundCells, fn = "cells_xparm.yaml")
+        cells_to_yaml_xparm(uc = foundCells_and_Path, fn = "cells_xparm.yaml")
         print("Cell information from XPARM.XDS parsed to cells_xparm.yaml")
 
     else:
         fns = parse_args_for_fns(args, name="CORRECT.LP", match=match)
-    
+
         xdsall = []
         for fn in fns:
             try:
@@ -409,16 +422,16 @@ def main():
             else:
                 if p and p.d:
                     xdsall.append(p)
-        
+
         for i, p in enumerate(xdsall):
             i += 1
             print(p.cell_info(sequence=i))
-        
+
         print(xds_parser.info_header())
         for i, p in enumerate(xdsall):
             i += 1
             print(p.integration_info(sequence=i, filename=True))
-        
+
         cells_to_excel(xdsall)
         # cells_to_cellparm(xdsall)
         cells_to_yaml(xdsall)
