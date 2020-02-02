@@ -340,7 +340,7 @@ def cells_to_yaml_xparm(uc, fn="cells_xparm.yaml"):
         i += 1
         d = {}
 
-        d["directory"] = Path(p[1]).parent.resolve()
+        d["directory"] = str(Path(p[1]).parent.resolve())
 
         """get rotation range from XDS.INP"""
         xdsinp = Path(p[1]).parent / "XDS.INP"
@@ -404,7 +404,7 @@ def main():
 
         for fn in fns:
             uc = parse_xparm_for_uc(fn)
-            foundCells_and_Path.append(uc, fn)
+            foundCells_and_Path.append([uc, fn])
 
         cells_to_yaml_xparm(uc = foundCells_and_Path, fn = "cells_xparm.yaml")
         print("Cell information from XPARM.XDS parsed to cells_xparm.yaml")
