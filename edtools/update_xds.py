@@ -155,10 +155,6 @@ def main():
                         action="store", type=float, dest="StrongPixel",
                         help="Parameter used for strong pixel threshold")
 
-    parser.add_argument("--match",
-                        action="store", type=str, dest="match",
-                        help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
-
     parser.add_argument("-it", "--indexingNumberThreshold",
                         action="store", type=float, dest="indexingNumberThreshold",
                         help="Parameter to tune the threshold for percentage of spots that is indexed")
