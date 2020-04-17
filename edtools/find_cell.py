@@ -370,7 +370,7 @@ def main():
                         action="store_true", dest="use_radian_for_clustering",
                         help="Use radians for unit cell clustering (to downweight the difference in angles)")
 
-    parser.add_argument("-r", "--use_sine_for_angles",
+    parser.add_argument("-s", "--use_sine_for_angles",
                         action="store_true", dest="use_sine_for_clustering",
                         help="Use sine for unit cell clustering (to disambiguousize the difference in angles)")
     

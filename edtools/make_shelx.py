@@ -19,7 +19,7 @@ TABLE = yaml.load(open(fin, "r"), Loader=yaml.Loader)
 def comp2dict(composition):
     """Takes composition: Si20 O10, returns dict of atoms {'Si':20,'O':10}"""
     import re
-    composition = " ".join(composition)
+    composition = "".join(composition)
     pat = re.compile('([A-z]+|[0-9]+)')
     m = re.findall(pat, composition)
     return dict(zip(m[::2], map(int,m[1::2])))
