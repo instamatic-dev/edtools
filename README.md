@@ -1,5 +1,13 @@
+![build](https://github.com/stefsmeets/edtools/workflows/build/badge.svg)
+![PyPI](https://img.shields.io/pypi/v/edtools.svg?style=flat)
+
 # edtools
-Collection of tools for automated processing and clustering of single-crystal electron diffraction data
+
+Collection of tools for automated processing and clustering of single-crystal electron diffraction data.
+
+Install using `pip install edtools`.
+
+[The source for this project is available here][src].
 
 ## Pipeline tools
 
@@ -21,7 +29,7 @@ Looks files matching `CORRECT.LP` in all subdirectories and extracts unit cell/i
 
 ### find_cell.py
 
-This program a cells.yaml file and shows histogram plots with the unit cell parameters. This program mimicks `CELLPARM` (http://xds.mpimf-heidelberg.mpg.de/html_doc/cellparm_program.html) and calculates the weighted mean lattice parameters, where the weight is typically the number of observed reflections (defaults to 1.0). For each lattice parameter, the mean is calculated in a given range (default range = median+-2). The range can be changed by dragging the cursor on the histogram plots. 
+This program a cells.yaml file and shows histogram plots with the unit cell parameters. This program mimicks `CELLPARM` (http://xds.mpimf-heidelberg.mpg.de/html_doc/cellparm_program.html) and calculates the weighted mean lattice parameters, where the weight is typically the number of observed reflections (defaults to 1.0). For each lattice parameter, the mean is calculated in a given range (default range = median+-2). The range can be changed by dragging the cursor on the histogram plots.
 
 Alternatively, the unit cells can be clustered by giving the `--cluster` command, in which a dendrogram is shown. The cluster cutoff can be selected by clicking in the dendrogram. The clusters will be written to `cells_cluster_#.yaml`.
 
@@ -106,3 +114,5 @@ edtools.find_rotation_axis [XDS.INP]
 - (Windows 10) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
 - (Windows 10) XDS and related tools must be available under WSL
 
+
+[src]: https://github.com/stefsmeets/edtools
