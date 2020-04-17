@@ -28,8 +28,6 @@ license = "GPL-3.0-only"
 include = [
     ".pre-commit.yaml",
     "LICENCE",
-    "pyproject.toml",
-    "README.md",
     "setup.py",
 ]
 
