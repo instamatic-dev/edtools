@@ -1,5 +1,7 @@
-![build](https://github.com/stefsmeets/edtools/workflows/build/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/stefsmeets/edtools/build)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/edtools)
 ![PyPI](https://img.shields.io/pypi/v/edtools.svg?style=flat)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/edtools)
 
 # edtools
 
