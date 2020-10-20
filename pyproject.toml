@@ -18,11 +18,11 @@ classifiers = [
 	"Programming Language :: Python :: 3.7",
 	"Programming Language :: Python :: 3.8",
 ]
-homepage = "http://github.com/stefsmeets/edtools"
-repository = "http://github.com/stefsmeets/edtools"
-documentation = "http://github.com/stefsmeets/edtools"
-maintainers = ["Stef Smeets <s.smeets@tudelft.nl>"]
-authors = ["Stef Smeets <s.smeets@tudelft.nl>"]
+homepage = "http://github.com/instamatic-dev/edtools"
+repository = "http://github.com/instamatic-dev/edtools"
+documentation = "http://github.com/instamatic-dev/edtools"
+maintainers = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
+authors = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
 readme = "README.md"
 license = "GPL-3.0-only"
 include = [
@@ -55,7 +55,7 @@ pre-commit = "*"
 "edtools.find_rotation_axis"  = "edtools.find_rotation_axis:main"
 
 [tool.poetry.urls]
-"Bug Reports" = "https://github.com/stefsmeets/edtools/issues"
+"Bug Reports" = "https://github.com/instamatic-dev/edtools/issues"
 
 [tool.dephell.main]
 from = {format = "poetry", path = "pyproject.toml"}

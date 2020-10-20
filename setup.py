@@ -25,9 +25,9 @@ setup(
     description='Collection of tools for automated processing and clustering of electron diffraction data.',
     python_requires='>=3.6.1',
     project_urls={
-        'documentation': 'http://github.com/stefsmeets/edtools',
-        'homepage': 'http://github.com/stefsmeets/edtools',
-        'repository': 'http://github.com/stefsmeets/edtools'},
+        'documentation': 'http://github.com/instamatic-dev/edtools',
+        'homepage': 'http://github.com/instamatic-dev/edtools',
+        'repository': 'http://github.com/instamatic-dev/edtools'},
     author='Stef Smeets',
     author_email='s.smeets@tudelft.nl',
     license='GPL-3.0-only',
