@@ -21,7 +21,15 @@ def update_xds(fn,
                sp=None, 
                indnumthre=None, 
                d=False, 
-               dl=None):
+               dl=None,
+               processors=None,
+               center=None,
+               axis=None,
+               cam_len=None,
+               mosaicity=None,
+               pixel_size=None,
+               untrusted=None,
+               corr=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -55,7 +63,7 @@ def update_xds(fn,
         elif overload and "OVERLOAD" in line:
             line = f"OVERLOAD= {overload:d}\n"
         elif hi_res and "INCLUDE_RESOLUTION_RANGE" in line:
-            line = f"INCLUDE_RESOLUTION_RANGE= {lo_res:.1f} {hi_res:.1f}\n"
+            line = f"INCLUDE_RESOLUTION_RANGE= {lo_res:.2f} {hi_res:.2f}\n"
         elif wfac1 and "WFAC1" in line:
             line = f"WFAC1= {wfac1:.1f}\n"
         elif sp and "STRONG_PIXEL" in line:
@@ -73,8 +81,8 @@ def update_xds(fn,
             else:
                 if keyword in ("DATA_RANGE=", "SPOT_RANGE=", "BACKGROUND_RANGE="):
                     data_begin, data_end = line[20:].split()
-                    data_begin_cf = round(int(data_begin)*0.98)
-                    data_end_cf = round(int(data_end)*0.98)
+                    data_begin_cf = round(int(data_begin))
+                    data_end_cf = round(int(data_end)*(1-cut_frames))
                     line = f"{keyword:20s}        {data_begin_cf:d} {data_end_cf:d}\n"
         elif comment and "UNIT_CELL_CONSTANTS" in line:
             line = pre + line
@@ -88,11 +96,38 @@ def update_xds(fn,
             line = ""
         elif jobs and ("JOB=" in line):
             continue
+        elif processors:
+            try:
+                keyword = line.strip().split("=")[0]
+            except IndexError:
+                pass
+            else:
+                if keyword in ("MAXIMUM_NUMBER_OF_JOBS", "MAXIMUM_NUMBER_OF_PROCESSORS"):
+                    line = f"{keyword}={processors:d}\n"
+        elif center and "ORGX" in line and "ORGY" in line:
+            line = f"ORGX= {center[0]:.2f}    ORGY= {center[1]:.2f}\n"
+        elif untrusted and "UNTRUSTED_RECTANGLE" in line:
+            line = "!" + line
+        elif corr and "GEO_CORR=" in line:
+            line = "!" + line
+        elif axis and "ROTATION_AXIS" in line:
+            line = f"ROTATION_AXIS= {axis[0]} {axis[1]} {axis[2]}\n"
+        elif cam_len and "DETECTOR_DISTANCE" in line:
+            line = f"DETECTOR_DISTANCE= {cam_len}\n"
+        elif pixel_size and "QX" in line:
+            line = f"QX= {pixel_size[0]}  QY= {pixel_size[1]}\n"
+        if "Cryst." in line:
+            line = ""
+
 
         new_lines.append(line)
 
     if apd:
         line = f"{apd}\n"
+        new_lines.append(line)
+
+    if mosaicity:
+        line = f"BEAM_DIVERGENCE_E.S.D.=   {mosaicity[0]:.3f}\nREFLECTING_RANGE_E.S.D.=   {mosaicity[1]:.2f}\n"
         new_lines.append(line)
         
     open(fn, "w").writelines(new_lines)
@@ -136,8 +171,8 @@ def main():
                         help="Update resolution cut LOW_RES / HIGH_RES (default: 20 0.8)")
 
     parser.add_argument("-f", "--cut-frames",
-                        action="store_true", dest="cut_frames",
-                        help="Cut the first and last 2 percent of frames")
+                        action="store", type=float, dest="cut_frames",
+                        help="Cut the last n percent of frames (deault: 0.0)")
 
     parser.add_argument("-w", "--wfac1",
                         action="store", type=float, dest="wfac1",
@@ -170,6 +205,37 @@ def main():
     parser.add_argument("-j", "--jobs",
                         action="store", type=str, nargs="+", 
                         help="Specify which JOB should be performed by XDS: XYCORR, INIT, COLSPOT, IDXREF, DEFPIX, INTEGRATE, CORRECT. Specify `all` for all jobs.")
+    parser.add_argument("-p", "--processors",
+                        action="store", type=int, dest="processors", 
+                        help="Specify MAXIMUM_NUMBER_OF_JOBS and MAXIMUM_NUMBER_OF_PROCESSORS.")
+
+    parser.add_argument("-cen", "--center",
+                        action="store", type=float, nargs=2, dest="center",
+                        help="Update beam center positio.")
+
+    parser.add_argument("-ax", "--axis",
+                        action="store", type=float, nargs=3, dest="axis",
+                        help="Update the rotation axis.")
+                        
+    parser.add_argument("-cam", "--cam_len",
+                        action="store", type=float, dest="cam_len",
+                        help="Update the camera length.")
+                        
+    parser.add_argument("-mos", "--mosaicity",
+                        action="store", type=float, nargs=2, dest="mosaicity",
+                        help="Update BEAM_DIVERGENCE_E.S.D. and REFLECTING_RANGE_E.S.D.")
+                        
+    parser.add_argument("-px", "--pixel_size",
+                        action="store", type=float, nargs=2, dest="pixel_size",
+                        help="Update camera physical pixel size")
+                        
+    parser.add_argument("-un", "--untrusted",
+                        action="store", type=bool, dest="untrusted",
+                        help="Comment UNTRUSTED_RECTANGLE")
+
+    parser.add_argument("-co", "--corr",
+                        action="store", type=bool, dest="corr",
+                        help="Comment UNTRUSTED_RECTANGLE")
 
     parser.set_defaults(cell=None,
                         spgr=None,
@@ -178,14 +244,22 @@ def main():
                         match=None,
                         overload_value=None,
                         resolution=(None, None),
-                        cut_frames=False,
+                        cut_frames=None,
                         wfac1=None,
                         append=None,
                         StrongPixel=None,
                         indexingNumberThreshold=None,
                         delete_ref_line=False,
                         delete_line=None,
-                        jobs=())
+                        jobs=(),
+                        processors=None,
+                        center=None,
+                        axis=None,
+                        cam_len=None,
+                        mosaicity=None,
+                        pixel_size=None,
+                        untrusted=None,
+                        corr=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -204,6 +278,14 @@ def main():
     del_ref = options.delete_ref_line
     del_line = options.delete_line
     jobs = options.jobs
+    processors = options.processors
+    center = options.center
+    axis = options.axis
+    cam_len = options.cam_len
+    mosaicity = options.mosaicity
+    pixel_size = options.pixel_size
+    untrusted=options.untrusted
+    corr=options.corr
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
@@ -225,7 +307,15 @@ def main():
                    sp=StrongPixel, 
                    indnumthre = indnumthre, 
                    d=del_ref, 
-                   dl=del_line)
+                   dl=del_line,
+                   processors = processors,
+                   center=center,
+                   axis=axis,
+                   cam_len=cam_len,
+                   mosaicity=mosaicity,
+                   pixel_size=pixel_size,
+                   untrusted=untrusted,
+                   corr=corr)
 
     print(f"\033[KUpdated {len(fns)} files")
 

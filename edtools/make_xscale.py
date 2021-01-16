@@ -55,7 +55,7 @@ def write_xscale_inp(fns, unit_cell, space_group):
 
     with open("XSCALE.INP", "w") as f:
 
-        print("MINIMUM_I/SIGMA= 2", file=f)
+        print("SNRC= 2", file=f)
         print("SAVE_CORRECTION_IMAGES= FALSE", file=f)  # prevent local directory being littered with .cbf files
         print(f"SPACE_GROUP_NUMBER= {space_group}", file=f)
         print(f"UNIT_CELL_CONSTANTS= {cell_str}", file=f)

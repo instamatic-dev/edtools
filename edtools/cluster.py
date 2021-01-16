@@ -154,10 +154,10 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8), ioversigma=2):
         print(f"! Cluster distance cutoff: {item['distance_cutoff']}", file=f)
         print(f"! Cluster method: {item['method']}", file=f)
         print(file=f)
-        print(f"MINIMUM_I/SIGMA= {ioversigma}", file=f)
+        print(f"SNRC= {ioversigma}", file=f)
         print("SAVE_CORRECTION_IMAGES= FALSE", file=f)  # prevent local directory being littered with .cbf files
-        print(f"! {spgr}", file=f)
-        print(f"! {cell}", file=f)
+        print(f" {spgr}", file=f)
+        print(f" {cell}", file=f)
         print(file=f)
         print("OUTPUT_FILE= MERGED.HKL", file=f)
         print(file=f)
