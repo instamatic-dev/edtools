@@ -24,7 +24,10 @@ def update_xds(fn,
                dl=None,
                processors=None,
                center=None,
+               axis=None,
+               cam_len=None,
                mosaicity=None,
+               pixel_size=None,
                untrusted=None,
                corr=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
@@ -60,7 +63,7 @@ def update_xds(fn,
         elif overload and "OVERLOAD" in line:
             line = f"OVERLOAD= {overload:d}\n"
         elif hi_res and "INCLUDE_RESOLUTION_RANGE" in line:
-            line = f"INCLUDE_RESOLUTION_RANGE= {lo_res:.1f} {hi_res:.1f}\n"
+            line = f"INCLUDE_RESOLUTION_RANGE= {lo_res:.2f} {hi_res:.2f}\n"
         elif wfac1 and "WFAC1" in line:
             line = f"WFAC1= {wfac1:.1f}\n"
         elif sp and "STRONG_PIXEL" in line:
@@ -107,7 +110,12 @@ def update_xds(fn,
             line = "!" + line
         elif corr and "GEO_CORR=" in line:
             line = "!" + line
-
+        elif axis and "ROTATION_AXIS" in line:
+            line = f"ROTATION_AXIS= {axis[0]} {axis[1]} {axis[2]}\n"
+        elif cam_len and "DETECTOR_DISTANCE" in line:
+            line = f"DETECTOR_DISTANCE= {cam_len}\n"
+        elif pixel_size and "QX" in line:
+            line = f"QX= {pixel_size[0]}  QY= {pixel_size[1]}\n"
         if "Cryst." in line:
             line = ""
 
@@ -203,12 +211,24 @@ def main():
 
     parser.add_argument("-cen", "--center",
                         action="store", type=float, nargs=2, dest="center",
-                        help="Update beam center position")
+                        help="Update beam center positio.")
 
+    parser.add_argument("-ax", "--axis",
+                        action="store", type=float, nargs=3, dest="axis",
+                        help="Update the rotation axis.")
+                        
+    parser.add_argument("-cam", "--cam_len",
+                        action="store", type=float, dest="cam_len",
+                        help="Update the camera length.")
+                        
     parser.add_argument("-mos", "--mosaicity",
                         action="store", type=float, nargs=2, dest="mosaicity",
                         help="Update BEAM_DIVERGENCE_E.S.D. and REFLECTING_RANGE_E.S.D.")
-
+                        
+    parser.add_argument("-px", "--pixel_size",
+                        action="store", type=float, nargs=2, dest="pixel_size",
+                        help="Update camera physical pixel size")
+                        
     parser.add_argument("-un", "--untrusted",
                         action="store", type=bool, dest="untrusted",
                         help="Comment UNTRUSTED_RECTANGLE")
@@ -234,7 +254,10 @@ def main():
                         jobs=(),
                         processors=None,
                         center=None,
+                        axis=None,
+                        cam_len=None,
                         mosaicity=None,
+                        pixel_size=None,
                         untrusted=None,
                         corr=None)
     
@@ -257,7 +280,10 @@ def main():
     jobs = options.jobs
     processors = options.processors
     center = options.center
+    axis = options.axis
+    cam_len = options.cam_len
     mosaicity = options.mosaicity
+    pixel_size = options.pixel_size
     untrusted=options.untrusted
     corr=options.corr
 
@@ -284,7 +310,10 @@ def main():
                    dl=del_line,
                    processors = processors,
                    center=center,
+                   axis=axis,
+                   cam_len=cam_len,
                    mosaicity=mosaicity,
+                   pixel_size=pixel_size,
                    untrusted=untrusted,
                    corr=corr)
 

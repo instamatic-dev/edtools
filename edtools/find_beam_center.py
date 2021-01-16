@@ -2,6 +2,8 @@ from .utils import parse_args_for_fns
 import numpy as np
 from scipy import ndimage
 from scipy import interpolate
+from skimage.registration import phase_cross_correlation
+import scipy.ndimage as ndimage
 from .update_xds import update_xds
 
 def read_adsc(fname: str) -> (np.array, dict):
@@ -143,6 +145,47 @@ def find_beam_center(img: np.ndarray, sigma: int = 30, m: int = 100, kind: int =
 
     center = np.array([cx, cy])
     return center
+    
+def translate_image(arr, shift: np.array) -> np.array:
+    """Translate an image according to shift. Shift should be a 2D numpy array"""
+    img = np.zeros(arr.shape, dtype=np.uint16)
+    shift = np.int16(shift)
+    avg = np.uint16(arr.mean())
+    if shift[0] >= 0 and shift[1] >= 0:
+        if shift[0] == 0 and shift[1] == 0:
+            return arr
+        elif shift[0] == 0:
+            img[:, shift[1]:] = arr[:, :-shift[1]]
+            img[:, :shift[1]] = avg
+        elif shift[1] == 0:
+            img[shift[0]:, :] = arr[:-shift[0], :]
+            img[:shift[0], :] = avg
+        else:
+            img[shift[0]:, shift[1]:] = arr[:-shift[0], :-shift[1]]
+            img[:shift[0], :] = avg
+            img[:, :shift[1]] = avg
+    elif shift[0] >= 0 and shift[1] < 0:
+        if shift[0] == 0:
+            img[:, :shift[1]] = arr[:, -shift[1]:]
+            img[:, shift[1]:] = avg
+        else:
+            img[shift[0]:, :shift[1]] = arr[:-shift[0], -shift[1]:]
+            img[:shift[0], :] = avg
+            img[:, shift[1]:] = avg
+    elif shift[0] < 0 and shift[1] >= 0:
+        if shift[1] == 0:
+            img[:shift[0], :] = arr[-shift[0]:, :]
+            img[shift[0]:, :] = avg
+        else:
+            img[:shift[0], shift[1]:] = arr[-shift[0]:, :-shift[1]]
+            img[shift[0]:, :] = avg
+            img[:, :shift[1]] = avg
+    elif shift[0] < 0 and shift[1] < 0:
+        img[:shift[0], :shift[1]] = arr[-shift[0]:, -shift[1]:]
+        img[shift[0]:, :] = avg
+        img[:, shift[1]:] = avg
+
+    return img
 
 def main():
     import argparse
@@ -169,22 +212,30 @@ def main():
 
     for fn in XDS_input_path:
         data_path = fn.parent/'data'
+        print(data_path)
         img_list = list(data_path.glob("*.img"))
         img_first = str(img_list[0])
         data, header = read_adsc(img_first)
         center_x, center_y = find_beam_center(data)
-        update_xds(fn, jobs=(), center=(center_x, center_y))
+        #center_x, center_y = (268, 249)
+        update_xds(fn, jobs=(), center=(center_y, center_x))
+        template = data[round(center_x)-16:round(center_x)+16, round(center_y)-16:round(center_y)+16].copy()
+        center_x_new, center_y_new = find_beam_center(template, sigma=5)
+        print(center_x_new, center_y_new)
 
         for img in img_list[1:]:
-        	img = str(img)
-        	data, header = read_adsc(img)
-        	center = find_beam_center(data)
-        	shift = (center_x-center[0], center_y-center[1])
-        	#print(shift)
-        	data = ndimage.interpolation.shift(data,shift,output=np.uint16,order=1,mode='nearest')
-        	header['BEAM_CENTER_X'] = center_x
-        	header['BEAM_CENTER_Y'] = center_y
-        	write_adsc(img, data, header)
+            img = str(img)
+            data, header = read_adsc(img)
+            #center = find_beam_center(data)
+            #center_area = data[round(center_y)-10:round(center_y)+10, round(center_x)-10:round(center_x)+10]
+            center  = find_beam_center(data[round(center_x)-16:round(center_x)+16, round(center_y)-16:round(center_y)+16],sigma=5)
+            shift = (center_x_new-center[0], center_y_new-center[1])
+            #shift, error, phasediff = phase_cross_correlation(template, center_area, upsample_factor=10)
+            print(shift)
+            data = ndimage.shift(data,shift,output=np.uint16,mode='nearest')
+            header['BEAM_CENTER_X'] = center_y
+            header['BEAM_CENTER_Y'] = center_x
+            write_adsc(img, data, header)
         	
 
 if __name__ == '__main__':
