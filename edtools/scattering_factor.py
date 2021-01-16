@@ -5,6 +5,7 @@ import yaml
 import numpy as np
 import pandas as pd
 import tkinter as tk
+from pathlib import Path
 from tkinter import *
 from tkinter.ttk import *
 
@@ -13,6 +14,8 @@ from edtools.widgets import Spinbox, Hoverbox
 from collections import namedtuple
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
+atomlib  = Path(__file__).parent / "atomlib.yaml"
 
 FitResult_4p = namedtuple('FitResult_4p', 'a0 b0 a1 b1 a2 b2 a3 b3 c'.split())
 FitResult_5p = namedtuple('FitResult_5p', 'a0 b0 a1 b1 a2 b2 a3 b3 a4 b4 c'.split())
@@ -573,7 +576,7 @@ class ScatteringFactorGUI(LabelFrame):
         frame.pack(side='top', fill='x', expand=False, padx=5, pady=5)
 
     def init_vars(self):
-        with open('atomlib.yaml', 'r') as f:
+        with open(atomlib, 'r') as f:
             self.scat_factor_lib = yaml.load(f, Loader=yaml.Loader)
         
         self.element = ""

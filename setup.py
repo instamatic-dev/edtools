@@ -63,7 +63,8 @@ setup(
         'numpy==1.*,>=1.18.2',
         'pandas==1.*,>=1.0.3',
         'scipy==1.*,>=1.4.1',
-        'uncertainties==3.*,>=3.1.2'],
+        'uncertainties==3.*,>=3.1.2',
+        'lmfit>=1.0.0'],
     extras_require={
         'dev': [
             'check-manifest',
