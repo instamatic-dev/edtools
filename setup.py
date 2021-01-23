@@ -49,7 +49,7 @@ setup(
             'edtools.make_xscale = edtools.make_xscale:main',
             'edtools.make_shelx = edtools.make_shelx:main',
             'edtools.update_xds = edtools.update_xds:main',
-            'edtools.group_reflections = edtools.group_reflections:main',
+            'edtools.reflection_tool = edtools.reflection_tool:main',
             'edtools.find_rotation_axis = edtools.find_rotation_axis:main',
             'edtools.find_beam_center  = edtools.find_beam_center:main',
             'edtools.scattering_factor  = edtools.scattering_factor:main']},
