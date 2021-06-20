@@ -232,7 +232,7 @@ def main():
             shift = (center_x_new-center[0], center_y_new-center[1])
             #shift, error, phasediff = phase_cross_correlation(template, center_area, upsample_factor=10)
             print(shift)
-            data = ndimage.shift(data,shift,output=np.uint16,mode='nearest')
+            data = ndimage.shift(data, shift, output=np.uint16, mode='nearest')
             header['BEAM_CENTER_X'] = center_y
             header['BEAM_CENTER_Y'] = center_x
             write_adsc(img, data, header)
