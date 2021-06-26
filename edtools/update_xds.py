@@ -29,7 +29,8 @@ def update_xds(fn,
                mosaicity=None,
                pixel_size=None,
                untrusted=None,
-               corr=None):
+               corr=None,
+               refine_idx=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -116,6 +117,8 @@ def update_xds(fn,
             line = f"DETECTOR_DISTANCE= {cam_len}\n"
         elif pixel_size and "QX" in line:
             line = f"QX= {pixel_size[0]}  QY= {pixel_size[1]}\n"
+        elif refine_idx and "REFINE(IDXREF)" in line:
+            line = f"REFINE(IDXREF)=   {' '.join(refine_idx)}\n"
         if "Cryst." in line:
             line = ""
 
@@ -237,6 +240,10 @@ def main():
                         action="store", type=bool, dest="corr",
                         help="Comment UNTRUSTED_RECTANGLE")
 
+    parser.add_argument("-ridx", "--refine_index",
+                        action="store", type=str, nargs="*", dest="refine_index",
+                        help="Comment refine index")
+
     parser.set_defaults(cell=None,
                         spgr=None,
                         comment=False,
@@ -259,7 +266,8 @@ def main():
                         mosaicity=None,
                         pixel_size=None,
                         untrusted=None,
-                        corr=None)
+                        corr=None,
+                        refine_index=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -284,8 +292,9 @@ def main():
     cam_len = options.cam_len
     mosaicity = options.mosaicity
     pixel_size = options.pixel_size
-    untrusted=options.untrusted
-    corr=options.corr
+    untrusted = options.untrusted
+    corr = options.corr
+    refine_index = options.refine_index
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
@@ -315,7 +324,8 @@ def main():
                    mosaicity=mosaicity,
                    pixel_size=pixel_size,
                    untrusted=untrusted,
-                   corr=corr)
+                   corr=corr,
+                   refine_idx=refine_index)
 
     print(f"\033[KUpdated {len(fns)} files")
 

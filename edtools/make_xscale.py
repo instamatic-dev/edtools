@@ -43,7 +43,7 @@ def get_xds_ascii_names(lst):
     return ret
 
 
-def write_xscale_inp(fns, unit_cell, space_group):
+def write_xscale_inp(fns, unit_cell, space_group, resolution):
     cwd = Path(".").resolve()
 
     cell_str = " ".join((f"{val:.3f}" for val in unit_cell))
@@ -75,17 +75,17 @@ def write_xscale_inp(fns, unit_cell, space_group):
                     fn = fn.as_posix().replace(f"{drive}", f"/mnt/{drive_letter}")
 
             print(f"    INPUT_FILE= {fn}", file=f)
-            print(f"    INCLUDE_RESOLUTION_RANGE= 20 0.8", file=f)
+            print(f"    INCLUDE_RESOLUTION_RANGE= {resolution[0]} {resolution[1]}", file=f)
             print(file=f)
 
     print(f"Wrote file {f.name}")
 
 
-def write_xdsconv_inp():
+def write_xdsconv_inp(resolution):
     with open("XDSCONV.INP", "w") as f:
-        print("""
+        print(f"""
 INPUT_FILE= MERGED.HKL
-INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
+INCLUDE_RESOLUTION_RANGE= {resolution[0]} {resolution[1]} ! optional 
 OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
 
@@ -111,12 +111,18 @@ def main():
                         action="store", type=float, nargs=6, dest="cell",
                         help="Override the unit cell parameters (default: mean unit cell)")
 
+    parser.add_argument("-r","--resolution",
+                        action="store", type=float, nargs=2, dest="resolution",
+                        help="Override the resolution (default: mean unit cell)")
+
     parser.set_defaults(cell=None,
-                        spgr=None)
+                        spgr=None,
+                        resolution=(20, 0.8))
     
     options = parser.parse_args()
     spgr = options.spgr
     cell = options.cell
+    resolution = options.resolution
     args = options.args
     
     if not args:  # attempt to populate args
@@ -162,8 +168,8 @@ def main():
         laue_symm = d["laue_symmetry"]
         print(f"Lowest possible symmetry for {spgr} ({lattice}): {laue_symm}")
 
-    write_xscale_inp(fns, unit_cell=cell, space_group=spgr)
-    write_xdsconv_inp()
+    write_xscale_inp(fns, unit_cell=cell, space_group=spgr, resolution=resolution)
+    write_xdsconv_inp(resolution=resolution)
 
 
 if __name__ == '__main__':
