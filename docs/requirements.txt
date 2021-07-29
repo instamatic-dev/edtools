@@ -2,8 +2,10 @@ sphinx
 sphinx_rtd_theme
 readthedocs-sphinx-search
 autodocsumm
-numpy
+lmfit
 matplotlib
-scipy
+numpy
 pandas
+pyyaml
+scipy
 uncertainties
