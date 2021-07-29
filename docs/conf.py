@@ -39,7 +39,7 @@ def make_markdown(app):
 # https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events
 # https://github.com/readthedocs/readthedocs.org/issues/2276
 def setup(app):
-    # app.connect('builder-inited', make_markdown)
+    app.connect('builder-inited', make_markdown)
     app.connect('builder-inited', run_apidoc)
 
 
