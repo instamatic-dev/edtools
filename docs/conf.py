@@ -118,7 +118,9 @@ autodoc_default_options = {
     'special-members': '__init__',
 }
 
-autodoc_mock_imports = []
+autodoc_mock_imports = [
+    'cctbx',
+]
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),

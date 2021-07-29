@@ -8,4 +8,5 @@ numpy
 pandas
 pyyaml
 scipy
+scikit-image
 uncertainties
