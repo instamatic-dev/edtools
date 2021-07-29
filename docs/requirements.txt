@@ -1,0 +1,9 @@
+sphinx
+sphinx_rtd_theme
+readthedocs-sphinx-search
+autodocsumm
+numpy
+matplotlib
+scipy
+pandas
+uncertainties
