@@ -30,7 +30,7 @@ def run_apidoc(app):
 # Convert readme.md and others to rst to be included in index.html
 def make_markdown(app):
     import subprocess
-    for inp, out in (('../readme.md', 'readme.rst')):
+    for inp, out in (('../readme.md', 'readme.rst'),):
         cmd = f'pandoc --from=markdown --to=rst --output={out} {inp}'
         args = cmd.split()
         subprocess.run(args)
