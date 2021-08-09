@@ -21,7 +21,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='edtools',
-    version='1.0.0',
+    version='1.0.1',
     description='Collection of tools for automated processing and clustering of electron diffraction data.',
     python_requires='>=3.6.1',
     project_urls={
@@ -29,7 +29,7 @@ setup(
         'homepage': 'http://github.com/instamatic-dev/edtools',
         'repository': 'http://github.com/instamatic-dev/edtools'},
     author='Stef Smeets',
-    author_email='s.smeets@tudelft.nl',
+    author_email='s.smeets@esciencecenter.nl',
     license='GPL-3.0-only',
     keywords='electron-diffraction microed xds pipeline cluster-analysis',
     classifiers=[
@@ -38,7 +38,9 @@ setup(
             'Programming Language :: Python :: 3',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8'],
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+    ],
     entry_points={
         'console_scripts': [
             'edtools.autoindex = edtools.autoindex:main',
