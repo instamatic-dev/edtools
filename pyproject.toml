@@ -12,7 +12,7 @@ keywords = [
 ]
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
-	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+	"License :: OSI Approved :: BSD License",
 	"Programming Language :: Python :: 3",
 	"Programming Language :: Python :: 3.6",
 	"Programming Language :: Python :: 3.7",
@@ -25,7 +25,7 @@ documentation = "http://github.com/instamatic-dev/edtools"
 maintainers = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
 authors = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
 readme = "README.md"
-license = "GPL-3.0-only"
+license = "BSD-3-clause"
 include = [
     ".pre-commit.yaml",
     "LICENCE",

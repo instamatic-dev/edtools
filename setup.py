@@ -30,11 +30,11 @@ setup(
         'repository': 'http://github.com/instamatic-dev/edtools'},
     author='Stef Smeets',
     author_email='s.smeets@esciencecenter.nl',
-    license='GPL-3.0-only',
+    license='BSD-3-clause',
     keywords='electron-diffraction microed xds pipeline cluster-analysis',
     classifiers=[
             'Development Status :: 5 - Stable',
-            'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+            'License :: OSI Approved :: BSD License',
             'Programming Language :: Python :: 3',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
