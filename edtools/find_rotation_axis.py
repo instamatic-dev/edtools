@@ -78,7 +78,7 @@ def cylinder_histo(xyz, bins=(1000, 500)):
 
 def plot_histo(H, xedges, yedges, title="Histogram"):
     """Plot the histogram of the cylindrical projection."""
-    plt.imshow(H.T, interpolation='nearest', origin='low',
+    plt.imshow(H.T, interpolation='nearest', origin='lower',
             extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]],
               vmax=np.percentile(H, 99))
     plt.title(title)
