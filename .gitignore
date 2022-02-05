@@ -1,0 +1,15 @@
+*.bak
+*.bpc
+*.c
+*.dacs
+*.egg-info
+*.log
+*.pptx
+*.prefs
+*.pyc
+*.pyd
+*.txt
+*.zip
+.coverage
+.db
+
