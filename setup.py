@@ -58,9 +58,10 @@ setup(
             'edtools.cif_tools = edtools.cif_tools:main']},
     packages=['edtools'],
     package_dir={
-        '': '.'},
+        'edtools': 'edtools'},
     package_data={
-        'edtools': ['*.yaml']},
+        'edtools': ['*.yaml', 
+                    'instrument/*.cif']},
     install_requires=[
         'matplotlib==3.*,>=3.2.1',
         'numpy==1.*,>=1.18.2',
