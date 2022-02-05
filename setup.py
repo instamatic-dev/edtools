@@ -52,7 +52,8 @@ setup(
             'edtools.reflection_tool = edtools.reflection_tool:main',
             'edtools.find_rotation_axis = edtools.find_rotation_axis:main',
             'edtools.find_beam_center  = edtools.find_beam_center:main',
-            'edtools.scattering_factor  = edtools.scattering_factor:main']},
+            'edtools.scattering_factor  = edtools.scattering_factor:main',
+            'edtools.cif_tools = edtools.cif_tools:main']},
     packages=['edtools'],
     package_dir={
         '': '.'},
