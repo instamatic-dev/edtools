@@ -191,9 +191,9 @@ def run_xscale(clusters, cell, spgr, resolution=(20.0, 0.8), ioversigma=2):
             sp.run("xscale 2>&1 >/dev/null", cwd=drc, shell=True)
     
         with open(drc / "XDSCONV.INP", "w") as f:
-            print("""
+            print(f"""
 INPUT_FILE= MERGED.HKL
-INCLUDE_RESOLUTION_RANGE= 20 0.8 ! optional 
+INCLUDE_RESOLUTION_RANGE= {dmax:8.2f} {dmin:8.2f} ! optional 
 OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
 FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
         

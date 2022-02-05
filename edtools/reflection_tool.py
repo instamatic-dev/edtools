@@ -43,6 +43,10 @@ class GroupReflectionsGUI(LabelFrame):
         Checkbutton(frame, text='EXTI Corr', variable=self.var_exti_corr).grid(row=2, column=0, columnspan=2, sticky='EW')
         Label(frame, text='EXTI').grid(row=2, column=2, sticky='EW')
         Spinbox(frame, textvariable=self.var_exti_param, width=6, from_=0.0, to=100.0, increment=0.01).grid(row=2, column=3, sticky='EW', padx=5)
+        Label(frame, text='Prec').grid(row=2, column=4, sticky='EW')
+        Spinbox(frame, textvariable=self.var_prec_angle, width=6, from_=0.0, to=100.0, increment=0.01).grid(row=2, column=5, sticky='EW', padx=5)
+        Label(frame, text='Lambda').grid(row=2, column=6, sticky='EW')
+        Spinbox(frame, textvariable=self.var_lambda, width=6, from_=0.0, to=100.0, increment=0.01).grid(row=2, column=7, sticky='EW', padx=5)
 
         frame.pack(side='top', fill='x', expand=False, padx=5, pady=5)
 
@@ -136,10 +140,12 @@ class GroupReflectionsGUI(LabelFrame):
         self.SaveButton.grid(row=1, column=1, sticky='EW', padx=5)
         self.SplitButton = Button(frame, text='Split Grouped', width=15, command=self.split_grouped, state=NORMAL)
         self.SplitButton.grid(row=1, column=2, sticky='EW')
-        self.FButton = Button(frame, text='Gen Fcalc', width=15, command=self.gen_fcalc, state=NORMAL)
-        self.FButton.grid(row=1, column=3, sticky='EW', padx=5)
-        self.FButton = Button(frame, text='Remove Refl', width=15, command=self.remove_reflection, state=NORMAL)
-        self.FButton.grid(row=1, column=3, sticky='EW')
+        self.GenFcalcButton = Button(frame, text='Gen Fcalc', width=15, command=self.gen_fcalc, state=NORMAL)
+        self.GenFcalcButton.grid(row=1, column=3, sticky='EW', padx=5)
+        self.RemoveRefButton = Button(frame, text='Remove Refl', width=15, command=self.remove_reflection, state=NORMAL)
+        self.RemoveRefButton.grid(row=1, column=4, sticky='EW')
+        self.CorrPrecButton = Button(frame, text='Corr Prec', width=15, command=self.corr_prec, state=NORMAL)
+        self.CorrPrecButton.grid(row=2, column=0, sticky='EW')
 
         frame.pack(side='top', fill='x', expand=False, padx=5, pady=5)
 
@@ -154,6 +160,8 @@ class GroupReflectionsGUI(LabelFrame):
         self.var_lorentz_corr = BooleanVar(value=True)
         self.var_exti_corr = BooleanVar(value=False)
         self.var_exti_param = DoubleVar(value=0.0)
+        self.var_prec_angle = DoubleVar(value=1.2)
+        self.var_lambda = DoubleVar(value=0.01968)
         self.var_a = DoubleVar(value=10.0)
         self.var_b = DoubleVar(value=10.0)
         self.var_c = DoubleVar(value=10.0)
@@ -200,6 +208,27 @@ class GroupReflectionsGUI(LabelFrame):
         hkl_df = pd.DataFrame(hkl,columns=('indice','I','sigma'))
         filtered_df = hkl_df[hkl_df['indice'].apply(lambda x: x[0] != 0 and x[1] != 0 and x[2] != 0)]
         self.save_file(filtered_df)
+
+    def corr_prec(self):
+        # Correct precession intensities, see Daliang Zhang's paper for formula
+        self.unit_cell = (self.var_a.get(), self.var_b.get(), self.var_c.get(), self.var_alpha.get(), self.var_beta.get(), self.var_gamma.get())
+        self.space_group = self.var_space_group.get()
+        hkl = any_reflection_file(f"{self.file_name}=hklf4").as_miller_arrays(crystal.symmetry(unit_cell=self.unit_cell, space_group_symbol=self.space_group))[0]
+        hkl_df = pd.DataFrame(hkl,columns=('indice','I','sigma'))
+        d_spacings = hkl.d_spacings().data()
+        hkl_df['d_spacings'] = d_spacings
+        self.lorentz_corr(hkl_df)
+        self.save_file(hkl_df)
+
+    def lorentz_corr(self, df):
+        angle = self.var_prec_angle.get() * np.pi / 180
+        wavelength = self.var_lambda.get()
+        factor = (1/df['d_spacings']) * np.sqrt(((1/wavelength)*np.sin(angle))**2 - (1/df['d_spacings']/2)**2) * wavelength / 2 
+        print(df)
+        print(factor)
+        df['I'] = df['I'] * factor
+        df['sigma'] = df['sigma'] * factor
+        print(df)
 
     def read_cif(self,f):
         #read a cif file  One cif file can contain multiple structures

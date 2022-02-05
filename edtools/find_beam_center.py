@@ -219,7 +219,8 @@ def main():
         center_x, center_y = find_beam_center(data)
         #center_x, center_y = (268, 249)
         update_xds(fn, jobs=(), center=(center_y, center_x))
-        template = data[round(center_x)-16:round(center_x)+16, round(center_y)-16:round(center_y)+16].copy()
+        template = data[int(round(center_x-16)):int(round(center_x+16)), 
+                        int(round(center_y-16)):int(round(center_y+16))].copy()
         center_x_new, center_y_new = find_beam_center(template, sigma=5)
         print(center_x_new, center_y_new)
 
@@ -228,7 +229,8 @@ def main():
             data, header = read_adsc(img)
             #center = find_beam_center(data)
             #center_area = data[round(center_y)-10:round(center_y)+10, round(center_x)-10:round(center_x)+10]
-            center  = find_beam_center(data[round(center_x)-16:round(center_x)+16, round(center_y)-16:round(center_y)+16],sigma=5)
+            center  = find_beam_center(data[int(round(center_x-16)):int(round(center_x+16)), 
+                                        int(round(center_y-16)):int(round(center_y+16))],sigma=5)
             shift = (center_x_new-center[0], center_y_new-center[1])
             #shift, error, phasediff = phase_cross_correlation(template, center_area, upsample_factor=10)
             print(shift)
