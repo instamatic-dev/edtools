@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "edtools"
-version = "1.0.0"
+version = "1.0.1"
 description = "Collection of tools for automated processing and clustering of electron diffraction data."
 keywords = [
 	"electron-diffraction",
@@ -12,19 +12,20 @@ keywords = [
 ]
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
-	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+	"License :: OSI Approved :: BSD License",
 	"Programming Language :: Python :: 3",
 	"Programming Language :: Python :: 3.6",
 	"Programming Language :: Python :: 3.7",
 	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
 ]
-homepage = "http://github.com/stefsmeets/edtools"
-repository = "http://github.com/stefsmeets/edtools"
-documentation = "http://github.com/stefsmeets/edtools"
-maintainers = ["Stef Smeets <s.smeets@tudelft.nl>"]
-authors = ["Stef Smeets <s.smeets@tudelft.nl>"]
+homepage = "http://github.com/instamatic-dev/edtools"
+repository = "http://github.com/instamatic-dev/edtools"
+documentation = "http://github.com/instamatic-dev/edtools"
+maintainers = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
+authors = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
 readme = "README.md"
-license = "GPL-3.0-only"
+license = "BSD-3-clause"
 include = [
     ".pre-commit.yaml",
     "LICENCE",
@@ -33,11 +34,12 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.6.1"
-numpy = "^1.18.2"
-matplotlib = "^3.2.1"
-scipy = "^1.4.1"
-pandas = "^1.0.3"
-uncertainties = "^3.1.2"
+numpy = ">=1.18.2"
+matplotlib = ">=3.2.1"
+scipy = ">=1.4.1"
+pandas = ">=1.0.3"
+uncertainties = ">=3.1.2"
+PyYAML = ">=5.4.1"
 
 [tool.poetry.dev-dependencies]
 check-manifest = "*"
@@ -56,7 +58,7 @@ pre-commit = "*"
 "edtools.find_beam_center"  = "edtools.find_beam_center:main"
 
 [tool.poetry.urls]
-"Bug Reports" = "https://github.com/stefsmeets/edtools/issues"
+"Bug Reports" = "https://github.com/instamatic-dev/edtools/issues"
 
 [tool.dephell.main]
 from = {format = "poetry", path = "pyproject.toml"}
@@ -64,5 +66,5 @@ to = {format = "setuppy", path = "setup.py"}
 versioning = "semver"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry"]
 build-backend = "poetry.masonry.api"

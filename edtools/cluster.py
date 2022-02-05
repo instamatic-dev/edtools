@@ -16,7 +16,7 @@ if platform == "win32":
 def check_for_pointless():
     if platform == "win32":
         # -i to run bash in interactive mode, i.e. .bashrc is loaded
-        p = sp.run(f"{bash_exe} -ic 'which pointless'", stdout=sp.PIPE)  # check if pointless can be run
+        p = sp.run(f'{bash_exe} -ic which pointless', stdout=sp.PIPE)  # check if pointless can be run
     else:
         p = sp.run("which pointless", stdout=sp.PIPE, shell=True)  # check if pointless can be run
 

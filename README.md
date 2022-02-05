@@ -1,4 +1,4 @@
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/stefsmeets/edtools/build)](https://github.com/stefsmeets/edtools/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/instamatic-dev/edtools/build)](https://github.com/instamatic-dev/edtools/actions)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/edtools)](https://pypi.org/project/edtools/)
 [![PyPI](https://img.shields.io/pypi/v/edtools.svg?style=flat)](https://pypi.org/project/edtools/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/edtools)](https://pypi.org/project/edtools/)
@@ -117,4 +117,4 @@ edtools.find_rotation_axis [XDS.INP]
 - (Windows 10) XDS and related tools must be available under WSL
 
 
-[src]: https://github.com/stefsmeets/edtools
+[src]: https://github.com/instamatic-dev/edtools

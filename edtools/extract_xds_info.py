@@ -30,6 +30,8 @@ class xds_parser(object):
         d = {}
 
         cell, spgr = None, None
+        ISa = None
+        Boverall = None
 
         for line in f:
             if line.startswith(" SUBSET OF INTENSITY DATA WITH SIGNAL/NOISE >= -3.0 AS FUNCTION OF RESOLUTION"):
