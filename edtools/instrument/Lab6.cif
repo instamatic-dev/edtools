@@ -1,0 +1,16 @@
+data_Lab6
+_diffrn_detector                      'Timepix'
+_diffrn_detector_type                 'Hybrid pixel'
+
+_diffrn_measurement_device            'Lab6 with Timepix detector'
+_diffrn_measurement_device_type       'Lab6'
+_diffrn_measurement_method            '3DED/MicroED'
+
+_diffrn_radiation_monochromator       'Electron Microscope'
+_diffrn_radiation_probe               'Electron'
+_diffrn_radiation_type                'Electron'
+_diffrn_radiation_wavelength          0.0251
+
+_diffrn_source                        'Electron microscope'
+_diffrn_source_type                   'Electron microscope'
+_diffrn_source_target                 'Lab6 thermal emission'

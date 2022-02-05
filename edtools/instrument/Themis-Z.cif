@@ -1,0 +1,15 @@
+_diffrn_detector                      'OneView'
+_diffrn_detector_type                 'CMOS'
+
+_diffrn_measurement_device            'Themis-Z with OneView CMOS detector'
+_diffrn_measurement_device_type       'Themis-Z'
+_diffrn_measurement_method            '3DED/MicroED'
+
+_diffrn_radiation_monochromator       'Electron Microscope'
+_diffrn_radiation_probe               'Electron'
+_diffrn_radiation_type                'Electron'
+_diffrn_radiation_wavelength          0.0197
+
+_diffrn_source                        'Electron microscope'
+_diffrn_source_type                   'Field emission electron microscope'
+_diffrn_source_target                 'Tungsten thermal field emission'

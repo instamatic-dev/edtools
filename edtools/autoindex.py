@@ -11,8 +11,8 @@ from .extract_xds_info import xds_parser
 
 try:
     from instamatic import config
-    HOST = config.cfg.indexing_server_host
-    PORT = config.cfg.indexing_server_port
+    HOST = config.settings.indexing_server_host
+    PORT = config.settings.indexing_server_port
     BUFF = 1024
 except ImportError:
     HOST, PORT = None, None
