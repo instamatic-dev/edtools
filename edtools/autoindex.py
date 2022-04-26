@@ -222,6 +222,20 @@ def main():
         for future in futures:
             ret = future.result()
 
+    for i, fn in enumerate(fns):
+        drc = fn.parent
+
+        with open(drc / "XDSCONV.INP", "w") as f:
+            print(f"""
+INPUT_FILE= XDS_ASCII.HKL
+OUTPUT_FILE= shelx.hkl  SHELX    ! Warning: do _not_ name this file "temp.mtz" !
+FRIEDEL'S_LAW= FALSE             ! default is FRIEDEL'S_LAW=TRUE""", file=f)
+            
+        if platform == "win32":
+            sp.run(f"{bash_exe} -ic xdsconv 2>&1 >/dev/null", cwd=drc)
+        else:
+            sp.run("xdsconv 2>&1 >/dev/null", cwd=drc, shell=True)
+
 
 if __name__ == '__main__':
     main()
