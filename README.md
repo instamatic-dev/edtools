@@ -2,6 +2,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/edtools)](https://pypi.org/project/edtools/)
 [![PyPI](https://img.shields.io/pypi/v/edtools.svg?style=flat)](https://pypi.org/project/edtools/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/edtools)](https://pypi.org/project/edtools/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5727188.svg)](https://doi.org/10.5281/zenodo.5727188)
 
 # edtools
 
