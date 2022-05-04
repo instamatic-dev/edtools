@@ -8,7 +8,7 @@
 
 Collection of tools for automated processing and clustering of single-crystal electron diffraction data.
 
-Install using `pip install edtools`.
+Install using `pip install edtools`. Installation should take less than 20 seconds on a normal desktop.
 
 [The source for this project is available here][src].
 
