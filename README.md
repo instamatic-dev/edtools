@@ -113,17 +113,17 @@ edtools.find_rotation_axis [XDS.INP]
 
 ## OS Requirement
 
-The package has been mainly developed and tested under windows 10. 
+The package has been mainly developed and tested under windows 10.
 
 ## Software Requirements
 
-- Python3.6 including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
+- Python 3.6+ including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
 - `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
-- (Windows 10) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
-- (Windows 10) XDS and related tools must be available under WSL
+- (Windows 10 or newer) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+- (Windows 10 or newer) XDS and related tools must be available under WSL
 
 ## Package dependencies
 
-Check [requirements.txt](https://github.com/instamatic-dev/edtools/blob/master/docs/requirements.txt) for an updated package dependency list and versions.
+Check [pyproject.toml](pyproject.toml) for the full dependency list and versions.
 
 [src]: https://github.com/instamatic-dev/edtools

@@ -54,6 +54,7 @@ extensions = [
     # 'nbsphinx_link',
     # 'sphinx.ext.todo',
     # 'sphinx.ext.viewcode',
+    'nbsphinx',
     'autodocsumm',
 ]
 

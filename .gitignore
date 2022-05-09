@@ -2,14 +2,37 @@
 *.bpc
 *.c
 *.dacs
-*.egg-info
 *.log
 *.pptx
 *.prefs
-*.pyc
-*.pyd
 *.txt
 *.zip
-.coverage
 .db
 
+*.py[cod]
+*.egg-info
+*.eggs
+.ipynb_checkpoints
+*.vtk
+
+build
+dist
+.cache
+__pycache__
+
+htmlcov
+.coverage
+coverage.xml
+.pytest_cache
+
+docs/_build
+docs/apidocs
+playground/
+
+# ide
+.idea
+.eclipse
+.vscode
+
+# Mac
+.DS_Store
