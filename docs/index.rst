@@ -12,6 +12,16 @@ API Reference
    edtools
 
 
+Examples
+========
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+   :glob:
+
+   examples/*
+
+
 Links
 =====
 .. toctree::

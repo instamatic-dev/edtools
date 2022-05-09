@@ -8,7 +8,9 @@
 
 Collection of tools for automated processing and clustering of single-crystal electron diffraction data.
 
-Install using `pip install edtools`.
+Install using `pip install edtools`. Installation should take less than 20 seconds on a normal desktop.
+
+Find the latest [releases](https://github.com/instamatic-dev/edtools/releases) for the versions that have been tested on.
 
 [The source for this project is available here][src].
 
@@ -32,7 +34,7 @@ Looks files matching `CORRECT.LP` in all subdirectories and extracts unit cell/i
 
 ### find_cell.py
 
-This program a cells.yaml file and shows histogram plots with the unit cell parameters. This program mimicks `CELLPARM` (http://xds.mpimf-heidelberg.mpg.de/html_doc/cellparm_program.html) and calculates the weighted mean lattice parameters, where the weight is typically the number of observed reflections (defaults to 1.0). For each lattice parameter, the mean is calculated in a given range (default range = median+-2). The range can be changed by dragging the cursor on the histogram plots.
+This program a cells.yaml file and shows histogram plots with the unit cell parameters. This program mimicks [`CELLPARM`](http://xds.mpimf-heidelberg.mpg.de/html_doc/cellparm_program.html) and calculates the weighted mean lattice parameters, where the weight is typically the number of observed reflections (defaults to 1.0). For each lattice parameter, the mean is calculated in a given range (default range = median+-2). The range can be changed by dragging the cursor on the histogram plots.
 
 Alternatively, the unit cells can be clustered by giving the `--cluster` command, in which a dendrogram is shown. The cluster cutoff can be selected by clicking in the dendrogram. The clusters will be written to `cells_cluster_#.yaml`.
 
@@ -109,13 +111,19 @@ Usage:
 edtools.find_rotation_axis [XDS.INP]
 ```
 
+## OS Requirement
 
-## Requirements
+The package has been mainly developed and tested under windows 10.
 
-- Python3.6 including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
+## Software Requirements
+
+- Python 3.6+ including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
 - `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
-- (Windows 10) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
-- (Windows 10) XDS and related tools must be available under WSL
+- (Windows 10 or newer) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+- (Windows 10 or newer) XDS and related tools must be available under WSL
 
+## Package dependencies
+
+Check [pyproject.toml](pyproject.toml) for the full dependency list and versions.
 
 [src]: https://github.com/instamatic-dev/edtools
