@@ -6,15 +6,40 @@
 
 # edtools
 
-Collection of tools for automated processing and clustering of single-crystal electron diffraction data.
+Collection of tools for automated processing and clustering of batch 3-dimensional electron diffraction (3D ED) datasets.
+
+[The source for this project is available here][src].
+
+[src]: https://github.com/instamatic-dev/edtools
+
+## Installation
 
 Install using `pip install edtools`. Installation should take less than 20 seconds on a normal desktop.
 
 Find the latest [releases](https://github.com/instamatic-dev/edtools/releases) for the versions that have been tested on.
 
-[The source for this project is available here][src].
+## OS Requirement
+
+Windows 10 or newer.
+
+## Software Requirements
+
+- Python 3.6+ including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
+- `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
+- Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
+- XDS and related tools must be available under WSL
+
+## Package dependencies
+
+Check [pyproject.toml](pyproject.toml) for the full dependency list and versions.
+
+## Documentation
+
+See the documentation at https://edtools.readthedocs.io.
 
 ## Pipeline tools
+
+At any step, run *edtools.xxx -h* for help with possible arguments.
 
 ### autoindex.py
 
@@ -22,6 +47,12 @@ Looks for files matching `XDS.INP` in all subdirectories and runs them using `XD
 
 	In:  XDS.INP
 	Out: XDS data processing on all files
+
+Usage:
+
+```
+edtools.autoindex
+```
 
 ### extract_xds_info.py
 
@@ -31,6 +62,12 @@ Looks files matching `CORRECT.LP` in all subdirectories and extracts unit cell/i
 	Out: cells.yaml
 	     cells.xlsx
 	     filelist.txt
+
+Usage:
+
+```
+edtools.extract_xds_info
+```
 
 ### find_cell.py
 
@@ -42,12 +79,24 @@ Alternatively, the unit cells can be clustered by giving the `--cluster` command
 	Out: mean cell parameters
 	     cells_*.yaml (clustering only)
 
+Usage:
+
+```
+edtools.find_cell cells.yaml --cluster
+```
+
 ### make_xscale.py
 
 Prepares an input file `XSCALE.INP` for `XSCALE` and corresponding `XDSCONV.INP` for `XDSCONV`. Takes a `cells.yaml` file or a series of `XDS_ASCII.HKL` files as input, and uses those to generate the `XSCALE.INP` file.
 
 	In:  cells.yaml / XDS_ASCII.HKL
 	Out: XSCALE.INP
+
+Usage:
+
+```
+edtools.make_xscale cells.yaml -c 10.0 20.0 30.0 90.0 90.0 90.0 -s Cmmm
+```
 
 ### cluster.py
 
@@ -61,6 +110,12 @@ Parses the `XSCALE.LP` file for the correlation coefficients between reflection 
 		Pointless processing
 		shelx.hkl
 		shelx.ins (optional)
+
+Usage:
+
+```
+edtools.cluster
+```
 
 
 ## Helper tools
@@ -111,19 +166,6 @@ Usage:
 edtools.find_rotation_axis [XDS.INP]
 ```
 
-## OS Requirement
+## Demo of using edtools to process batch 3D electron diffraction datasets
 
-The package has been mainly developed and tested under windows 10.
-
-## Software Requirements
-
-- Python 3.6+ including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
-- `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
-- (Windows 10 or newer) Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
-- (Windows 10 or newer) XDS and related tools must be available under WSL
-
-## Package dependencies
-
-Check [pyproject.toml](pyproject.toml) for the full dependency list and versions.
-
-[src]: https://github.com/instamatic-dev/edtools
+See the demo at https://edtools.readthedocs.io/en/latest/examples/edtools_demo.html.
