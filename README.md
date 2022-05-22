@@ -25,9 +25,9 @@ Windows 10 or newer.
 ## Software Requirements
 
 - Python 3.6+ including `numpy`, `scipy`, `matplotlib`, and `pandas` libraries
-- `sginfo` or `cctbx.python` must be available on the system path for `edtools.make_shelx`
+- [`sginfo`](https://github.com/rwgk/sginfo) or [`cctbx.python`](https://cctbx.github.io/installation.html#installation) must be available on the system path for `edtools.make_shelx`
 - Access to [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)
-- XDS and related tools must be available under WSL
+- XDS package must be installed properly under WSL
 
 ## Package dependencies
 
