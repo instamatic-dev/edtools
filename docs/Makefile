@@ -15,8 +15,8 @@ STATICDIR     = _static
 html: conf.py edtools.rst readme.rst
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-readme.rst: ../README.md
-	pandoc --from=markdown --to=rst --output=readme.rst ../README.md
+readme.rst: ../readme.md
+	pandoc --from=markdown --to=rst --output=readme.rst ../readme.md
 
 edtools.rst:
 	$(SPHINXGEN) -eTf -t "$(TEMPLATESDIR)" -o "$(SOURCEDIR)" ../edtools
