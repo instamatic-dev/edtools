@@ -1,5 +1,6 @@
 sphinx
 sphinx_rtd_theme
+nbsphinx
 readthedocs-sphinx-search
 autodocsumm
 lmfit

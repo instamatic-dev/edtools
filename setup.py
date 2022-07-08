@@ -21,7 +21,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='edtools',
-    version='1.0.1',
+    version='1.0.3',
     description='Collection of tools for automated processing and clustering of electron diffraction data.',
     python_requires='>=3.6.1',
     project_urls={
@@ -60,11 +60,12 @@ setup(
     package_dir={
         'edtools': 'edtools'},
     package_data={
-        'edtools': ['*.yaml', 
+        'edtools': ['*.yaml',
                     'instrument/*.cif']},
     install_requires=[
         'matplotlib==3.*,>=3.2.1',
         'numpy==1.*,>=1.18.2',
+        'openpyxl>=3.0.10',
         'pandas==1.*,>=1.0.3',
         'scipy==1.*,>=1.4.1',
         'uncertainties==3.*,>=3.1.2',

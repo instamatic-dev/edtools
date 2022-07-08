@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "edtools"
-version = "1.0.1"
+version = "1.0.3"
 description = "Collection of tools for automated processing and clustering of electron diffraction data."
 keywords = [
 	"electron-diffraction",
@@ -24,7 +24,7 @@ repository = "http://github.com/instamatic-dev/edtools"
 documentation = "http://github.com/instamatic-dev/edtools"
 maintainers = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
 authors = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
-readme = "README.md"
+readme = "readme.md"
 license = "BSD-3-clause"
 include = [
     ".pre-commit.yaml",
@@ -40,6 +40,7 @@ scipy = ">=1.4.1"
 pandas = ">=1.0.3"
 uncertainties = ">=3.1.2"
 PyYAML = ">=5.4.1"
+openpyxl = ">=3.0.10"
 
 [tool.poetry.dev-dependencies]
 check-manifest = "*"
