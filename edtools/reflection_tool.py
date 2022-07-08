@@ -146,6 +146,8 @@ class GroupReflectionsGUI(LabelFrame):
         self.RemoveRefButton.grid(row=1, column=4, sticky='EW')
         self.CorrPrecButton = Button(frame, text='Corr Prec', width=15, command=self.corr_prec, state=NORMAL)
         self.CorrPrecButton.grid(row=2, column=0, sticky='EW')
+        self.CorrPrecButton = Button(frame, text='Check I seq', width=15, command=self.check_I_frame_seq, state=NORMAL)
+        self.CorrPrecButton.grid(row=2, column=1, sticky='EW', padx=5)
 
         frame.pack(side='top', fill='x', expand=False, padx=5, pady=5)
 
@@ -347,7 +349,6 @@ class GroupReflectionsGUI(LabelFrame):
         with open(self.file_name, 'r') as f:
             contents = f.readlines()
         header = contents[:32]
-        tail = contents[-1:]
         df = pd.read_csv(StringIO(''.join(contents[32:-1])), sep='\s+', names=['H','K','L','IOBS','SIGMA','XCAL','YCAL','ZCAL',
                                         'RLP','PEAK','CORR','MAXC','XOBS','YOBS','ZOBS','ALF0','BET0','ALF1','BET1','PSI','ISEG'])
 
@@ -382,7 +383,7 @@ class GroupReflectionsGUI(LabelFrame):
                 f.write(f"{df.loc[i, 'H']:4}{df.loc[i, 'K']:4}{df.loc[i, 'L']:4}{df.loc[i, 'IOBS']:8.1f}{df.loc[i, 'SIGMA']:8.1f}\n")
 
     def open_file(self):
-        self.file_name = filedialog.askopenfilename(initialdir='.', title='Select file', 
+        self.file_name = filedialog.askopenfilename(title='Select file', 
                             filetypes=(('hkl files', '*.hkl'), ('cif files', '*.cif'), ('all files', '*.*')))
         self.lb_file.config(text=self.file_name)
 
@@ -418,6 +419,61 @@ class GroupReflectionsGUI(LabelFrame):
         merged = merged.sort_values('indice2').drop(['indice1'], axis=1)
 
         return merged
+
+    def check_I_frame_seq(self):
+        self.unit_cell = (self.var_a.get(), self.var_b.get(), self.var_c.get(), self.var_alpha.get(), self.var_beta.get(), self.var_gamma.get())
+        with open(self.file_name, 'r') as f:
+            contents = f.readlines()
+            header = contents[:32]
+            df = pd.read_csv(StringIO(''.join(contents[32:-1])), sep='\s+', names=['H','K','L','IOBS','SIGMA','XCAL','YCAL','ZCAL',
+                                'RLP','PEAK','CORR','MAXC','XOBS','YOBS','ZOBS','ALF0','BET0','ALF1','BET1','PSI','ISEG'])
+
+        for line in header:
+            if 'STARTING_ANGLE' in line:
+                start_angle = float(line[17:].strip())
+            elif 'OSCILLATION_RANGE' in line:
+                oscillation_angle = float(line[20:].strip())
+        df['index'] = list(zip(df.H, df.K, df.L))
+        df_sorted = df.sort_values('ZOBS')
+        df_sorted = df_sorted.drop(columns=['H', 'K', 'L'])
+        df_sorted  =df_sorted[df_sorted['ZOBS'] != 0.0]
+        start_frame = df_sorted['ZOBS'].min()
+        end_frame = df_sorted['ZOBS'].max()
+        num_frame =  end_frame - start_frame + 1
+        start_angle = start_angle + start_frame * oscillation_angle
+
+        file = any_reflection_file(self.file_name).file_content()
+        intensity = flex.double(file.iobs)
+        sigma = flex.double(file.sigma)
+        miller_set = miller.set(crystal.symmetry(unit_cell=self.unit_cell, space_group_symbol=self.var_space_group.get()), 
+                                indices=flex.miller_index(file.hkl))
+        hkl = miller.array(miller_set, data=intensity, sigmas=sigma)
+        hkl = hkl.remove_systematic_absences()
+        df_hkl = pd.DataFrame(list(hkl), columns=['index', 'intensity', 'sigma'])
+        merged = df_sorted.merge(df_hkl)
+        merged.to_csv('1.csv')
+        Iobs_diff_acc = 0
+
+        for i in range(len(merged) - 1):
+            Iobs_first = merged['IOBS'][i]
+            target = merged['index'][i]
+            target = list(target)
+            target[0] = -target[0]
+            target[1] = -target[1]
+            target[2] = -target[2]
+            target = tuple(target)
+            search = merged[i+1:]
+            result = search[search['index']==target]
+            result = result.reset_index(drop=True)
+            if len(result['IOBS']) == 1:
+                Iobs_second = result['IOBS'][0]
+                Iobs_diff_acc = Iobs_diff_acc + (Iobs_first - Iobs_second) 
+            elif len(result['IOBS']) > 1:
+                print('Two reflections at the same time?')
+
+        print(f'{target}: {Iobs_first}, {Iobs_second}')
+        print(f'start: {start_angle: .2f}, end: {start_angle + oscillation_angle*num_frame: .2f}, frame number: {num_frame}, oscillation: {oscillation_angle}')
+        print(f'The difference is {Iobs_diff_acc}.\n')
 
     def scaling_factor(self, value, power):
         if value > 0:
