@@ -386,7 +386,7 @@ def main():
                         use_raw_cell=True,
                         raw=False,
                         use_radian_for_clustering=False,
-                        use_sine_for_angles=False)
+                        use_sine_for_clustering=False)
     
     options = parser.parse_args()
 
