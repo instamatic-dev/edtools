@@ -304,15 +304,17 @@ def to_radian(cells):
     return cells_radian
 
 def to_sin(cells):
-    """convert all angles in unit cell parameter list to radians
+    """convert all angles in unit cell parameter list to sine
     cells: the cell parameters that are parsed from cells.yaml as np array"""
     angles = cells[:, 3:6]
     angles_sine = np.sin(np.radians(angles))
 
     cells_sine = cells.copy()
-    cells[:, 3:6] = angles_sine
+    cells_sine[:, 3:6] = angles_sine
+    # convert also the cell angles using arcsin in order to avoid the <> 90 degree ambiguity thingy
+    cells[:, 3:6] = np.degrees(np.arcsin(cells_sine[:, 3:6]))
 
-    return cells
+    return cells_sine
 
 
 def put_in_order(cells):
