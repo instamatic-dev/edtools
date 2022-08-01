@@ -386,7 +386,7 @@ def main():
                         use_raw_cell=True,
                         raw=False,
                         use_radian_for_clustering=False,
-                        use_sine_for_angles=False)
+                        use_sine_for_clustering=False)
     
     options = parser.parse_args()
 
@@ -397,7 +397,7 @@ def main():
     metric = options.metric
     use_raw_cell = options.use_raw_cell
     use_radian = options.use_radian_for_clustering
-    use_sine = options.use_sine_for_angles
+    use_sine = options.use_sine_for_clustering
     args = options.args
 
     if args:
