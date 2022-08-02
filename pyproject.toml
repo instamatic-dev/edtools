@@ -45,6 +45,7 @@ openpyxl = ">=3.0.10"
 [tool.poetry.dev-dependencies]
 check-manifest = "*"
 pre-commit = "*"
+bump2version = "*"
 
 [tool.poetry.scripts]
 "edtools.autoindex"           = "edtools.autoindex:main"

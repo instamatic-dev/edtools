@@ -73,5 +73,6 @@ setup(
     extras_require={
         'dev': [
             'check-manifest',
-            'pre-commit']},
+            'pre-commit',
+            'bump2version']},
 )
