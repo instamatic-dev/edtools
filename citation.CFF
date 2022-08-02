@@ -28,6 +28,6 @@ keywords:
   - XDS
   - cluster-analysis
 license: BSD-3-Clause
-version: 1.0.2
+version: 1.0.4
 date-released: '2021-11-25'
 doi: 10.5281/zenodo.5727189
