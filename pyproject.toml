@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "edtools"
-version = "1.0.3"
+version = "1.0.4"
 description = "Collection of tools for automated processing and clustering of electron diffraction data."
 keywords = [
 	"electron-diffraction",
@@ -45,6 +45,7 @@ openpyxl = ">=3.0.10"
 [tool.poetry.dev-dependencies]
 check-manifest = "*"
 pre-commit = "*"
+bump2version = "^1.0.1"
 
 [tool.poetry.scripts]
 "edtools.autoindex"           = "edtools.autoindex:main"

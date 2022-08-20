@@ -35,6 +35,14 @@ typing = ["mypy (==0.910)", "typing-extensions (>=3.7.4.3)"]
 virtualenv = ["virtualenv (>=20.0.35)"]
 
 [[package]]
+name = "bump2version"
+version = "1.0.1"
+description = "Version-bump your software with a single command!"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "cfgv"
 version = "3.3.0"
 description = "Validate configuration and produce human readable error messages."
@@ -411,7 +419,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1"
-content-hash = "c33860bee23704346ce20227da3842f9587df3d6947ad810f940a409a619cff9"
+content-hash = "db186d2641475049056aa00e771c8040e77ed730f1e7f3ce67dfda2569f0a033"
 
 [metadata.files]
 "backports.entry-points-selectable" = [
@@ -422,6 +430,7 @@ build = [
     {file = "build-0.6.1-py3-none-any.whl", hash = "sha256:59669d59404cd9ef3f6f425030f4a423743703d653960c536c79c032886dc125"},
     {file = "build-0.6.1.tar.gz", hash = "sha256:cebb047236cb7da777ac3335a8b16bfc585db374fedf0f647f6ea0efd953f54d"},
 ]
+bump2version = []
 cfgv = [
     {file = "cfgv-3.3.0-py2.py3-none-any.whl", hash = "sha256:b449c9c6118fe8cca7fa5e00b9ec60ba08145d281d52164230a69211c5d597a1"},
     {file = "cfgv-3.3.0.tar.gz", hash = "sha256:9e600479b3b99e8af981ecdfc80a0296104ee610cab48a5ae4ffd0b668650eb1"},

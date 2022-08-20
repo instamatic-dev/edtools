@@ -304,15 +304,17 @@ def to_radian(cells):
     return cells_radian
 
 def to_sin(cells):
-    """convert all angles in unit cell parameter list to radians
+    """convert all angles in unit cell parameter list to sine
     cells: the cell parameters that are parsed from cells.yaml as np array"""
     angles = cells[:, 3:6]
     angles_sine = np.sin(np.radians(angles))
 
     cells_sine = cells.copy()
-    cells[:, 3:6] = angles_sine
+    cells_sine[:, 3:6] = angles_sine
+    # convert also the cell angles using arcsin in order to avoid the <> 90 degree ambiguity thingy
+    cells[:, 3:6] = np.degrees(np.arcsin(cells_sine[:, 3:6]))
 
-    return cells
+    return cells_sine
 
 
 def put_in_order(cells):
@@ -386,7 +388,7 @@ def main():
                         use_raw_cell=True,
                         raw=False,
                         use_radian_for_clustering=False,
-                        use_sine_for_angles=False)
+                        use_sine_for_clustering=False)
     
     options = parser.parse_args()
 
@@ -397,7 +399,7 @@ def main():
     metric = options.metric
     use_raw_cell = options.use_raw_cell
     use_radian = options.use_radian_for_clustering
-    use_sine = options.use_sine_for_angles
+    use_sine = options.use_sine_for_clustering
     args = options.args
 
     if args:
