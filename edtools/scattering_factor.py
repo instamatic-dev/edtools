@@ -542,10 +542,15 @@ class ScatteringFactorGUI(LabelFrame):
         Label(frame, text="Points").grid(row=2, column=18, padx=5)
         Entry(frame, textvariable=self.var_s_points, width=8).grid(row=2, column=19)
 
-        Checkbutton(frame, text='Charge term', variable=self.var_add_charge_term).grid(row=3, column=18, columnspan=2, padx=5)
-        Checkbutton(frame, text='Use neutral', variable=self.var_use_neutral).grid(row=4, column=18, columnspan=2, padx=5)
+        tmp = Checkbutton(frame, text='Charge term', variable=self.var_add_charge_term)
+        tmp.grid(row=3, column=18, columnspan=2, padx=5)
+        Hoverbox(tmp, 'This button must be checked for charged ions.')
+        tmp = Checkbutton(frame, text='Use neutral', variable=self.var_use_neutral)
+        tmp.grid(row=4, column=18, columnspan=2, padx=5)
+        Hoverbox(tmp, 'This is used for use different scattering factors (from neutral atom or ion atom).')
         self.o_param = OptionMenu(frame, self.var_param, '4p_electron', '4p_electron', '5p_electron_1', '5p_electron_2', '4p_xray_1992', '5p_xray_1995')
         self.o_param.grid(row=5, column=18, columnspan=2, sticky='EW', padx=5)
+        Hoverbox(self.o_param, 'Scattering factor from different sources.')
         Button(frame, text="Plot", command=self.plot).grid(row=6, column=18, columnspan=2, sticky='EW', padx=5)
         Button(frame, text="Clear", command=self.clear_plot).grid(row=7, column=18, columnspan=2, sticky='EW', padx=5)
         Button(frame, text="Fit 4 Param", command=self.fit_4_param).grid(row=8, column=18, columnspan=2, sticky='EW', padx=5)
@@ -553,10 +558,14 @@ class ScatteringFactorGUI(LabelFrame):
         Button(frame, text="Output", command=self.output).grid(row=10, column=18, columnspan=2, sticky='EW', padx=5)
         
         Label(frame, text="Charge").grid(row=7, column=9, columnspan=3, sticky='E', padx=5)
-        OptionMenu(frame, self.var_charge, "", "7-", "6-", "5-", "4-", "3-", "2-", "1-", "", "1+", "2+", "3+", "4+", "5+", "6+", "7+").grid(row=7, column=12, columnspan=2, sticky='W')
+        tmp = OptionMenu(frame, self.var_charge, "", "7-", "6-", "5-", "4-", "3-", "2-", "1-", "", "1+", "2+", "3+", "4+", "5+", "6+", "7+")
+        tmp.grid(row=7, column=12, columnspan=2, sticky='W')
+        Hoverbox(tmp, 'Charge in integral: some elements have their own charged parameters and it is more accurate than using neutral scattering factor.')
         Spinbox(frame, width=5, textvariable=self.var_frac_charge, from_=-1.0, to=1.0, increment=0.01).grid(row=7, column=14, columnspan=3, sticky='W')
 
-        Button(frame, text="Read", width=9, command=self.read).grid(row=8, column=10, columnspan=3, sticky='E')
+        tmp = Button(frame, text="Read", width=9, command=self.read)
+        tmp.grid(row=8, column=10, columnspan=3, sticky='E')
+        Hoverbox(tmp, 'Read a file with only atomic scattering factor.')
         Button(frame, text="Draw", width=9, command=self.draw).grid(row=8, column=13, columnspan=3, sticky='E')
 
         frame.pack(side='top', fill='x', expand=False, padx=5, pady=5)
@@ -596,11 +605,12 @@ class ScatteringFactorGUI(LabelFrame):
                 self.scat_factor_lib = yaml.load(f, Loader=yaml.Loader)
 
     def read(self):
-        file_name = tk.filedialog.askopenfilename(initialdir='.', title='Select file', 
+        file_name = tk.filedialog.askopenfilename(title='Select file', 
                             filetypes=(('scattering factor files', '*.yaml'), ('all files', '*.*')))
         if len(file_name) != 0:
             with open(file_name, 'r') as f:
                 self.scat_factor = yaml.load(f, Loader=yaml.Loader)
+                print(self.scat_factor)
 
     def draw(self):
         charge = self.var_charge.get()
@@ -681,7 +691,7 @@ class ScatteringFactorGUI(LabelFrame):
         for i in range(5):
             result += param[2*i] * np.exp(-param[2*i+1] * s**2)
         if self.var_add_charge_term.get():
-            result += param[10] + 0.02394 * charge / s**2
+            result += param[10] + 0.023934 * charge / s**2
         return result
 
     def select_element(self, element):
@@ -718,6 +728,11 @@ class ScatteringFactorGUI(LabelFrame):
                 self.f = self.func_5p_charge(self.param, self.s, c)
                 self.ax.plot(self.s, self.f, label=self.element+f'{c}'+' '+num_param)
 
+        if self.var_add_charge_term.get():
+            print(f'Charge: {charge}, frac_charge: {frac_charge}, added charged term in structure factor.')
+        else:
+            print(f'Charge: {charge}, frac_charge: {frac_charge}, no charged term in structure factor.')
+        print(f'Base parameter: {self.param}')
         self.ax.legend()
         self.canvas.draw()
 

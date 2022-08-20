@@ -33,7 +33,8 @@ def update_xds(fn,
                refine_idx=None,
                refine_integrate=None,
                refine_corr=None,
-               trusted_region=None):
+               trusted_region=None,
+               trusted_pixels=None):
     shutil.copyfile(fn, fn.with_name("XDS.INP~"))
     
     lines = open(fn, "r", encoding = 'cp1252').readlines()
@@ -129,6 +130,8 @@ def update_xds(fn,
             line = f"REFINE(CORRECT)=   {' '.join(refine_corr)}\n"
         elif trusted_region and "TRUSTED_REGION" in line:
             line = f"TRUSTED_REGION= {trusted_region[0]} {trusted_region[1]}\n"
+        elif trusted_pixels and "VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS" in line:
+            line = f"VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS= {trusted_pixels[0]} {trusted_pixels[1]}\n"
         elif mosaicity and "BEAM_DIVERGENCE_E.S.D." in line:
             HAS_BEAM_DIV_RELF_RANGE = True
             line = f"BEAM_DIVERGENCE_E.S.D.= {mosaicity[0]:.3f}\n"
@@ -191,7 +194,7 @@ def main():
 
     parser.add_argument("-f", "--cut-frames",
                         action="store", type=float, dest="cut_frames",
-                        help="Cut the last n percent of frames (deault: 0.0)")
+                        help="Cut the last n*100 percent of frames (deault: 0.0)")
 
     parser.add_argument("-w", "--wfac1",
                         action="store", type=float, dest="wfac1",
@@ -272,6 +275,10 @@ def main():
                         action="store", type=float, nargs=2, dest="trusted_region",
                         help="Update the trusted region.")
 
+    parser.add_argument("-tr_pix", "--trusted_pixels",
+                        action="store", type=float, nargs=2, dest="trusted_pixels",
+                        help="Update the trusted pixels.")
+
     parser.set_defaults(cell=None,
                         spgr=None,
                         comment=False,
@@ -296,7 +303,8 @@ def main():
                         untrusted=None,
                         corr=None,
                         refine_index=None,
-                        trusted_region=None)
+                        trusted_region=None,
+                        trusted_pixels=None)
     
     options = parser.parse_args()
     spgr = options.spgr
@@ -327,6 +335,7 @@ def main():
     refine_integrate = options.refine_integrate
     refine_corr = options.refine_corr
     trusted_region = options.trusted_region
+    trusted_pixels = options.trusted_pixels
 
     fns = parse_args_for_fns(fns, name="XDS.INP", match=match)
 
@@ -360,7 +369,8 @@ def main():
                    refine_idx=refine_index,
                    refine_integrate=refine_integrate,
                    refine_corr=refine_corr,
-                   trusted_region=trusted_region)
+                   trusted_region=trusted_region,
+                   trusted_pixels=trusted_pixels)
 
     print(f"\033[KUpdated {len(fns)} files")
 

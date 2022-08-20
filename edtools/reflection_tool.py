@@ -363,9 +363,9 @@ class GroupReflectionsGUI(LabelFrame):
                 split = line.split()
                 self.var_slope.set(np.tan(np.arccos(-float(split[1]))))
 
+        df.loc[:, 'IOBS'] = df['IOBS'] / df['RLP'] / 10
+        df.loc[:, 'SIGMA'] = df['SIGMA'] / df['RLP'] / 10
         if self.var_lorentz_corr.get():
-            df.loc[:, 'IOBS'] = df['IOBS'] / df['RLP']
-            df.loc[:, 'SIGMA'] = df['SIGMA'] / df['RLP']
             factor = self.point_to_rotation_axis(df['XOBS'], df['YOBS'], [self.var_center_x.get(), self.var_center_y.get()], [self.var_slope.get(),1]) / self.var_img_size.get()
             df.loc[:, 'IOBS'] = df['IOBS'] * factor
             df.loc[:, 'SIGMA'] = df['SIGMA'] * factor
