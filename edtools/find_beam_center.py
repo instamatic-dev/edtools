@@ -202,6 +202,12 @@ def main():
     parser.add_argument("-m", "--match",
                         action="store", type=str, dest="match",
                         help="Include the XDS.INP files only if they are in the given directories (i.e. --match SMV_reprocessed)")
+    parser.add_argument("-stre", "--stretch",
+                        action="store", type=float, nargs=2, dest="stretch",
+                        help="Correct for the elliptical distortion")
+
+    parser.set_defaults(match=None,
+                        stretch=None)
 
     options = parser.parse_args()
     
