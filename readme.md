@@ -1,4 +1,4 @@
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/instamatic-dev/edtools/build)](https://github.com/instamatic-dev/edtools/actions)
+[![build](https://github.com/instamatic-dev/edtools/actions/workflows/test.yml/badge.svg)](https://github.com/instamatic-dev/edtools/actions/workflows/test.yml)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/edtools)](https://pypi.org/project/edtools/)
 [![PyPI](https://img.shields.io/pypi/v/edtools.svg?style=flat)](https://pypi.org/project/edtools/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/edtools)](https://pypi.org/project/edtools/)
