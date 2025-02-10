@@ -5,9 +5,9 @@ from shutil import which
 import sys
 
 
-if which("sginfo"):
+if e := which("sginfo"):
     exe = "sginfo"
-elif which("cctbx.python"):
+elif e := which("cctbx.python"):
     exe = "cctbx.python"
 else:
     sys.exit("Either sginfo or cctbx.python must be in the path")
@@ -27,15 +27,14 @@ def comp2dict(composition):
 
 def get_latt_symm_cards(spgr):
     if exe == "sginfo":
-        cmd = [exe, spgr, '-Shelx']
+        cmd = [e, spgr, '-Shelx']
     elif exe == "cctbx.python":
-        script = ("from cctbx import sgtbx\n"
-                  "from iotbx.shelx.write_ins import LATT_SYMM\n"
-                  "import sys\n"
-                  "space_group_info = sgtbx.space_group_info(\n"
-                  f"    symbol='{spgr}')\n"
-                  "LATT_SYMM(sys.stdout, space_group_info.group())\n")
-        cmd = [exe, "-c", script]
+        script = ("from cctbx import sgtbx;"
+                  "from iotbx.shelx.write_ins import LATT_SYMM;"
+                  "import sys;"
+                  f"space_group_info = sgtbx.space_group_info(symbol='{spgr}');"
+                  "LATT_SYMM(sys.stdout, space_group_info.group());")
+        cmd = [e, "-c", script]
 
     p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
     out, err = p.communicate()
