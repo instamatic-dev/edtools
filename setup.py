@@ -21,9 +21,9 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='edtools',
-    version='1.0.3',
+    version='1.0.4',
     description='Collection of tools for automated processing and clustering of electron diffraction data.',
-    python_requires='>=3.6.1',
+    python_requires='>=3.8.0',
     project_urls={
         'documentation': 'http://github.com/instamatic-dev/edtools',
         'homepage': 'http://github.com/instamatic-dev/edtools',
@@ -36,8 +36,6 @@ setup(
             'Development Status :: 5 - Stable',
             'License :: OSI Approved :: BSD License',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
     ],

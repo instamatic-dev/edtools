@@ -14,8 +14,6 @@ classifiers = [
 	"Development Status :: 5 - Production/Stable",
 	"License :: OSI Approved :: BSD License",
 	"Programming Language :: Python :: 3",
-	"Programming Language :: Python :: 3.6",
-	"Programming Language :: Python :: 3.7",
 	"Programming Language :: Python :: 3.8",
 	"Programming Language :: Python :: 3.9",
 ]
@@ -33,7 +31,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6.1"
+python = ">=3.8.0"
 numpy = ">=1.18.2"
 matplotlib = ">=3.2.1"
 scipy = ">=1.4.1"
