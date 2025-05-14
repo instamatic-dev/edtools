@@ -21,7 +21,6 @@ keywords = [
 license = "BSD-3-clause"
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
-	"License :: OSI Approved :: BSD License",
 	"Intended Audience :: Science/Research",
 	"Natural Language :: English",
 	"Programming Language :: Python :: 3",
@@ -34,13 +33,13 @@ classifiers = [
 	"Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    numpy = ">=1.18.2"
-    matplotlib = ">=3.2.1"
-    scipy = ">=1.4.1"
-    pandas = ">=1.0.3"
-    uncertainties = ">=3.1.2"
-    PyYAML = ">=5.4.1"
-    openpyxl = ">=3.0.10"
+    "numpy>=1.18.2",
+    "matplotlib>=3.2.1",
+    "scipy>=1.4.1",
+    "pandas>=1.0.3",
+    "uncertainties>=3.1.2",
+    "PyYAML>=5.4.1",
+    "openpyxl>=3.0.10",
 ]
 
 [project.urls]
@@ -49,19 +48,13 @@ issues = "http://github.com/instamatic-dev/edtools/issues"
 documentation = "http://github.com/instamatic-dev/edtools"
 changelog = "http://github.com/instamatic-dev/edtools/releases"
 
-include = [
-    ".pre-commit.yaml",
-    "LICENCE",
-    "setup.py",
-]
-
 [project.optional-dependencies]
 develop = [
     "check-manifest",
     "pre-commit",
     "bump-my-version",
 ]
-publishing = [
+publish = [
     "twine",
     "wheel",
     "build",
