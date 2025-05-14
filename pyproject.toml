@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edtools"
-version = "1.0.4"
+version = "1.1.0"
 description = "Collection of tools for automated processing and clustering of electron diffraction data."
 readme = "readme.md"
 requires-python = ">=3.8"
@@ -73,7 +73,7 @@ publish = [
 "edtools.find_beam_center"  = "edtools.find_beam_center:main"
 
 [tool.bumpversion]
-current_version = "1.0.4"
+current_version = "1.1.0"
 
 [[tool.bumpversion.files]]
 filename = "edtools/__init__.py"
