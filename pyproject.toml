@@ -1,8 +1,16 @@
-[tool]
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "edtools"
 version = "1.0.4"
 description = "Collection of tools for automated processing and clustering of electron diffraction data."
+readme = "readme.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "Stef Smeets", email="s.smeets@esciencecenter.nl"}
+]
 keywords = [
 	"electron-diffraction",
 	"microed",
@@ -10,42 +18,56 @@ keywords = [
 	"pipeline",
 	"cluster-analysis",
 ]
+license = "BSD-3-clause"
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
 	"License :: OSI Approved :: BSD License",
+	"Intended Audience :: Science/Research",
+	"Natural Language :: English",
 	"Programming Language :: Python :: 3",
 	"Programming Language :: Python :: 3.8",
 	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Topic :: Scientific/Engineering",
 ]
+dependencies = [
+    numpy = ">=1.18.2"
+    matplotlib = ">=3.2.1"
+    scipy = ">=1.4.1"
+    pandas = ">=1.0.3"
+    uncertainties = ">=3.1.2"
+    PyYAML = ">=5.4.1"
+    openpyxl = ">=3.0.10"
+]
+
+[project.urls]
 homepage = "http://github.com/instamatic-dev/edtools"
-repository = "http://github.com/instamatic-dev/edtools"
+issues = "http://github.com/instamatic-dev/edtools/issues"
 documentation = "http://github.com/instamatic-dev/edtools"
-maintainers = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
-authors = ["Stef Smeets <s.smeets@esciencecenter.nl>"]
-readme = "readme.md"
-license = "BSD-3-clause"
+changelog = "http://github.com/instamatic-dev/edtools/releases"
+
 include = [
     ".pre-commit.yaml",
     "LICENCE",
     "setup.py",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.8.0"
-numpy = ">=1.18.2"
-matplotlib = ">=3.2.1"
-scipy = ">=1.4.1"
-pandas = ">=1.0.3"
-uncertainties = ">=3.1.2"
-PyYAML = ">=5.4.1"
-openpyxl = ">=3.0.10"
+[project.optional-dependencies]
+develop = [
+    "check-manifest",
+    "pre-commit",
+    "bump-my-version",
+]
+publishing = [
+    "twine",
+    "wheel",
+    "build",
+]
 
-[tool.poetry.dev-dependencies]
-check-manifest = "*"
-pre-commit = "*"
-bump2version = "^1.0.1"
-
-[tool.poetry.scripts]
+[project.scripts]
 "edtools.autoindex"           = "edtools.autoindex:main"
 "edtools.cluster"             = "edtools.cluster:main"
 "edtools.find_cell"           = "edtools.find_cell:main"
@@ -57,14 +79,25 @@ bump2version = "^1.0.1"
 "edtools.find_rotation_axis"  = "edtools.find_rotation_axis:main"
 "edtools.find_beam_center"  = "edtools.find_beam_center:main"
 
-[tool.poetry.urls]
-"Bug Reports" = "https://github.com/instamatic-dev/edtools/issues"
+[tool.bumpversion]
+current_version = "1.0.4"
 
-[tool.dephell.main]
-from = {format = "poetry", path = "pyproject.toml"}
-to = {format = "setuppy", path = "setup.py"}
-versioning = "semver"
+[[tool.bumpversion.files]]
+filename = "edtools/__init__.py"
+search = "__version__ = '{current_version}'"
+replace = "__version__ = '{new_version}'"
 
-[build-system]
-requires = ["poetry"]
-build-backend = "poetry.masonry.api"
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+search = "version: {current_version}"
+replace = "version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "docs/conf.py"
+search = "version = release = '{current_version}'"
+replace = "version = release = '{new_version}'"
