@@ -1,0 +1,2 @@
+include edtools/*.yaml
+include edtools/instrument/*.cif
